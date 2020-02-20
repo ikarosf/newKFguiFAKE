@@ -27,7 +27,7 @@ import resource_rc
 
 
 # 打包exe文件用，编程时请注释
-os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join('.', 'plugins')
+# os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join('.', 'plugins')
 
 
 class MyWindow(Ui_MainWindow, QMainWindow):
