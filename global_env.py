@@ -11,7 +11,9 @@ myCardList = None
 enemyCardList = None
 npcList = None
 
+run_args = "bnpc"
 saveData = None
+
 
 
 class MyCardListClass(dict):

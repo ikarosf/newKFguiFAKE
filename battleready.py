@@ -75,6 +75,10 @@ class Ui_battleReadyForm(object):
         # self.addnpcpushButton.clicked.connect(self.chooseNpcCard)
         # self.gridLayout.addWidget(self.addnpcpushButton, 1, 3, 1, 1)
 
+        self.freebattlepushButton = QPushButton(Form)
+        self.freebattlepushButton.setObjectName(u"battlepushButton")
+        self.freebattlepushButton.clicked.connect(self.freeRunTest)
+        self.gridLayout.addWidget(self.freebattlepushButton, 1, 4, 1, 1)
 
         self.battlepushButton = QPushButton(Form)
         self.battlepushButton.setObjectName(u"battlepushButton")
@@ -95,6 +99,7 @@ class Ui_battleReadyForm(object):
         # self.delenemycardpushButton.setText("移除选择敌方")
         # self.delnpcpushButton.setText("移除选择NPC")
         # self.addnpcpushButton.setText("添加NPC")
+        self.freebattlepushButton.setText("自定义命令战斗")
         self.battlepushButton.setText("模拟战斗！")
 
     # retranslateUi
@@ -188,6 +193,35 @@ class Ui_battleReadyForm(object):
 
         global_env.mainWin.textBrowser.setText(thisText)
         self.close()
+
+
+    def freeRunTest(self):
+        if len(self.mycardlistWidget.selectedItems()) == 0:
+            QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
+            return
+        if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
+            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
+            return
+        text, ok = QInputDialog.getMultiLineText(self, '自定义参数战斗', '输入参数：', text=global_env.run_args)
+        if not (ok and text):
+            return
+        global_env.run_args = text
+        file_path = os.path.join(".", "newkf.in")
+        # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
+        gu_text = self.make_full_gu_text2()
+        if not gu_text:
+            QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
+            return
+        with open(file_path, "w") as f:
+            f.write(gu_text)
+        result = execCmd(text)
+        thisText = ""
+        for i in result:
+            thisText += i
+
+        global_env.mainWin.textBrowser.setText(thisText)
+        self.close()
+
 
     def make_full_gu_text(self):
         try:
