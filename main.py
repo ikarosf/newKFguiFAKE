@@ -74,6 +74,7 @@ class myCardWindow(Ui_mycardForm, QFrame):
         super(myCardWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
 
 
 class enemyCardWindow(Ui_enemycardForm, QFrame):
@@ -81,6 +82,7 @@ class enemyCardWindow(Ui_enemycardForm, QFrame):
         super(enemyCardWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
 
 
 class npcWindow(Ui_npcForm, QFrame):
@@ -88,6 +90,7 @@ class npcWindow(Ui_npcForm, QFrame):
         super(npcWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
 
 
 class battleReadyWindow(Ui_battleReadyForm, QFrame):
@@ -95,6 +98,7 @@ class battleReadyWindow(Ui_battleReadyForm, QFrame):
         super(battleReadyWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
 
 
 if __name__ == '__main__':

@@ -68,7 +68,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_9 = QPushButton(self.centralwidget)
         self.pushButton_9.setObjectName(u"pushButton_9")
-
+        self.pushButton_9.clicked.connect(self.aboutWindowOpen)
         self.gridLayout.addWidget(self.pushButton_9, 2, 2, 1, 1)
 
         self.textBrowser = QTextBrowser(self.centralwidget)
@@ -101,7 +101,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText("PushButton")
         self.pushButton_7.setText("PushButton")
         self.pushButton_8.setText("PushButton")
-        self.pushButton_9.setText("PushButton")
+        self.pushButton_9.setText("ABOUT")
 
     # retranslateUi
 
@@ -115,3 +115,6 @@ class Ui_MainWindow(object):
             return
         QMessageBox.information(self, "提示", "已选择" + fileName_choose + "为咕咕镇计算器", QMessageBox.Yes)
         global_env.saveData["setting"]["exeDir"] = fileName_choose
+
+    def aboutWindowOpen(self):
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nlink: https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
