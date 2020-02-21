@@ -14,7 +14,7 @@ import sys, os
 from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox, QFrame
 from PySide2 import QtGui
 
-from battleready import Ui_battleReadyForm
+from battlereadyWindow import Ui_battleReadyForm
 from mainWindow import Ui_MainWindow
 from mycardWindow import Ui_mycardForm
 from enemycardWindow import Ui_enemycardForm

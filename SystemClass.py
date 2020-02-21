@@ -91,18 +91,21 @@ class cardAttr:
 
 
 class equip:
-    def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical):
+    def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, equipType):
         self.level = level
         self.attr0 = attr0
         self.attr1 = attr1
         self.attr2 = attr2
         self.attr3 = attr3
         self.hasMystical = hasMystical
+        self.equipType = equipType
 
 
 class weaponEquip(equip):
+    partsText = "weapon"
+
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, weaponType):
-        super(weaponEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical)
+        super(weaponEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, weaponType)
         self.weaponType = weaponType
 
     def make_gu_text(self):
@@ -127,8 +130,10 @@ class weaponEquip(equip):
 
 
 class gloveEquip(equip):
+    partsText = "glove"
+
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, gloveType):
-        super(gloveEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical)
+        super(gloveEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, gloveType)
         self.gloveType = gloveType
 
     def make_gu_text(self):
@@ -153,8 +158,10 @@ class gloveEquip(equip):
 
 
 class ArmorEquip(equip):
+    partsText = "Armor"
+
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, ArmorType):
-        super(ArmorEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical)
+        super(ArmorEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, ArmorType)
         self.ArmorType = ArmorType
 
     def make_gu_text(self):
@@ -179,8 +186,10 @@ class ArmorEquip(equip):
 
 
 class helmetEquip(equip):
+    partsText = "helmet"
+
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, helmetType):
-        super(helmetEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical)
+        super(helmetEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, helmetType)
         self.helmetType = helmetType
 
     def make_gu_text(self):
