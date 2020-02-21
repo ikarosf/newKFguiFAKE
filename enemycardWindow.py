@@ -16,6 +16,7 @@ import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
     ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet
+from action_def import text_to_equipSet
 from cardClass import enemyCard
 
 QString = type("")
@@ -431,6 +432,11 @@ class Ui_enemycardForm(object):
         self.pushButton_3.setObjectName(u"删除卡片")
         self.gridLayout_8.addWidget(self.pushButton_3, 0, 2, 1, 1)
 
+        self.pushButton_4 = QPushButton(Form)
+        self.pushButton_4.clicked.connect(self.text_equipSet)
+        self.pushButton_4.setObjectName(u"快捷写入装备")
+        self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
+
         self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
 
         self.retranslateUi(Form)
@@ -478,6 +484,7 @@ class Ui_enemycardForm(object):
         self.pushButton.setText("存储卡片")
         self.pushButton_2.setText("覆盖当前卡片")
         self.pushButton_3.setText("删除当前卡片")
+        self.pushButton_4.setText("装备导入")
 
     # retranslateUi
 
@@ -755,7 +762,7 @@ class Ui_enemycardForm(object):
         if yes:
             del (global_env.enemyCardList[text])
 
-    def chooseEnemyCard(self, tag):   #combobox点击事件
+    def chooseEnemyCard(self, tag):  # combobox点击事件
         if tag not in global_env.enemyCardList.keys():
             return
         card = global_env.enemyCardList[tag]
@@ -763,7 +770,6 @@ class Ui_enemycardForm(object):
             self.newEnemyCard()
         else:
             self.setEnemyCard(card)
-
 
     def ableCheck(self):
         # self.lineEdit_2.setObjectName(u"卡片等级")
@@ -874,3 +880,40 @@ class Ui_enemycardForm(object):
                 return False, "装备属性不能大于150!"
 
         return True, "无错误"
+
+    def text_equipSet(self):
+        text, ok = QInputDialog.getMultiLineText(self, '快捷复制导入套装', '必须以武器为首行：')
+        if not (ok and text):
+            return
+        mySet = text_to_equipSet(text)
+        self.comboBox_8.setCurrentIndex(mySet.weapon.equipType)
+        self.lineEdit_3.setText(mySet.weapon.level)
+        self.lineEdit_4.setText(mySet.weapon.attr0)
+        self.lineEdit_5.setText(mySet.weapon.attr1)
+        self.lineEdit_6.setText(mySet.weapon.attr2)
+        self.lineEdit_7.setText(mySet.weapon.attr3)
+        self.comboBox_9.setCurrentIndex(mySet.weapon.hasMystical)
+
+        self.comboBox_10.setCurrentIndex(mySet.glove.equipType)
+        self.lineEdit_12.setText(mySet.glove.level)
+        self.lineEdit_8.setText(mySet.glove.attr0)
+        self.lineEdit_9.setText(mySet.glove.attr1)
+        self.lineEdit_11.setText(mySet.glove.attr2)
+        self.lineEdit_10.setText(mySet.glove.attr3)
+        self.comboBox_11.setCurrentIndex(mySet.glove.hasMystical)
+
+        self.comboBox_12.setCurrentIndex(mySet.Armor.equipType)
+        self.lineEdit_17.setText(mySet.Armor.level)
+        self.lineEdit_13.setText(mySet.Armor.attr0)
+        self.lineEdit_14.setText(mySet.Armor.attr1)
+        self.lineEdit_16.setText(mySet.Armor.attr2)
+        self.lineEdit_15.setText(mySet.Armor.attr3)
+        self.comboBox_13.setCurrentIndex(mySet.Armor.hasMystical)
+
+        self.comboBox_14.setCurrentIndex(mySet.helmet.equipType)
+        self.lineEdit_22.setText(mySet.helmet.level)
+        self.lineEdit_18.setText(mySet.helmet.attr0)
+        self.lineEdit_19.setText(mySet.helmet.attr1)
+        self.lineEdit_21.setText(mySet.helmet.attr2)
+        self.lineEdit_20.setText(mySet.helmet.attr3)
+        self.comboBox_15.setCurrentIndex(mySet.helmet.hasMystical)
