@@ -155,22 +155,22 @@ class Ui_mycardForm(object):
 
         self.gridLayout_4.addWidget(self.label_14, 1, 0, 1, 1)
 
-        self.lineEdit_4 = intLineEdit(Form, max=500)
+        self.lineEdit_4 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_4.setObjectName(u"武器属性1")
 
         self.gridLayout_4.addWidget(self.lineEdit_4, 2, 1, 1, 1)
 
-        self.lineEdit_7 = intLineEdit(Form, max=500)
+        self.lineEdit_7 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_7.setObjectName(u"武器属性4")
 
         self.gridLayout_4.addWidget(self.lineEdit_7, 2, 4, 1, 1)
 
-        self.lineEdit_6 = intLineEdit(Form, max=500)
-        self.lineEdit_6.setObjectName(u"武器属性4")
+        self.lineEdit_6 = intLineEdit(Form, min=50, max=150)
+        self.lineEdit_6.setObjectName(u"武器属性3")
 
         self.gridLayout_4.addWidget(self.lineEdit_6, 2, 3, 1, 1)
 
-        self.lineEdit_3 = intLineEdit(Form, max=500)
+        self.lineEdit_3 = intLineEdit(Form, min=1, max=500)
         self.lineEdit_3.setObjectName(u"武器等级")
 
         self.gridLayout_4.addWidget(self.lineEdit_3, 1, 1, 1, 3)
@@ -199,7 +199,7 @@ class Ui_mycardForm(object):
 
         self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.lineEdit_8 = intLineEdit(Form, max=500)
+        self.lineEdit_8 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_8.setObjectName(u"手套属性1")
 
         self.gridLayout_5.addWidget(self.lineEdit_8, 2, 1, 1, 1)
@@ -209,17 +209,17 @@ class Ui_mycardForm(object):
 
         self.gridLayout_5.addWidget(self.label_17, 0, 0, 1, 1)
 
-        self.lineEdit_9 = intLineEdit(Form, max=500)
+        self.lineEdit_9 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_9.setObjectName(u"手套属性2")
 
         self.gridLayout_5.addWidget(self.lineEdit_9, 2, 2, 1, 1)
 
-        self.lineEdit_10 = intLineEdit(Form, max=500)
+        self.lineEdit_10 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_10.setObjectName(u"手套属性4")
 
         self.gridLayout_5.addWidget(self.lineEdit_10, 2, 4, 1, 1)
 
-        self.lineEdit_11 = intLineEdit(Form, max=500)
+        self.lineEdit_11 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_11.setObjectName(u"手套属性3")
 
         self.gridLayout_5.addWidget(self.lineEdit_11, 2, 3, 1, 1)
@@ -229,13 +229,13 @@ class Ui_mycardForm(object):
 
         self.gridLayout_5.addWidget(self.label_18, 3, 0, 1, 1)
 
-        self.lineEdit_12 = intLineEdit(Form, max=500)
+        self.lineEdit_12 = intLineEdit(Form, min=1, max=500)
         self.lineEdit_12.setObjectName(u"手套等级")
 
         self.gridLayout_5.addWidget(self.lineEdit_12, 1, 1, 1, 3)
 
         self.comboBox_10 = gloveChooseComboBox(Form)
-        self.comboBox_10.setObjectName(u"手套神秘")
+        self.comboBox_10.setObjectName(u"手套类型")
 
         self.gridLayout_5.addWidget(self.comboBox_10, 0, 1, 1, 2)
 
@@ -297,7 +297,7 @@ class Ui_mycardForm(object):
 
         self.gridLayout_6 = QGridLayout()
         self.gridLayout_6.setObjectName(u"护甲")
-        self.lineEdit_13 = intLineEdit(Form, max=500)
+        self.lineEdit_13 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_13.setObjectName(u"护甲属性1")
 
         self.gridLayout_6.addWidget(self.lineEdit_13, 2, 1, 1, 1)
@@ -307,17 +307,17 @@ class Ui_mycardForm(object):
 
         self.gridLayout_6.addWidget(self.label_21, 0, 0, 1, 1)
 
-        self.lineEdit_14 = intLineEdit(Form, max=500)
+        self.lineEdit_14 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_14.setObjectName(u"护甲属性2")
 
         self.gridLayout_6.addWidget(self.lineEdit_14, 2, 2, 1, 1)
 
-        self.lineEdit_15 = intLineEdit(Form, max=500)
+        self.lineEdit_15 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_15.setObjectName(u"护甲属性4")
 
         self.gridLayout_6.addWidget(self.lineEdit_15, 2, 4, 1, 1)
 
-        self.lineEdit_16 = intLineEdit(Form, max=500)
+        self.lineEdit_16 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_16.setObjectName(u"护甲属性3")
 
         self.gridLayout_6.addWidget(self.lineEdit_16, 2, 3, 1, 1)
@@ -327,7 +327,7 @@ class Ui_mycardForm(object):
 
         self.gridLayout_6.addWidget(self.label_22, 3, 0, 1, 1)
 
-        self.lineEdit_17 = intLineEdit(Form, max=500)
+        self.lineEdit_17 = intLineEdit(Form, min=1, max=500)
         self.lineEdit_17.setObjectName(u"护甲等级")
 
         self.gridLayout_6.addWidget(self.lineEdit_17, 1, 1, 1, 3)
@@ -356,7 +356,7 @@ class Ui_mycardForm(object):
 
         self.gridLayout_7 = QGridLayout()
         self.gridLayout_7.setObjectName(u"头盔")
-        self.lineEdit_18 = intLineEdit(Form, max=500)
+        self.lineEdit_18 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_18.setObjectName(u"头盔属性1")
 
         self.gridLayout_7.addWidget(self.lineEdit_18, 2, 1, 1, 1)
@@ -366,17 +366,17 @@ class Ui_mycardForm(object):
 
         self.gridLayout_7.addWidget(self.label_25, 0, 0, 1, 1)
 
-        self.lineEdit_19 = intLineEdit(Form, max=500)
+        self.lineEdit_19 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_19.setObjectName(u"头盔属性2")
 
         self.gridLayout_7.addWidget(self.lineEdit_19, 2, 2, 1, 1)
 
-        self.lineEdit_20 = intLineEdit(Form, max=500)
+        self.lineEdit_20 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_20.setObjectName(u"头盔属性4")
 
         self.gridLayout_7.addWidget(self.lineEdit_20, 2, 4, 1, 1)
 
-        self.lineEdit_21 = intLineEdit(Form, max=500)
+        self.lineEdit_21 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_21.setObjectName(u"头盔属性3")
 
         self.gridLayout_7.addWidget(self.lineEdit_21, 2, 3, 1, 1)
@@ -386,7 +386,7 @@ class Ui_mycardForm(object):
 
         self.gridLayout_7.addWidget(self.label_26, 3, 0, 1, 1)
 
-        self.lineEdit_22 = intLineEdit(Form, max=500)
+        self.lineEdit_22 = intLineEdit(Form, min=1, max=500)
         self.lineEdit_22.setObjectName(u"头盔等级")
 
         self.gridLayout_7.addWidget(self.lineEdit_22, 1, 1, 1, 3)
@@ -714,6 +714,10 @@ class Ui_mycardForm(object):
         self.comboBox.setCurrentIndex(currentIndex)
 
     def saveMyCard(self):
+        (result, message) = self.ableCheck()
+        if not result:
+            QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
+            return
         newCard = self.makeMyCard()
         text, ok = QInputDialog.getText(self, '设置卡片显示名', '输入名称：', text=newCard.tostring())
         if ok and text:
@@ -724,6 +728,10 @@ class Ui_mycardForm(object):
             self.comboBox.setCurrentText(text)
 
     def editMyCard(self):
+        (result, message) = self.ableCheck()
+        if not result:
+            QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
+            return
         newCard = self.makeMyCard()
         # index = self.comboBox.currentIndex()
         text = self.comboBox.currentText()
@@ -747,7 +755,7 @@ class Ui_mycardForm(object):
         if yes:
             del (global_env.myCardList[text])
 
-    def chooseMyCard(self, tag):   #combobox点击事件
+    def chooseMyCard(self, tag):  # combobox点击事件
         if tag not in global_env.myCardList.keys():
             return
         card = global_env.myCardList[tag]
@@ -755,3 +763,113 @@ class Ui_mycardForm(object):
             self.newMyCard()
         else:
             self.setMyCard(card)
+
+    def ableCheck(self):
+        # self.lineEdit_2.setObjectName(u"卡片等级")
+        # self.spinBox.setObjectName(u"力量")
+        # self.spinBox_2.setObjectName(u"敏捷")
+        # self.spinBox_3.setObjectName(u"智力")
+        # self.spinBox_4.setObjectName(u"体魄")
+        # self.spinBox_5.setObjectName(u"精神")
+        # self.spinBox_6.setObjectName(u"意志")
+
+        level = self.lineEdit_2.getValue()
+        STR = self.spinBox.getValue()
+        AGI = self.spinBox_2.getValue()
+        INT = self.spinBox_3.getValue()
+        VIT = self.spinBox_4.getValue()
+        SPR = self.spinBox_5.getValue()
+        RES = self.spinBox_6.getValue()
+
+        if level > 500:
+            return False, "卡片不能超过500级"
+        maxPoint = level * 3 + 6
+        if maxPoint < STR + AGI + INT + VIT + SPR + RES:
+            return False, "属性点分配超过等级上限！"
+
+        # self.comboBox_2.setObjectName(u"技能位")
+        # self.comboBox_3.setObjectName(u"技能1")
+        # self.comboBox_4.setObjectName(u"技能2")
+        # self.comboBox_5.setObjectName(u"技能3")
+        # self.comboBox_6.setObjectName(u"技能4")
+
+        sklSlotNum = self.comboBox_2.currentIndex() + 1
+        sklList = []
+        skl_1 = self.comboBox_3.currentIndex()
+        skl_2 = self.comboBox_4.currentIndex()
+        skl_3 = self.comboBox_5.currentIndex()
+        skl_4 = self.comboBox_6.currentIndex()
+        if skl_1 != 0:
+            sklList.append(skl_1)
+        if skl_2 != 0:
+            if skl_2 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_2)
+        if skl_3 != 0:
+            if skl_3 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_3)
+        if skl_4 != 0:
+            if skl_4 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_4)
+        if len(sklList) > sklSlotNum:
+            return False, "技能数量大于技能位!"
+
+        # self.comboBox_8.setObjectName(u"武器类型")
+        # self.lineEdit_3.setObjectName(u"武器等级")
+        # self.lineEdit_4.setObjectName(u"武器属性1")
+        # self.lineEdit_5.setObjectName(u"武器属性2")
+        # self.lineEdit_6.setObjectName(u"武器属性3")
+        # self.lineEdit_7.setObjectName(u"武器属性4")
+        if self.comboBox_8.currentIndex() != 0:
+            if self.lineEdit_3.getValue() > 500:
+                return False, "装备等级不能大于500!"
+            if self.lineEdit_4.getValue() < 50 or self.lineEdit_5.getValue() < 50 or self.lineEdit_6.getValue() < 50 or self.lineEdit_7.getValue() < 50:
+                return False, "装备属性不能小于50!"
+            if self.lineEdit_4.getValue() > 150 or self.lineEdit_5.getValue() > 150 or self.lineEdit_6.getValue() > 150 or self.lineEdit_7.getValue() > 150:
+                return False, "装备属性不能大于150!"
+
+        # self.comboBox_10.setObjectName(u"手套类型")
+        # self.lineEdit_12.setObjectName(u"手套等级")
+        # self.lineEdit_8.setObjectName(u"手套属性1")
+        # self.lineEdit_9.setObjectName(u"手套属性2")
+        # self.lineEdit_11.setObjectName(u"手套属性3")
+        # self.lineEdit_10.setObjectName(u"手套属性4")
+        if self.comboBox_10.currentIndex() != 0:
+            if self.lineEdit_12.getValue() > 500:
+                return False, "装备等级不能大于500!"
+            if self.lineEdit_8.getValue() < 50 or self.lineEdit_9.getValue() < 50 or self.lineEdit_11.getValue() < 50 or self.lineEdit_10.getValue() < 50:
+                return False, "装备属性不能小于50!"
+            if self.lineEdit_8.getValue() > 150 or self.lineEdit_9.getValue() > 150 or self.lineEdit_11.getValue() > 150 or self.lineEdit_10.getValue() > 150:
+                return False, "装备属性不能大于150!"
+
+        # self.comboBox_12.setObjectName(u"护甲类型")
+        # self.lineEdit_17.setObjectName(u"护甲等级")
+        # self.lineEdit_13.setObjectName(u"护甲属性1")
+        # self.lineEdit_14.setObjectName(u"护甲属性2")
+        # self.lineEdit_16.setObjectName(u"护甲属性3")
+        # self.lineEdit_15.setObjectName(u"护甲属性4")
+        if self.comboBox_12.currentIndex() != 0:
+            if self.lineEdit_17.getValue() > 500:
+                return False, "装备等级不能大于500!"
+            if self.lineEdit_13.getValue() < 50 or self.lineEdit_14.getValue() < 50 or self.lineEdit_16.getValue() < 50 or self.lineEdit_15.getValue() < 50:
+                return False, "装备属性不能小于50!"
+            if self.lineEdit_13.getValue() > 150 or self.lineEdit_14.getValue() > 150 or self.lineEdit_16.getValue() > 150 or self.lineEdit_15.getValue() > 150:
+                return False, "装备属性不能大于150!"
+
+        # self.comboBox_14.setObjectName(u"头盔类型")
+        # self.lineEdit_22.setObjectName(u"头盔等级")
+        # self.lineEdit_18.setObjectName(u"头盔属性1")
+        # self.lineEdit_19.setObjectName(u"头盔属性2")
+        # self.lineEdit_21.setObjectName(u"头盔属性3")
+        # self.lineEdit_20.setObjectName(u"头盔属性4")
+        if self.comboBox_14.currentIndex() != 0:
+            if self.lineEdit_22.getValue() > 500:
+                return False, "装备等级不能大于500!"
+            if self.lineEdit_18.getValue() < 50 or self.lineEdit_19.getValue() < 50 or self.lineEdit_21.getValue() < 50 or self.lineEdit_20.getValue() < 50:
+                return False, "装备属性不能小于50!"
+            if self.lineEdit_18.getValue() > 150 or self.lineEdit_19.getValue() > 150 or self.lineEdit_21.getValue() > 150 or self.lineEdit_20.getValue() > 150:
+                return False, "装备属性不能大于150!"
+
+        return True, "无错误"

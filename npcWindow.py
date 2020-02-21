@@ -195,6 +195,10 @@ class Ui_npcForm(object):
         self.comboBox_2.setCurrentIndex(currentIndex)
 
     def saveNpc(self):
+        (result, message) = self.ableCheck()
+        if not result:
+            QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
+            return
         newNpc = self.makeNpc()
         text, ok = QInputDialog.getText(self, '设置卡片显示名', '输入名称：', text=newNpc.tostring())
         if ok and text:
@@ -205,6 +209,10 @@ class Ui_npcForm(object):
             self.comboBox_2.setCurrentText(text)
 
     def editNpc(self):
+        (result, message) = self.ableCheck()
+        if not result:
+            QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
+            return
         newNpc = self.makeNpc()
         # index = self.comboBox.currentIndex()
         text = self.comboBox_2.currentText()
@@ -236,3 +244,25 @@ class Ui_npcForm(object):
             self.newNpc()
         else:
             self.setNpc(mynpc)
+
+    def ableCheck(self):
+        skl_1 = self.skillComboBox0.currentIndex()
+        skl_2 = self.skillComboBox1.currentIndex()
+        skl_3 = self.skillComboBox2.currentIndex()
+        skl_4 = self.skillComboBox3.currentIndex()
+        sklList = []
+        if skl_1 != 0:
+            sklList.append(skl_1)
+        if skl_2 != 0:
+            if skl_2 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_2)
+        if skl_3 != 0:
+            if skl_3 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_3)
+        if skl_4 != 0:
+            if skl_4 in sklList:
+                return False, "技能重复！"
+            sklList.append(skl_4)
+        return True, "无错误"
