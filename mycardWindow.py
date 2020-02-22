@@ -780,7 +780,7 @@ class Ui_mycardForm(object):
         # self.spinBox_5.setObjectName(u"精神")
         # self.spinBox_6.setObjectName(u"意志")
         if global_env.test_mode:
-            return True,"测试模式"
+            return True, "测试模式"
 
         level = self.lineEdit_2.getValue()
         STR = self.spinBox.getValue()
@@ -801,7 +801,9 @@ class Ui_mycardForm(object):
         # self.comboBox_4.setObjectName(u"技能2")
         # self.comboBox_5.setObjectName(u"技能3")
         # self.comboBox_6.setObjectName(u"技能4")
-
+        halo = self.lineEdit.getValue()
+        if halo > 200 :
+            return False, "光环不能大于200!"
         sklSlotNum = self.comboBox_2.currentIndex() + 1
         sklList = []
         skl_1 = self.comboBox_3.currentIndex()
@@ -824,7 +826,18 @@ class Ui_mycardForm(object):
             sklList.append(skl_4)
         if len(sklList) > sklSlotNum:
             return False, "技能数量大于技能位!"
-
+        used_halo = 0
+        for skl in sklList:
+            if skl <= 3:
+                used_halo += 10
+            elif skl <= 5:
+                used_halo += 30
+            elif skl <= 8:
+                used_halo += 50
+            elif skl <= 11:
+                used_halo += 100
+        if used_halo > halo:
+            return False, "技能所需点数超过光环！"
         # self.comboBox_8.setObjectName(u"武器类型")
         # self.lineEdit_3.setObjectName(u"武器等级")
         # self.lineEdit_4.setObjectName(u"武器属性1")
