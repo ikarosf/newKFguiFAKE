@@ -11,6 +11,7 @@ from cardClass import myCard
 
 QString = type("")
 
+
 class Ui_cardForm(object):
     def setupUi(self, Form):
         if Form.objectName():
@@ -63,68 +64,75 @@ class Ui_cardForm(object):
 
         self.lineEdit_2 = intLineEdit(parent=Form, max=500)  # 等级
         self.lineEdit_2.setObjectName(u"卡片等级")
-
+        self.lineEdit_2.textEdited.connect(self.set_remainder_point)
         self.gridLayout.addWidget(self.lineEdit_2, 2, 1, 1, 1)
+
+        self.remainder_point_text = QLabel(Form)
+        self.remainder_point_text.setObjectName(u"点数文本")
+        self.gridLayout.addWidget(self.remainder_point_text, 3, 0, 1, 1)
+        self.remainder_point = QLabel(Form)
+        self.remainder_point.setObjectName(u"点数")
+        self.gridLayout.addWidget(self.remainder_point, 3, 1, 1, 1)
 
         self.label_5 = QLabel(Form)
         self.label_5.setObjectName(u"力量")
 
-        self.gridLayout.addWidget(self.label_5, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_5, 4, 0, 1, 1)
 
         self.spinBox = bigSpinBox(Form)
         self.spinBox.setObjectName(u"力量")
-
-        self.gridLayout.addWidget(self.spinBox, 3, 1, 1, 1)
+        self.spinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox, 4, 1, 1, 1)
 
         self.label_6 = QLabel(Form)
         self.label_6.setObjectName(u"敏捷")
 
-        self.gridLayout.addWidget(self.label_6, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_6, 5, 0, 1, 1)
 
         self.spinBox_2 = bigSpinBox(Form)
         self.spinBox_2.setObjectName(u"敏捷")
-
-        self.gridLayout.addWidget(self.spinBox_2, 4, 1, 1, 1)
+        self.spinBox_2.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox_2, 5, 1, 1, 1)
 
         self.label_7 = QLabel(Form)
         self.label_7.setObjectName(u"智力")
 
-        self.gridLayout.addWidget(self.label_7, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_7, 6, 0, 1, 1)
 
         self.spinBox_3 = bigSpinBox(Form)
         self.spinBox_3.setObjectName(u"智力")
-
-        self.gridLayout.addWidget(self.spinBox_3, 5, 1, 1, 1)
+        self.spinBox_3.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox_3, 6, 1, 1, 1)
 
         self.label_8 = QLabel(Form)
         self.label_8.setObjectName(u"体魄")
 
-        self.gridLayout.addWidget(self.label_8, 6, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_8, 7, 0, 1, 1)
 
         self.spinBox_4 = bigSpinBox(Form)
         self.spinBox_4.setObjectName(u"体魄")
-
-        self.gridLayout.addWidget(self.spinBox_4, 6, 1, 1, 1)
+        self.spinBox_4.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox_4, 7, 1, 1, 1)
 
         self.label_9 = QLabel(Form)
         self.label_9.setObjectName(u"精神")
 
-        self.gridLayout.addWidget(self.label_9, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_9, 8, 0, 1, 1)
 
         self.spinBox_5 = bigSpinBox(Form)
         self.spinBox_5.setObjectName(u"精神")
-
-        self.gridLayout.addWidget(self.spinBox_5, 7, 1, 1, 1)
+        self.spinBox_5.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox_5, 8, 1, 1, 1)
 
         self.label_10 = QLabel(Form)
         self.label_10.setObjectName(u"意志")
 
-        self.gridLayout.addWidget(self.label_10, 8, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_10, 9, 0, 1, 1)
 
         self.spinBox_6 = bigSpinBox(Form)
         self.spinBox_6.setObjectName(u"意志")
-
-        self.gridLayout.addWidget(self.spinBox_6, 8, 1, 1, 1)
+        self.spinBox_6.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.spinBox_6, 9, 1, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout, 1, 0, 2, 1)
 
@@ -426,6 +434,11 @@ class Ui_cardForm(object):
         self.pushButton_4.setObjectName(u"快捷写入装备")
         self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
 
+        self.pushButton_5 = QPushButton(Form)
+        self.pushButton_5.clicked.connect(self.percentage_attr)
+        self.pushButton_5.setObjectName(u"比例分配属性")
+        self.gridLayout_8.addWidget(self.pushButton_5, 1, 1, 1, 1)
+
         self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
 
         self.retranslateUi(Form)
@@ -441,6 +454,7 @@ class Ui_cardForm(object):
         self.label_3.setText("卡片类型")
 
         self.label_4.setText("卡片等级")
+        self.remainder_point_text.setText("可用点数")
         self.label_5.setText("力量")
         self.label_6.setText("敏捷")
         self.label_7.setText("智力")
@@ -474,6 +488,7 @@ class Ui_cardForm(object):
         self.pushButton_2.setText("覆盖当前卡片")
         self.pushButton_3.setText("删除当前卡片")
         self.pushButton_4.setText("装备导入")
+        self.pushButton_5.setText("百分比分配属性")
 
     # retranslateUi
 
@@ -762,6 +777,7 @@ class Ui_cardForm(object):
                 self.setMyCard(card)
             except:
                 QMessageBox.critical(self, "错误", "该配置出错不可用", QMessageBox.Yes)
+        self.set_remainder_point()
 
     def ableCheck(self):
         # self.lineEdit_2.setObjectName(u"卡片等级")
@@ -794,7 +810,7 @@ class Ui_cardForm(object):
         # self.comboBox_5.setObjectName(u"技能3")
         # self.comboBox_6.setObjectName(u"技能4")
         halo = self.lineEdit.getValue()
-        if halo > 200 :
+        if halo > 200:
             return False, "光环不能大于200!"
         sklSlotNum = self.comboBox_2.currentIndex() + 1
         sklList = []
@@ -924,3 +940,33 @@ class Ui_cardForm(object):
         self.lineEdit_21.setText(mySet.helmet.attr2)
         self.lineEdit_20.setText(mySet.helmet.attr3)
         self.comboBox_15.setCurrentIndex(mySet.helmet.hasMystical)
+
+    def set_remainder_point(self):
+        level = self.lineEdit_2.getValue()
+        STR = self.spinBox.getValue()
+        AGI = self.spinBox_2.getValue()
+        INT = self.spinBox_3.getValue()
+        VIT = self.spinBox_4.getValue()
+        SPR = self.spinBox_5.getValue()
+        RES = self.spinBox_6.getValue()
+
+        maxPoint = level * 3 + 6
+        remainder_point = maxPoint - (STR + AGI + INT + VIT + SPR + RES)
+        self.remainder_point.setText(str(remainder_point))
+
+    def percentage_attr(self):
+        text, ok = QInputDialog.getText(self, '分配属性', '输入6个整数，空格分割')
+        if ok and text:
+            percentage_text = text.split()
+            attr_list = []
+            level = self.lineEdit_2.getValue()
+            point = level * 3
+            for i in range(6):
+                attr_list.append(int(point * int(percentage_text[i]) / 100 + 1))
+            self.spinBox.setValue(attr_list[0])
+            self.spinBox_2.setValue(attr_list[1])
+            self.spinBox_3.setValue(attr_list[2])
+            self.spinBox_4.setValue(attr_list[3])
+            self.spinBox_5.setValue(attr_list[4])
+            self.spinBox_6.setValue(attr_list[5])
+            self.set_remainder_point()
