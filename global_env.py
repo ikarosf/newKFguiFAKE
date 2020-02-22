@@ -17,7 +17,6 @@ saveData = None
 test_mode = False
 
 
-
 class MyCardListClass(dict):
     def __init__(self, *args, **kwargs):
         super(MyCardListClass, self).__init__(*args, **kwargs)
@@ -39,11 +38,11 @@ class EnemyCardListClass(dict):
     def __setitem__(self, *args, **kwargs):
         super(EnemyCardListClass, self).__setitem__(*args, **kwargs)
         if enemyCardWindow is not None:
-            enemyCardWindow.enemyCardListUpdate()
+            enemyCardWindow.myCardListUpdate()
 
     def __delitem__(self, *args, **kwargs):
         super(EnemyCardListClass, self).__delitem__(*args, **kwargs)
-        enemyCardWindow.enemyCardListUpdate()
+        enemyCardWindow.myCardListUpdate()
 
 
 class NPCListClass(dict):

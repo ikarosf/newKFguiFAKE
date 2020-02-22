@@ -180,7 +180,11 @@ class Ui_battleReadyForm(object):
             return
         file_path = os.path.join(".", "newkf.in")
         # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
-        gu_text = self.make_full_gu_text2()
+        try:
+            gu_text = self.make_full_gu_text2()
+        except:
+            QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
+            return
         if not gu_text:
             QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
             return
