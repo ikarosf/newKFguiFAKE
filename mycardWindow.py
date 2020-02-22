@@ -447,7 +447,7 @@ class Ui_mycardForm(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle("我的卡片")
-        self.label.setText("TextLabel")
+        self.label.setText("卡片列表")
         self.label_2.setText("光环百分比")
         self.label_3.setText("卡片类型")
 
@@ -605,7 +605,7 @@ class Ui_mycardForm(object):
         self.comboBox_5.setCurrentIndex(skill_3.data)
         self.comboBox_6.setCurrentIndex(skill_4.data)
 
-        self.comboBox_8.setCurrentIndex(weapon.weaponType)
+        self.comboBox_8.setCurrentIndex(weapon.equipType)
         self.lineEdit_3.setText(weapon.level)
         self.lineEdit_4.setText(weapon.attr0)
         self.lineEdit_5.setText(weapon.attr1)
@@ -613,7 +613,7 @@ class Ui_mycardForm(object):
         self.lineEdit_7.setText(weapon.attr3)
         self.comboBox_9.setCurrentIndex(weapon.hasMystical)
 
-        self.comboBox_10.setCurrentIndex(glove.gloveType)
+        self.comboBox_10.setCurrentIndex(glove.equipType)
         self.lineEdit_12.setText(glove.level)
         self.lineEdit_8.setText(glove.attr0)
         self.lineEdit_9.setText(glove.attr1)
@@ -621,7 +621,7 @@ class Ui_mycardForm(object):
         self.lineEdit_10.setText(glove.attr3)
         self.comboBox_11.setCurrentIndex(glove.hasMystical)
 
-        self.comboBox_12.setCurrentIndex(Armor.ArmorType)
+        self.comboBox_12.setCurrentIndex(Armor.equipType)
         self.lineEdit_17.setText(Armor.level)
         self.lineEdit_13.setText(Armor.attr0)
         self.lineEdit_14.setText(Armor.attr1)
@@ -629,7 +629,7 @@ class Ui_mycardForm(object):
         self.lineEdit_15.setText(Armor.attr3)
         self.comboBox_13.setCurrentIndex(Armor.hasMystical)
 
-        self.comboBox_14.setCurrentIndex(helmet.helmetType)
+        self.comboBox_14.setCurrentIndex(helmet.equipType)
         self.lineEdit_22.setText(helmet.level)
         self.lineEdit_18.setText(helmet.attr0)
         self.lineEdit_19.setText(helmet.attr1)
@@ -680,7 +680,7 @@ class Ui_mycardForm(object):
         self.comboBox_5.setCurrentIndex(skill_3)
         self.comboBox_6.setCurrentIndex(skill_4)
 
-        self.comboBox_8.setCurrentIndex(weapon.weaponType)
+        self.comboBox_8.setCurrentIndex(weapon.equipType)
         self.lineEdit_3.setText(weapon.level)
         self.lineEdit_4.setText(weapon.attr0)
         self.lineEdit_5.setText(weapon.attr1)
@@ -688,7 +688,7 @@ class Ui_mycardForm(object):
         self.lineEdit_7.setText(weapon.attr3)
         self.comboBox_9.setCurrentIndex(weapon.hasMystical)
 
-        self.comboBox_10.setCurrentIndex(glove.gloveType)
+        self.comboBox_10.setCurrentIndex(glove.equipType)
         self.lineEdit_12.setText(glove.level)
         self.lineEdit_8.setText(glove.attr0)
         self.lineEdit_9.setText(glove.attr1)
@@ -696,7 +696,7 @@ class Ui_mycardForm(object):
         self.lineEdit_10.setText(glove.attr3)
         self.comboBox_11.setCurrentIndex(glove.hasMystical)
 
-        self.comboBox_12.setCurrentIndex(Armor.ArmorType)
+        self.comboBox_12.setCurrentIndex(Armor.equipType)
         self.lineEdit_17.setText(Armor.level)
         self.lineEdit_13.setText(Armor.attr0)
         self.lineEdit_14.setText(Armor.attr1)
@@ -704,7 +704,7 @@ class Ui_mycardForm(object):
         self.lineEdit_15.setText(Armor.attr3)
         self.comboBox_13.setCurrentIndex(Armor.hasMystical)
 
-        self.comboBox_14.setCurrentIndex(helmet.helmetType)
+        self.comboBox_14.setCurrentIndex(helmet.equipType)
         self.lineEdit_22.setText(helmet.level)
         self.lineEdit_18.setText(helmet.attr0)
         self.lineEdit_19.setText(helmet.attr1)
@@ -779,6 +779,8 @@ class Ui_mycardForm(object):
         # self.spinBox_4.setObjectName(u"体魄")
         # self.spinBox_5.setObjectName(u"精神")
         # self.spinBox_6.setObjectName(u"意志")
+        if global_env.test_mode:
+            return True,"测试模式"
 
         level = self.lineEdit_2.getValue()
         STR = self.spinBox.getValue()

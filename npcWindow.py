@@ -112,7 +112,7 @@ class Ui_npcForm(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle("NPC")
-        self.label_2.setText("TextLabel")
+        self.label_2.setText("npc列表")
         self.label.setText("NPC类型")
 
         self.label_3.setText("技能")

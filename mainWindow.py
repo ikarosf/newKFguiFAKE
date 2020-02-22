@@ -63,7 +63,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_8 = QPushButton(self.centralwidget)
         self.pushButton_8.setObjectName(u"pushButton_8")
-
+        self.pushButton_8.clicked.connect(self.enterTestMode)
         self.gridLayout.addWidget(self.pushButton_8, 2, 1, 1, 1)
 
         self.pushButton_9 = QPushButton(self.centralwidget)
@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
         self.pushButton_5.setText("设置newkf.exe路径")
         self.pushButton_6.setText("PushButton")
         self.pushButton_7.setText("PushButton")
-        self.pushButton_8.setText("PushButton")
+        self.pushButton_8.setText("TESTMODE")
         self.pushButton_9.setText("ABOUT")
 
     # retranslateUi
@@ -118,3 +118,8 @@ class Ui_MainWindow(object):
 
     def aboutWindowOpen(self):
         QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nlink: https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
+
+    def enterTestMode(self):
+        yes = QMessageBox.warning(self, "进入测试模式？", "测试模式暂时唯一的功能是保存卡片时不再检测数值合法性", QMessageBox.Yes | QMessageBox.No)
+        if yes:
+            global_env.test_mode = True

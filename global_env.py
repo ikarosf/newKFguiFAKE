@@ -14,6 +14,8 @@ npcList = None
 run_args = "bnpc"
 saveData = None
 
+test_mode = False
+
 
 
 class MyCardListClass(dict):

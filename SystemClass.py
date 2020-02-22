@@ -100,20 +100,12 @@ class equip:
         self.hasMystical = hasMystical
         self.equipType = equipType
 
-
-class weaponEquip(equip):
-    partsText = "weapon"
-
-    def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, weaponType):
-        super(weaponEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, weaponType)
-        self.weaponType = weaponType
-
     def make_gu_text(self):
         text = ''
-        if self.weaponType == 0:
+        if self.equipType == 0:
             text += "NONE"
             return text
-        text += all_equip["data"]["weapon"][self.weaponType - 1]
+        text += all_equip["data"][self.partsText][self.equipType - 1]
         text += " "
         text += self.level
         text += " "
@@ -127,6 +119,15 @@ class weaponEquip(equip):
         text += " "
         text += str(self.hasMystical)
         return text
+
+
+class weaponEquip(equip):
+    partsText = "weapon"
+
+    def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, weaponType):
+        super(weaponEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, weaponType)
+
+
 
 
 class gloveEquip(equip):
@@ -134,27 +135,7 @@ class gloveEquip(equip):
 
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, gloveType):
         super(gloveEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, gloveType)
-        self.gloveType = gloveType
 
-    def make_gu_text(self):
-        text = ''
-        if self.gloveType == 0:
-            text += "NONE"
-            return text
-        text += all_equip["data"]["glove"][self.gloveType - 1]
-        text += " "
-        text += self.level
-        text += " "
-        text += self.attr0
-        text += " "
-        text += self.attr1
-        text += " "
-        text += self.attr2
-        text += " "
-        text += self.attr3
-        text += " "
-        text += str(self.hasMystical)
-        return text
 
 
 class ArmorEquip(equip):
@@ -162,27 +143,8 @@ class ArmorEquip(equip):
 
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, ArmorType):
         super(ArmorEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, ArmorType)
-        self.ArmorType = ArmorType
 
-    def make_gu_text(self):
-        text = ''
-        if self.ArmorType == 0:
-            text += "NONE"
-            return text
-        text += all_equip["data"]["Armor"][self.ArmorType - 1]
-        text += " "
-        text += self.level
-        text += " "
-        text += self.attr0
-        text += " "
-        text += self.attr1
-        text += " "
-        text += self.attr2
-        text += " "
-        text += self.attr3
-        text += " "
-        text += str(self.hasMystical)
-        return text
+
 
 
 class helmetEquip(equip):
@@ -190,27 +152,7 @@ class helmetEquip(equip):
 
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, helmetType):
         super(helmetEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, helmetType)
-        self.helmetType = helmetType
 
-    def make_gu_text(self):
-        text = ''
-        if self.helmetType == 0:
-            text += "NONE"
-            return text
-        text += all_equip["data"]["helmet"][self.helmetType - 1]
-        text += " "
-        text += self.level
-        text += " "
-        text += self.attr0
-        text += " "
-        text += self.attr1
-        text += " "
-        text += self.attr2
-        text += " "
-        text += self.attr3
-        text += " "
-        text += str(self.hasMystical)
-        return text
 
 
 class EQUIPSet:
