@@ -10,6 +10,7 @@ battleReadyWindow = None
 myCardList = None
 enemyCardList = None
 npcList = None
+equipStorageDict = None
 
 run_args = "bnpc"
 saveData = None
@@ -59,6 +60,24 @@ class NPCListClass(dict):
         npcWindow.npcListUpdate()
 
 
+def equipStorageDictINIT():
+    print("初始化equipStorageDict")
+    return {
+        "weapon": {
+            "不改变": None
+        },
+        "glove": {
+            "不改变": None
+        },
+        "Armor": {
+            "不改变": None
+        },
+        "helmet": {
+            "不改变": None
+        }
+    }
+
+
 def initSaveData():
     global saveData, myCardList, enemyCardList, npcList
     saveData = {
@@ -66,7 +85,8 @@ def initSaveData():
         'data': {
             "myCardList": MyCardListClass({"新卡片": None}),
             "enemyCardList": EnemyCardListClass({"新卡片": None}),
-            "npcList": NPCListClass({"新npc": None})
+            "npcList": NPCListClass({"新npc": None}),
+            "equipStorageDict": equipStorageDictINIT()
         }
     }
     myCardList = saveData["data"]["myCardList"]
@@ -78,15 +98,16 @@ def storeSaveData():
     saveData["data"]["myCardList"] = myCardList
     saveData["data"]["enemyCardList"] = enemyCardList
     saveData["data"]["npcList"] = npcList
+    saveData["data"]["equipStorageDict"] = equipStorageDict
 
     file_path = os.path.join(".", "ggzgui")
     with open(file_path, 'wb') as f:
         pickle.dump(saveData, f)
-        data_saved = True
+        # data_saved = True
 
 
 def readSaveData():
-    global saveData, myCardList, enemyCardList, npcList
+    global saveData, myCardList, enemyCardList, npcList, equipStorageDict
     file_path = os.path.join(".", "ggzgui")
     try:
         with open(file_path, 'rb') as f:
@@ -94,6 +115,11 @@ def readSaveData():
             myCardList = saveData["data"]["myCardList"]
             enemyCardList = saveData["data"]["enemyCardList"]
             npcList = saveData["data"]["npcList"]
+            if saveData["data"].__contains__("equipStorageDict"):
+                equipStorageDict = saveData["data"]["equipStorageDict"]
+            else:
+                equipStorageDict = equipStorageDictINIT()
+
     except FileNotFoundError:
         return False
     return True

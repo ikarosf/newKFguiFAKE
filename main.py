@@ -21,10 +21,7 @@ from enemycardWindow import Ui_enemycardForm
 from npcWindow import Ui_npcForm
 import global_env
 # import logging
-
-
 import resource_rc
-
 
 # 打包exe文件用，编程时请注释
 os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join('.', 'plugins')
@@ -51,6 +48,7 @@ class MyWindow(Ui_MainWindow, QMainWindow):
     #         print("鼠标滚轮下滚")  # 响应测试语句
 
     def closeEvent(self, event):
+        global_env.storeSaveData()
         # if not global_env.data_saved:
         #     reply = QtWidgets.QMessageBox.question(self,
         #                                            '将关闭程序',
@@ -66,7 +64,6 @@ class MyWindow(Ui_MainWindow, QMainWindow):
         #         event.ignore()
         # else:
         #     event.accept()
-        global_env.storeSaveData()
 
 
 class myCardWindow(Ui_mycardForm, QFrame):

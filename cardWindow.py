@@ -1,5 +1,5 @@
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-                            QRect, QSize, QUrl, Qt)
+                            QRect, QSize, QUrl, Qt, SIGNAL, Slot)
 from PySide2.QtWidgets import *
 
 import global_env
@@ -8,6 +8,7 @@ from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponCho
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet
 from action_def import text_to_equipSet
 from cardClass import myCard
+from equipChooseWindow import equipChooseWindow
 
 QString = type("")
 
@@ -16,7 +17,9 @@ class Ui_cardForm(object):
     def setupUi(self, Form):
         if Form.objectName():
             Form.setObjectName(u"Form")
+        self.Form = Form
         Form.resize(575, 602)
+
         self.gridLayout_9 = QGridLayout(Form)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
         self.gridLayout_3 = QGridLayout()
@@ -143,6 +146,16 @@ class Ui_cardForm(object):
 
         self.gridLayout_4.addWidget(self.label_13, 0, 0, 1, 1)
 
+        self.equipStorageButton = QPushButton(Form)
+        self.equipStorageButton.setObjectName("装备仓库")
+        self.equipStorageButton.clicked.connect(self.openEquipChooseWindow)
+        self.gridLayout_4.addWidget(self.equipStorageButton, 0, 3, 1, 1)
+
+        self.weaponToStorage = QPushButton(Form)
+        self.weaponToStorage.setObjectName("武器加入仓库")
+        self.weaponToStorage.clicked.connect(lambda: self.EquipToStorage("weapon"))
+        self.gridLayout_4.addWidget(self.weaponToStorage, 0, 4, 1, 1)
+
         self.lineEdit_5 = intLineEdit(Form, max=500)
         self.lineEdit_5.setObjectName(u"武器属性2")
 
@@ -206,6 +219,11 @@ class Ui_cardForm(object):
         self.label_17.setObjectName(u"手套类型")
 
         self.gridLayout_5.addWidget(self.label_17, 0, 0, 1, 1)
+
+        self.gloveToStorage = QPushButton(Form)
+        self.gloveToStorage.setObjectName("手套加入仓库")
+        self.gloveToStorage.clicked.connect(lambda: self.EquipToStorage("glove"))
+        self.gridLayout_5.addWidget(self.gloveToStorage, 0, 4, 1, 1)
 
         self.lineEdit_9 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_9.setObjectName(u"手套属性2")
@@ -305,6 +323,11 @@ class Ui_cardForm(object):
 
         self.gridLayout_6.addWidget(self.label_21, 0, 0, 1, 1)
 
+        self.ArmorToStorage = QPushButton(Form)
+        self.ArmorToStorage.setObjectName("护甲加入仓库")
+        self.ArmorToStorage.clicked.connect(lambda: self.EquipToStorage("Armor"))
+        self.gridLayout_6.addWidget(self.ArmorToStorage, 0, 4, 1, 1)
+
         self.lineEdit_14 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_14.setObjectName(u"护甲属性2")
 
@@ -363,6 +386,11 @@ class Ui_cardForm(object):
         self.label_25.setObjectName(u"头盔类型")
 
         self.gridLayout_7.addWidget(self.label_25, 0, 0, 1, 1)
+
+        self.helmetToStorage = QPushButton(Form)
+        self.helmetToStorage.setObjectName("头盔加入仓库")
+        self.helmetToStorage.clicked.connect(lambda: self.EquipToStorage("helmet"))
+        self.gridLayout_7.addWidget(self.helmetToStorage, 0, 4, 1, 1)
 
         self.lineEdit_19 = intLineEdit(Form, min=50, max=150)
         self.lineEdit_19.setObjectName(u"头盔属性2")
@@ -489,6 +517,12 @@ class Ui_cardForm(object):
         self.pushButton_3.setText("删除当前卡片")
         self.pushButton_4.setText("装备导入")
         self.pushButton_5.setText("百分比分配属性")
+
+        self.equipStorageButton.setText("装备仓库")
+        self.weaponToStorage.setText("加入仓库")
+        self.gloveToStorage.setText("加入仓库")
+        self.ArmorToStorage.setText("加入仓库")
+        self.helmetToStorage.setText("加入仓库")
 
     # retranslateUi
 
@@ -753,7 +787,7 @@ class Ui_cardForm(object):
             QMessageBox.critical(self, "错误", "模板不可修改", QMessageBox.Yes)
             return
         yes = QMessageBox.question(self, "提问对话框", "确认修改？", QMessageBox.Yes | QMessageBox.No)
-        if yes:
+        if yes == QMessageBox.Yes:
             self.cardList[text] = newCard
 
     def delMyCard(self):
@@ -763,7 +797,7 @@ class Ui_cardForm(object):
             QMessageBox.critical(self, "错误", "模板不可删除", QMessageBox.Yes)
             return
         yes = QMessageBox.question(self, "提问对话框", "确认删除？", QMessageBox.Yes | QMessageBox.No)
-        if yes:
+        if yes == QMessageBox.Yes:
             del (self.cardList[text])
 
     def chooseMyCard(self, tag):  # combobox点击事件
@@ -909,37 +943,41 @@ class Ui_cardForm(object):
         if not (ok and text):
             return
         mySet = text_to_equipSet(text)
-        self.comboBox_8.setCurrentIndex(mySet.weapon.equipType)
-        self.lineEdit_3.setText(mySet.weapon.level)
-        self.lineEdit_4.setText(mySet.weapon.attr0)
-        self.lineEdit_5.setText(mySet.weapon.attr1)
-        self.lineEdit_6.setText(mySet.weapon.attr2)
-        self.lineEdit_7.setText(mySet.weapon.attr3)
-        self.comboBox_9.setCurrentIndex(mySet.weapon.hasMystical)
+        self.equipSetImport(mySet)
 
-        self.comboBox_10.setCurrentIndex(mySet.glove.equipType)
-        self.lineEdit_12.setText(mySet.glove.level)
-        self.lineEdit_8.setText(mySet.glove.attr0)
-        self.lineEdit_9.setText(mySet.glove.attr1)
-        self.lineEdit_11.setText(mySet.glove.attr2)
-        self.lineEdit_10.setText(mySet.glove.attr3)
-        self.comboBox_11.setCurrentIndex(mySet.glove.hasMystical)
-
-        self.comboBox_12.setCurrentIndex(mySet.Armor.equipType)
-        self.lineEdit_17.setText(mySet.Armor.level)
-        self.lineEdit_13.setText(mySet.Armor.attr0)
-        self.lineEdit_14.setText(mySet.Armor.attr1)
-        self.lineEdit_16.setText(mySet.Armor.attr2)
-        self.lineEdit_15.setText(mySet.Armor.attr3)
-        self.comboBox_13.setCurrentIndex(mySet.Armor.hasMystical)
-
-        self.comboBox_14.setCurrentIndex(mySet.helmet.equipType)
-        self.lineEdit_22.setText(mySet.helmet.level)
-        self.lineEdit_18.setText(mySet.helmet.attr0)
-        self.lineEdit_19.setText(mySet.helmet.attr1)
-        self.lineEdit_21.setText(mySet.helmet.attr2)
-        self.lineEdit_20.setText(mySet.helmet.attr3)
-        self.comboBox_15.setCurrentIndex(mySet.helmet.hasMystical)
+    def equipSetImport(self, mySet):
+        if mySet.weapon is not None:
+            self.comboBox_8.setCurrentIndex(mySet.weapon.equipType)
+            self.lineEdit_3.setText(mySet.weapon.level)
+            self.lineEdit_4.setText(mySet.weapon.attr0)
+            self.lineEdit_5.setText(mySet.weapon.attr1)
+            self.lineEdit_6.setText(mySet.weapon.attr2)
+            self.lineEdit_7.setText(mySet.weapon.attr3)
+            self.comboBox_9.setCurrentIndex(mySet.weapon.hasMystical)
+        if mySet.glove is not None:
+            self.comboBox_10.setCurrentIndex(mySet.glove.equipType)
+            self.lineEdit_12.setText(mySet.glove.level)
+            self.lineEdit_8.setText(mySet.glove.attr0)
+            self.lineEdit_9.setText(mySet.glove.attr1)
+            self.lineEdit_11.setText(mySet.glove.attr2)
+            self.lineEdit_10.setText(mySet.glove.attr3)
+            self.comboBox_11.setCurrentIndex(mySet.glove.hasMystical)
+        if mySet.Armor is not None:
+            self.comboBox_12.setCurrentIndex(mySet.Armor.equipType)
+            self.lineEdit_17.setText(mySet.Armor.level)
+            self.lineEdit_13.setText(mySet.Armor.attr0)
+            self.lineEdit_14.setText(mySet.Armor.attr1)
+            self.lineEdit_16.setText(mySet.Armor.attr2)
+            self.lineEdit_15.setText(mySet.Armor.attr3)
+            self.comboBox_13.setCurrentIndex(mySet.Armor.hasMystical)
+        if mySet.helmet is not None:
+            self.comboBox_14.setCurrentIndex(mySet.helmet.equipType)
+            self.lineEdit_22.setText(mySet.helmet.level)
+            self.lineEdit_18.setText(mySet.helmet.attr0)
+            self.lineEdit_19.setText(mySet.helmet.attr1)
+            self.lineEdit_21.setText(mySet.helmet.attr2)
+            self.lineEdit_20.setText(mySet.helmet.attr3)
+            self.comboBox_15.setCurrentIndex(mySet.helmet.hasMystical)
 
     def set_remainder_point(self):
         level = self.lineEdit_2.getValue()
@@ -970,3 +1008,73 @@ class Ui_cardForm(object):
             self.spinBox_5.setValue(attr_list[4])
             self.spinBox_6.setValue(attr_list[5])
             self.set_remainder_point()
+
+    def openEquipChooseWindow(self):
+        ecw = equipChooseWindow(self)
+        ecw.setWindowModality(Qt.ApplicationModal)
+        ecw.Signal_OneParameter.connect(self.equipSetImport)
+        ecw.open()
+
+    def EquipToStorage(self, equipParts):
+        result0, result1 = self.preEquipToStorage(equipParts)
+        if not result0:
+            QMessageBox.critical(self, "错误", result1, QMessageBox.Yes)
+            return
+        text, ok = QInputDialog.getText(self, '设置装备显示名', '输入名称：', text=result1.toSimpleString())
+        if ok and text:
+            if text in global_env.equipStorageDict[equipParts].keys():
+                QMessageBox.critical(self, "错误", "保存失败，与已有配置重名", QMessageBox.Yes)
+                return
+            global_env.equipStorageDict[equipParts][text] = result1
+
+    def preEquipToStorage(self, equipParts):
+        if equipParts == "weapon":
+            equipClass = weaponEquip
+            equipType = self.comboBox_8.currentIndex()
+            level = self.lineEdit_3.text()
+            attr0 = self.lineEdit_4.text()
+            attr1 = self.lineEdit_5.text()
+            attr2 = self.lineEdit_6.text()
+            attr3 = self.lineEdit_7.text()
+            hasMystical = self.comboBox_9.currentIndex()
+        elif equipParts == "glove":
+            equipClass = gloveEquip
+            equipType = self.comboBox_10.currentIndex()
+            level = self.lineEdit_12.text()
+            attr0 = self.lineEdit_8.text()
+            attr1 = self.lineEdit_9.text()
+            attr2 = self.lineEdit_11.text()
+            attr3 = self.lineEdit_10.text()
+            hasMystical = self.comboBox_11.currentIndex()
+        elif equipParts == "Armor":
+            equipClass = ArmorEquip
+            equipType = self.comboBox_12.currentIndex()
+            level = self.lineEdit_17.text()
+            attr0 = self.lineEdit_13.text()
+            attr1 = self.lineEdit_14.text()
+            attr2 = self.lineEdit_16.text()
+            attr3 = self.lineEdit_15.text()
+            hasMystical = self.comboBox_13.currentIndex()
+        elif equipParts == "helmet":
+            equipClass = helmetEquip
+            equipType = self.comboBox_14.currentIndex()
+            level = self.lineEdit_22.text()
+            attr0 = self.lineEdit_18.text()
+            attr1 = self.lineEdit_19.text()
+            attr2 = self.lineEdit_21.text()
+            attr3 = self.lineEdit_20.text()
+            hasMystical = self.comboBox_15.currentIndex()
+        else:
+            return False, ""
+        if equipType == 0:
+            return False, "无类型装备无法添加!"
+        if not global_env.test_mode:
+            if int(level) > 500:
+                return False, "装备等级不能大于500!"
+            if int(attr0) < 50 or int(attr1) < 50 or int(attr2) < 50 or int(attr3) < 50:
+                return False, "装备属性不能小于50!"
+            if int(attr0) > 150 or int(attr1) > 150 or int(attr2) > 150 or int(attr3) > 150:
+                return False, "装备属性不能大于150!"
+
+        result = equipClass(level, attr0, attr1, attr2, attr3, hasMystical, equipType)
+        return True, result

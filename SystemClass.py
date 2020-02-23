@@ -100,6 +100,33 @@ class equip:
         self.hasMystical = hasMystical
         self.equipType = equipType
 
+    def toString(self):
+        text = all_equip["name"][self.partsText][self.equipType - 1]
+        text += "\n"
+        text += " LV."
+        text += self.level
+        text += "\n"
+        text += self.attr0
+        text += "% "
+        text += self.attr1
+        text += "% "
+        text += self.attr2
+        text += "% "
+        text += self.attr3
+        text += "% "
+        text += "\n"
+        if self.hasMystical:
+            text += " 神秘"
+        return text
+
+    def toSimpleString(self):
+        text = all_equip["name"][self.partsText][self.equipType - 1]
+        text += " LV."
+        text += self.level
+        if self.hasMystical:
+            text += " 神秘"
+        return text
+
     def make_gu_text(self):
         text = ''
         if self.equipType == 0:
@@ -128,14 +155,11 @@ class weaponEquip(equip):
         super(weaponEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, weaponType)
 
 
-
-
 class gloveEquip(equip):
     partsText = "glove"
 
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, gloveType):
         super(gloveEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, gloveType)
-
 
 
 class ArmorEquip(equip):
@@ -145,14 +169,11 @@ class ArmorEquip(equip):
         super(ArmorEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, ArmorType)
 
 
-
-
 class helmetEquip(equip):
     partsText = "helmet"
 
     def __init__(self, level, attr0, attr1, attr2, attr3, hasMystical, helmetType):
         super(helmetEquip, self).__init__(level, attr0, attr1, attr2, attr3, hasMystical, helmetType)
-
 
 
 class EQUIPSet:

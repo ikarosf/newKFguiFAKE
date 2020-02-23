@@ -117,10 +117,10 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 0.6\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 0.7\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def enterTestMode(self):
         yes = QMessageBox.warning(self, "进入测试模式？", "测试模式暂时唯一的功能是保存卡片时不再检测数值合法性", QMessageBox.Yes | QMessageBox.No)
-        if yes:
+        if yes == QMessageBox.Yes:
             global_env.test_mode = True

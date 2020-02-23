@@ -223,7 +223,7 @@ class Ui_npcForm(object):
             QMessageBox.critical(self, "错误", "模板不可修改", QMessageBox.Yes)
             return
         yes = QMessageBox.question(self, "提问对话框", "确认修改？", QMessageBox.Yes | QMessageBox.No)
-        if yes:
+        if yes == QMessageBox.Yes:
             global_env.npcList[text] = newNpc
 
     def delNpc(self):
@@ -233,7 +233,7 @@ class Ui_npcForm(object):
             QMessageBox.critical(self, "错误", "模板不可删除", QMessageBox.Yes)
             return
         yes = QMessageBox.question(self, "提问对话框", "确认删除？", QMessageBox.Yes | QMessageBox.No)
-        if yes:
+        if yes == QMessageBox.Yes:
             del (global_env.npcList[text])
 
     def chooseNpc(self, tag):  # combobox点击事件
