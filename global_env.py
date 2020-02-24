@@ -6,6 +6,7 @@ myCardWindow = None
 enemyCardWindow = None
 npcWindow = None
 battleReadyWindow = None
+dailyBattleWindow = None
 
 myCardList = None
 enemyCardList = None

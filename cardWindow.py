@@ -1,11 +1,15 @@
+import re
+
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt, SIGNAL, Slot)
+from PySide2.QtGui import QCursor
 from PySide2.QtWidgets import *
 
 import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
     ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox
-from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet
+from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet, \
+    all_character, all_skill, all_equip
 from action_def import text_to_equipSet
 from cardClass import myCard
 from equipChooseWindow import equipChooseWindow
@@ -19,56 +23,59 @@ class Ui_cardForm(object):
             Form.setObjectName(u"Form")
         self.Form = Form
         Form.resize(575, 602)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.rightMenuShow)
 
         self.gridLayout_9 = QGridLayout(Form)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
         self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.label = QLabel(Form)
-        self.label.setObjectName(u"mycardlist")
+        self.cardlistlabel = QLabel(Form)
+        self.cardlistlabel.setObjectName(u"mycardlist")
 
-        self.gridLayout_3.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.cardlistlabel, 0, 0, 1, 1)
 
-        self.comboBox = myComboBox(Form)
+        self.cardlistcomboBox = myComboBox(Form)
         self.myCardListUpdate()
-        self.comboBox.currentIndexChanged.connect(lambda: self.chooseMyCard(self.comboBox.currentText()))
-        self.comboBox.setObjectName(u"mycardlist")
+        self.cardlistcomboBox.currentIndexChanged.connect(
+            lambda: self.chooseMyCard(self.cardlistcomboBox.currentText()))
+        self.cardlistcomboBox.setObjectName(u"mycardlist")
 
-        self.gridLayout_3.addWidget(self.comboBox, 0, 1, 1, 3)
+        self.gridLayout_3.addWidget(self.cardlistcomboBox, 0, 1, 1, 3)
 
         self.gridLayout_9.addLayout(self.gridLayout_3, 0, 0, 1, 2)
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label_2 = QLabel(Form)
-        self.label_2.setObjectName(u"光环")
+        self.halolabel = QLabel(Form)
+        self.halolabel.setObjectName(u"光环")
 
-        self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.halolabel, 0, 0, 1, 1)
 
-        self.lineEdit = intLineEdit(parent=Form, max=200)  # 光环
-        self.lineEdit.setObjectName(u"光环")
+        self.halolineEdit = intLineEdit(parent=Form, max=200)  # 光环
+        self.halolineEdit.setObjectName(u"光环")
 
-        self.gridLayout.addWidget(self.lineEdit, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.halolineEdit, 0, 1, 1, 1)
 
-        self.label_3 = QLabel(Form)
-        self.label_3.setObjectName(u"卡片类型")
+        self.cardtypelabel = QLabel(Form)
+        self.cardtypelabel.setObjectName(u"卡片类型")
 
-        self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.cardtypelabel, 1, 0, 1, 1)
 
-        self.comboBox_7 = cardCharacterComboBox(Form)
-        self.comboBox_7.setObjectName(u"卡片类型")
+        self.cardtypecomboBox = cardCharacterComboBox(Form)
+        self.cardtypecomboBox.setObjectName(u"卡片类型")
 
-        self.gridLayout.addWidget(self.comboBox_7, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.cardtypecomboBox, 1, 1, 1, 1)
 
-        self.label_4 = QLabel(Form)
-        self.label_4.setObjectName(u"卡片等级")
+        self.levellabel = QLabel(Form)
+        self.levellabel.setObjectName(u"卡片等级")
 
-        self.gridLayout.addWidget(self.label_4, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.levellabel, 2, 0, 1, 1)
 
-        self.lineEdit_2 = intLineEdit(parent=Form, max=500)  # 等级
-        self.lineEdit_2.setObjectName(u"卡片等级")
-        self.lineEdit_2.textEdited.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.lineEdit_2, 2, 1, 1, 1)
+        self.levellineEdit = intLineEdit(parent=Form, max=500)  # 等级
+        self.levellineEdit.setObjectName(u"卡片等级")
+        self.levellineEdit.textEdited.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.levellineEdit, 2, 1, 1, 1)
 
         self.remainder_point_text = QLabel(Form)
         self.remainder_point_text.setObjectName(u"点数文本")
@@ -77,74 +84,74 @@ class Ui_cardForm(object):
         self.remainder_point.setObjectName(u"点数")
         self.gridLayout.addWidget(self.remainder_point, 3, 1, 1, 1)
 
-        self.label_5 = QLabel(Form)
-        self.label_5.setObjectName(u"力量")
+        self.STRlabel = QLabel(Form)
+        self.STRlabel.setObjectName(u"力量")
 
-        self.gridLayout.addWidget(self.label_5, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.STRlabel, 4, 0, 1, 1)
 
-        self.spinBox = bigSpinBox(Form)
-        self.spinBox.setObjectName(u"力量")
-        self.spinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox, 4, 1, 1, 1)
+        self.STRspinBox = bigSpinBox(Form)
+        self.STRspinBox.setObjectName(u"力量")
+        self.STRspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.STRspinBox, 4, 1, 1, 1)
 
-        self.label_6 = QLabel(Form)
-        self.label_6.setObjectName(u"敏捷")
+        self.AGIlabel = QLabel(Form)
+        self.AGIlabel.setObjectName(u"敏捷")
 
-        self.gridLayout.addWidget(self.label_6, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.AGIlabel, 5, 0, 1, 1)
 
-        self.spinBox_2 = bigSpinBox(Form)
-        self.spinBox_2.setObjectName(u"敏捷")
-        self.spinBox_2.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox_2, 5, 1, 1, 1)
+        self.AGIspinBox = bigSpinBox(Form)
+        self.AGIspinBox.setObjectName(u"敏捷")
+        self.AGIspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.AGIspinBox, 5, 1, 1, 1)
 
-        self.label_7 = QLabel(Form)
-        self.label_7.setObjectName(u"智力")
+        self.INTlabel = QLabel(Form)
+        self.INTlabel.setObjectName(u"智力")
 
-        self.gridLayout.addWidget(self.label_7, 6, 0, 1, 1)
+        self.gridLayout.addWidget(self.INTlabel, 6, 0, 1, 1)
 
-        self.spinBox_3 = bigSpinBox(Form)
-        self.spinBox_3.setObjectName(u"智力")
-        self.spinBox_3.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox_3, 6, 1, 1, 1)
+        self.INTspinBox = bigSpinBox(Form)
+        self.INTspinBox.setObjectName(u"智力")
+        self.INTspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.INTspinBox, 6, 1, 1, 1)
 
-        self.label_8 = QLabel(Form)
-        self.label_8.setObjectName(u"体魄")
+        self.VITlabel = QLabel(Form)
+        self.VITlabel.setObjectName(u"体魄")
 
-        self.gridLayout.addWidget(self.label_8, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.VITlabel, 7, 0, 1, 1)
 
-        self.spinBox_4 = bigSpinBox(Form)
-        self.spinBox_4.setObjectName(u"体魄")
-        self.spinBox_4.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox_4, 7, 1, 1, 1)
+        self.VITspinBox = bigSpinBox(Form)
+        self.VITspinBox.setObjectName(u"体魄")
+        self.VITspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.VITspinBox, 7, 1, 1, 1)
 
-        self.label_9 = QLabel(Form)
-        self.label_9.setObjectName(u"精神")
+        self.SPRlabel = QLabel(Form)
+        self.SPRlabel.setObjectName(u"精神")
 
-        self.gridLayout.addWidget(self.label_9, 8, 0, 1, 1)
+        self.gridLayout.addWidget(self.SPRlabel, 8, 0, 1, 1)
 
-        self.spinBox_5 = bigSpinBox(Form)
-        self.spinBox_5.setObjectName(u"精神")
-        self.spinBox_5.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox_5, 8, 1, 1, 1)
+        self.SPRspinBox = bigSpinBox(Form)
+        self.SPRspinBox.setObjectName(u"精神")
+        self.SPRspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.SPRspinBox, 8, 1, 1, 1)
 
-        self.label_10 = QLabel(Form)
-        self.label_10.setObjectName(u"意志")
+        self.RESlabel = QLabel(Form)
+        self.RESlabel.setObjectName(u"意志")
 
-        self.gridLayout.addWidget(self.label_10, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.RESlabel, 9, 0, 1, 1)
 
-        self.spinBox_6 = bigSpinBox(Form)
-        self.spinBox_6.setObjectName(u"意志")
-        self.spinBox_6.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.spinBox_6, 9, 1, 1, 1)
+        self.RESspinBox = bigSpinBox(Form)
+        self.RESspinBox.setObjectName(u"意志")
+        self.RESspinBox.valueChanged.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.RESspinBox, 9, 1, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout, 1, 0, 2, 1)
 
         self.gridLayout_4 = QGridLayout()
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.label_13 = QLabel(Form)
-        self.label_13.setObjectName(u"武器类型")
+        self.weaponlabel = QLabel(Form)
+        self.weaponlabel.setObjectName(u"武器类型")
 
-        self.gridLayout_4.addWidget(self.label_13, 0, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponlabel, 0, 0, 1, 1)
 
         self.equipStorageButton = QPushButton(Form)
         self.equipStorageButton.setObjectName("装备仓库")
@@ -156,286 +163,286 @@ class Ui_cardForm(object):
         self.weaponToStorage.clicked.connect(lambda: self.EquipToStorage("weapon"))
         self.gridLayout_4.addWidget(self.weaponToStorage, 0, 4, 1, 1)
 
-        self.lineEdit_5 = intLineEdit(Form, max=500)
-        self.lineEdit_5.setObjectName(u"武器属性2")
+        self.weaponattr2lineEdit = intLineEdit(Form, max=500)
+        self.weaponattr2lineEdit.setObjectName(u"武器属性2")
 
-        self.gridLayout_4.addWidget(self.lineEdit_5, 2, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponattr2lineEdit, 2, 2, 1, 1)
 
-        self.label_14 = QLabel(Form)
-        self.label_14.setObjectName(u"等级")
+        self.weaponlevellabel = QLabel(Form)
+        self.weaponlevellabel.setObjectName(u"等级")
 
-        self.gridLayout_4.addWidget(self.label_14, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponlevellabel, 1, 0, 1, 1)
 
-        self.lineEdit_4 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_4.setObjectName(u"武器属性1")
+        self.weaponattr1lineEdit = intLineEdit(Form, min=50, max=150)
+        self.weaponattr1lineEdit.setObjectName(u"武器属性1")
 
-        self.gridLayout_4.addWidget(self.lineEdit_4, 2, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponattr1lineEdit, 2, 1, 1, 1)
 
-        self.lineEdit_7 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_7.setObjectName(u"武器属性4")
+        self.weaponattr4lineEdit = intLineEdit(Form, min=50, max=150)
+        self.weaponattr4lineEdit.setObjectName(u"武器属性4")
 
-        self.gridLayout_4.addWidget(self.lineEdit_7, 2, 4, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponattr4lineEdit, 2, 4, 1, 1)
 
-        self.lineEdit_6 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_6.setObjectName(u"武器属性3")
+        self.weaponattr3lineEdit = intLineEdit(Form, min=50, max=150)
+        self.weaponattr3lineEdit.setObjectName(u"武器属性3")
 
-        self.gridLayout_4.addWidget(self.lineEdit_6, 2, 3, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponattr3lineEdit, 2, 3, 1, 1)
 
-        self.lineEdit_3 = intLineEdit(Form, min=1, max=500)
-        self.lineEdit_3.setObjectName(u"武器等级")
+        self.weaponlevellineEdit = intLineEdit(Form, min=1, max=500)
+        self.weaponlevellineEdit.setObjectName(u"武器等级")
 
-        self.gridLayout_4.addWidget(self.lineEdit_3, 1, 1, 1, 3)
+        self.gridLayout_4.addWidget(self.weaponlevellineEdit, 1, 1, 1, 3)
 
-        self.comboBox_8 = weaponChooseComboBox(Form)
-        self.comboBox_8.setObjectName(u"武器类型")
+        self.weapontypecomboBox = weaponChooseComboBox(Form)
+        self.weapontypecomboBox.setObjectName(u"武器类型")
 
-        self.gridLayout_4.addWidget(self.comboBox_8, 0, 1, 1, 2)
+        self.gridLayout_4.addWidget(self.weapontypecomboBox, 0, 1, 1, 2)
 
-        self.comboBox_9 = hasOrNotComboBox(Form)
-        self.comboBox_9.setObjectName(u"武器神秘")
+        self.weaponmysticalcomboBox = hasOrNotComboBox(Form)
+        self.weaponmysticalcomboBox.setObjectName(u"武器神秘")
 
-        self.gridLayout_4.addWidget(self.comboBox_9, 3, 1, 1, 2)
+        self.gridLayout_4.addWidget(self.weaponmysticalcomboBox, 3, 1, 1, 2)
 
         self.label_15 = QLabel(Form)
         self.label_15.setObjectName(u"属性百分比")
 
         self.gridLayout_4.addWidget(self.label_15, 2, 0, 1, 1)
 
-        self.label_16 = QLabel(Form)
-        self.label_16.setObjectName(u"武器神秘")
+        self.weaponmysticallabel = QLabel(Form)
+        self.weaponmysticallabel.setObjectName(u"武器神秘")
 
-        self.gridLayout_4.addWidget(self.label_16, 3, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.weaponmysticallabel, 3, 0, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_4, 1, 1, 1, 1)
 
         self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.lineEdit_8 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_8.setObjectName(u"手套属性1")
+        self.gloveattr1lineEdit = intLineEdit(Form, min=50, max=150)
+        self.gloveattr1lineEdit.setObjectName(u"手套属性1")
 
-        self.gridLayout_5.addWidget(self.lineEdit_8, 2, 1, 1, 1)
+        self.gridLayout_5.addWidget(self.gloveattr1lineEdit, 2, 1, 1, 1)
 
-        self.label_17 = QLabel(Form)
-        self.label_17.setObjectName(u"手套类型")
+        self.glovetypelabel = QLabel(Form)
+        self.glovetypelabel.setObjectName(u"手套类型")
 
-        self.gridLayout_5.addWidget(self.label_17, 0, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.glovetypelabel, 0, 0, 1, 1)
 
         self.gloveToStorage = QPushButton(Form)
         self.gloveToStorage.setObjectName("手套加入仓库")
         self.gloveToStorage.clicked.connect(lambda: self.EquipToStorage("glove"))
         self.gridLayout_5.addWidget(self.gloveToStorage, 0, 4, 1, 1)
 
-        self.lineEdit_9 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_9.setObjectName(u"手套属性2")
+        self.gloveattr2lineEdit = intLineEdit(Form, min=50, max=150)
+        self.gloveattr2lineEdit.setObjectName(u"手套属性2")
 
-        self.gridLayout_5.addWidget(self.lineEdit_9, 2, 2, 1, 1)
+        self.gridLayout_5.addWidget(self.gloveattr2lineEdit, 2, 2, 1, 1)
 
-        self.lineEdit_10 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_10.setObjectName(u"手套属性4")
+        self.gloveattr4lineEdit = intLineEdit(Form, min=50, max=150)
+        self.gloveattr4lineEdit.setObjectName(u"手套属性4")
 
-        self.gridLayout_5.addWidget(self.lineEdit_10, 2, 4, 1, 1)
+        self.gridLayout_5.addWidget(self.gloveattr4lineEdit, 2, 4, 1, 1)
 
-        self.lineEdit_11 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_11.setObjectName(u"手套属性3")
+        self.gloveattr3lineEdit = intLineEdit(Form, min=50, max=150)
+        self.gloveattr3lineEdit.setObjectName(u"手套属性3")
 
-        self.gridLayout_5.addWidget(self.lineEdit_11, 2, 3, 1, 1)
+        self.gridLayout_5.addWidget(self.gloveattr3lineEdit, 2, 3, 1, 1)
 
-        self.label_18 = QLabel(Form)
-        self.label_18.setObjectName(u"手套神秘")
+        self.glovemysticallabel = QLabel(Form)
+        self.glovemysticallabel.setObjectName(u"手套神秘")
 
-        self.gridLayout_5.addWidget(self.label_18, 3, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.glovemysticallabel, 3, 0, 1, 1)
 
-        self.lineEdit_12 = intLineEdit(Form, min=1, max=500)
-        self.lineEdit_12.setObjectName(u"手套等级")
+        self.glovelevellineEdit = intLineEdit(Form, min=1, max=500)
+        self.glovelevellineEdit.setObjectName(u"手套等级")
 
-        self.gridLayout_5.addWidget(self.lineEdit_12, 1, 1, 1, 3)
+        self.gridLayout_5.addWidget(self.glovelevellineEdit, 1, 1, 1, 3)
 
-        self.comboBox_10 = gloveChooseComboBox(Form)
-        self.comboBox_10.setObjectName(u"手套类型")
+        self.glovetypecomboBox = gloveChooseComboBox(Form)
+        self.glovetypecomboBox.setObjectName(u"手套类型")
 
-        self.gridLayout_5.addWidget(self.comboBox_10, 0, 1, 1, 2)
+        self.gridLayout_5.addWidget(self.glovetypecomboBox, 0, 1, 1, 2)
 
-        self.comboBox_11 = hasOrNotComboBox(Form)
-        self.comboBox_11.setObjectName(u"手套神秘")
+        self.glovemysticalcomboBox = hasOrNotComboBox(Form)
+        self.glovemysticalcomboBox.setObjectName(u"手套神秘")
 
-        self.gridLayout_5.addWidget(self.comboBox_11, 3, 1, 1, 2)
+        self.gridLayout_5.addWidget(self.glovemysticalcomboBox, 3, 1, 1, 2)
 
-        self.label_19 = QLabel(Form)
-        self.label_19.setObjectName(u"手套属性")
+        self.gloveattrlabel = QLabel(Form)
+        self.gloveattrlabel.setObjectName(u"手套属性")
 
-        self.gridLayout_5.addWidget(self.label_19, 2, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.gloveattrlabel, 2, 0, 1, 1)
 
-        self.label_20 = QLabel(Form)
-        self.label_20.setObjectName(u"手套等级")
+        self.glovelevellabel = QLabel(Form)
+        self.glovelevellabel.setObjectName(u"手套等级")
 
-        self.gridLayout_5.addWidget(self.label_20, 1, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.glovelevellabel, 1, 0, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_5, 2, 1, 1, 1)
 
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"技能组")
-        self.label_11 = QLabel(Form)
-        self.label_11.setObjectName(u"技能位")
+        self.skillslotlabel = QLabel(Form)
+        self.skillslotlabel.setObjectName(u"技能位")
 
-        self.gridLayout_2.addWidget(self.label_11, 0, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.skillslotlabel, 0, 0, 1, 1)
 
-        self.comboBox_2 = skillSlotNum(Form)
-        self.comboBox_2.setObjectName(u"技能位")
+        self.skillslotcomboBox = skillSlotNum(Form)
+        self.skillslotcomboBox.setObjectName(u"技能位")
 
-        self.gridLayout_2.addWidget(self.comboBox_2, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.skillslotcomboBox, 0, 1, 1, 1)
 
-        self.label_12 = QLabel(Form)
-        self.label_12.setObjectName(u"技能")
+        self.skilllabel = QLabel(Form)
+        self.skilllabel.setObjectName(u"技能")
 
-        self.gridLayout_2.addWidget(self.label_12, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.skilllabel, 1, 0, 1, 1)
 
-        self.comboBox_3 = skillComboBox(Form)
-        self.comboBox_3.setObjectName(u"技能1")
+        self.skill1comboBox = skillComboBox(Form)
+        self.skill1comboBox.setObjectName(u"技能1")
 
-        self.gridLayout_2.addWidget(self.comboBox_3, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.skill1comboBox, 1, 1, 1, 1)
 
-        self.comboBox_4 = skillComboBox(Form)
-        self.comboBox_4.setObjectName(u"技能2")
+        self.skill2comboBox = skillComboBox(Form)
+        self.skill2comboBox.setObjectName(u"技能2")
 
-        self.gridLayout_2.addWidget(self.comboBox_4, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.skill2comboBox, 2, 1, 1, 1)
 
-        self.comboBox_5 = skillComboBox(Form)
-        self.comboBox_5.setObjectName(u"技能3")
+        self.skill3comboBox = skillComboBox(Form)
+        self.skill3comboBox.setObjectName(u"技能3")
 
-        self.gridLayout_2.addWidget(self.comboBox_5, 3, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.skill3comboBox, 3, 1, 1, 1)
 
-        self.comboBox_6 = skillComboBox(Form)
-        self.comboBox_6.setObjectName(u"技能4")
+        self.skill4comboBox = skillComboBox(Form)
+        self.skill4comboBox.setObjectName(u"技能4")
 
-        self.gridLayout_2.addWidget(self.comboBox_6, 4, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.skill4comboBox, 4, 1, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_2, 3, 0, 2, 1)
 
         self.gridLayout_6 = QGridLayout()
         self.gridLayout_6.setObjectName(u"护甲")
-        self.lineEdit_13 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_13.setObjectName(u"护甲属性1")
+        self.armorattr1lineEdit = intLineEdit(Form, min=50, max=150)
+        self.armorattr1lineEdit.setObjectName(u"护甲属性1")
 
-        self.gridLayout_6.addWidget(self.lineEdit_13, 2, 1, 1, 1)
+        self.gridLayout_6.addWidget(self.armorattr1lineEdit, 2, 1, 1, 1)
 
-        self.label_21 = QLabel(Form)
-        self.label_21.setObjectName(u"护甲类型")
+        self.armortypelabel = QLabel(Form)
+        self.armortypelabel.setObjectName(u"护甲类型")
 
-        self.gridLayout_6.addWidget(self.label_21, 0, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.armortypelabel, 0, 0, 1, 1)
 
         self.ArmorToStorage = QPushButton(Form)
         self.ArmorToStorage.setObjectName("护甲加入仓库")
         self.ArmorToStorage.clicked.connect(lambda: self.EquipToStorage("Armor"))
         self.gridLayout_6.addWidget(self.ArmorToStorage, 0, 4, 1, 1)
 
-        self.lineEdit_14 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_14.setObjectName(u"护甲属性2")
+        self.armorattr2lineEdit = intLineEdit(Form, min=50, max=150)
+        self.armorattr2lineEdit.setObjectName(u"护甲属性2")
 
-        self.gridLayout_6.addWidget(self.lineEdit_14, 2, 2, 1, 1)
+        self.gridLayout_6.addWidget(self.armorattr2lineEdit, 2, 2, 1, 1)
 
-        self.lineEdit_15 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_15.setObjectName(u"护甲属性4")
+        self.armorattr4lineEdit = intLineEdit(Form, min=50, max=150)
+        self.armorattr4lineEdit.setObjectName(u"护甲属性4")
 
-        self.gridLayout_6.addWidget(self.lineEdit_15, 2, 4, 1, 1)
+        self.gridLayout_6.addWidget(self.armorattr4lineEdit, 2, 4, 1, 1)
 
-        self.lineEdit_16 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_16.setObjectName(u"护甲属性3")
+        self.armorattr3lineEdit = intLineEdit(Form, min=50, max=150)
+        self.armorattr3lineEdit.setObjectName(u"护甲属性3")
 
-        self.gridLayout_6.addWidget(self.lineEdit_16, 2, 3, 1, 1)
+        self.gridLayout_6.addWidget(self.armorattr3lineEdit, 2, 3, 1, 1)
 
-        self.label_22 = QLabel(Form)
-        self.label_22.setObjectName(u"护甲神秘")
+        self.armormysticallabel = QLabel(Form)
+        self.armormysticallabel.setObjectName(u"护甲神秘")
 
-        self.gridLayout_6.addWidget(self.label_22, 3, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.armormysticallabel, 3, 0, 1, 1)
 
-        self.lineEdit_17 = intLineEdit(Form, min=1, max=500)
-        self.lineEdit_17.setObjectName(u"护甲等级")
+        self.armorlevellineEdit = intLineEdit(Form, min=1, max=500)
+        self.armorlevellineEdit.setObjectName(u"护甲等级")
 
-        self.gridLayout_6.addWidget(self.lineEdit_17, 1, 1, 1, 3)
+        self.gridLayout_6.addWidget(self.armorlevellineEdit, 1, 1, 1, 3)
 
-        self.comboBox_12 = ArmorChooseComboBox(Form)
-        self.comboBox_12.setObjectName(u"护甲类型")
+        self.armortypecomboBox = ArmorChooseComboBox(Form)
+        self.armortypecomboBox.setObjectName(u"护甲类型")
 
-        self.gridLayout_6.addWidget(self.comboBox_12, 0, 1, 1, 2)
+        self.gridLayout_6.addWidget(self.armortypecomboBox, 0, 1, 1, 2)
 
-        self.comboBox_13 = hasOrNotComboBox(Form)
-        self.comboBox_13.setObjectName(u"护甲神秘")
+        self.armormysticalcomboBox = hasOrNotComboBox(Form)
+        self.armormysticalcomboBox.setObjectName(u"护甲神秘")
 
-        self.gridLayout_6.addWidget(self.comboBox_13, 3, 1, 1, 2)
+        self.gridLayout_6.addWidget(self.armormysticalcomboBox, 3, 1, 1, 2)
 
         self.label_23 = QLabel(Form)
         self.label_23.setObjectName(u"护甲属性百分比")
 
         self.gridLayout_6.addWidget(self.label_23, 2, 0, 1, 1)
 
-        self.label_24 = QLabel(Form)
-        self.label_24.setObjectName(u"护甲等级")
+        self.armorlevellabel = QLabel(Form)
+        self.armorlevellabel.setObjectName(u"护甲等级")
 
-        self.gridLayout_6.addWidget(self.label_24, 1, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.armorlevellabel, 1, 0, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_6, 3, 1, 1, 1)
 
         self.gridLayout_7 = QGridLayout()
         self.gridLayout_7.setObjectName(u"头盔")
-        self.lineEdit_18 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_18.setObjectName(u"头盔属性1")
+        self.helmetattr1lineEdit = intLineEdit(Form, min=50, max=150)
+        self.helmetattr1lineEdit.setObjectName(u"头盔属性1")
 
-        self.gridLayout_7.addWidget(self.lineEdit_18, 2, 1, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetattr1lineEdit, 2, 1, 1, 1)
 
-        self.label_25 = QLabel(Form)
-        self.label_25.setObjectName(u"头盔类型")
+        self.helmettypelabel = QLabel(Form)
+        self.helmettypelabel.setObjectName(u"头盔类型")
 
-        self.gridLayout_7.addWidget(self.label_25, 0, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.helmettypelabel, 0, 0, 1, 1)
 
         self.helmetToStorage = QPushButton(Form)
         self.helmetToStorage.setObjectName("头盔加入仓库")
         self.helmetToStorage.clicked.connect(lambda: self.EquipToStorage("helmet"))
         self.gridLayout_7.addWidget(self.helmetToStorage, 0, 4, 1, 1)
 
-        self.lineEdit_19 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_19.setObjectName(u"头盔属性2")
+        self.helmetattr2lineEdit = intLineEdit(Form, min=50, max=150)
+        self.helmetattr2lineEdit.setObjectName(u"头盔属性2")
 
-        self.gridLayout_7.addWidget(self.lineEdit_19, 2, 2, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetattr2lineEdit, 2, 2, 1, 1)
 
-        self.lineEdit_20 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_20.setObjectName(u"头盔属性4")
+        self.helmetattr4lineEdit = intLineEdit(Form, min=50, max=150)
+        self.helmetattr4lineEdit.setObjectName(u"头盔属性4")
 
-        self.gridLayout_7.addWidget(self.lineEdit_20, 2, 4, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetattr4lineEdit, 2, 4, 1, 1)
 
-        self.lineEdit_21 = intLineEdit(Form, min=50, max=150)
-        self.lineEdit_21.setObjectName(u"头盔属性3")
+        self.helmetattr3lineEdit = intLineEdit(Form, min=50, max=150)
+        self.helmetattr3lineEdit.setObjectName(u"头盔属性3")
 
-        self.gridLayout_7.addWidget(self.lineEdit_21, 2, 3, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetattr3lineEdit, 2, 3, 1, 1)
 
-        self.label_26 = QLabel(Form)
-        self.label_26.setObjectName(u"头盔神秘")
+        self.helmetmysticallabel = QLabel(Form)
+        self.helmetmysticallabel.setObjectName(u"头盔神秘")
 
-        self.gridLayout_7.addWidget(self.label_26, 3, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetmysticallabel, 3, 0, 1, 1)
 
-        self.lineEdit_22 = intLineEdit(Form, min=1, max=500)
-        self.lineEdit_22.setObjectName(u"头盔等级")
+        self.helmetlevellineEdit = intLineEdit(Form, min=1, max=500)
+        self.helmetlevellineEdit.setObjectName(u"头盔等级")
 
-        self.gridLayout_7.addWidget(self.lineEdit_22, 1, 1, 1, 3)
+        self.gridLayout_7.addWidget(self.helmetlevellineEdit, 1, 1, 1, 3)
 
-        self.comboBox_14 = helmetChooseComboBox(Form)
-        self.comboBox_14.setObjectName(u"头盔类型")
+        self.helmettypecomboBox = helmetChooseComboBox(Form)
+        self.helmettypecomboBox.setObjectName(u"头盔类型")
 
-        self.gridLayout_7.addWidget(self.comboBox_14, 0, 1, 1, 2)
+        self.gridLayout_7.addWidget(self.helmettypecomboBox, 0, 1, 1, 2)
 
-        self.comboBox_15 = hasOrNotComboBox(Form)
-        self.comboBox_15.setObjectName(u"头盔神秘")
+        self.helmetmysticalcomboBox = hasOrNotComboBox(Form)
+        self.helmetmysticalcomboBox.setObjectName(u"头盔神秘")
 
-        self.gridLayout_7.addWidget(self.comboBox_15, 3, 1, 1, 2)
+        self.gridLayout_7.addWidget(self.helmetmysticalcomboBox, 3, 1, 1, 2)
 
         self.label_27 = QLabel(Form)
         self.label_27.setObjectName(u"头盔属性百分比")
 
         self.gridLayout_7.addWidget(self.label_27, 2, 0, 1, 1)
 
-        self.label_28 = QLabel(Form)
-        self.label_28.setObjectName(u"头盔等级")
+        self.helmetlevellabel = QLabel(Form)
+        self.helmetlevellabel.setObjectName(u"头盔等级")
 
-        self.gridLayout_7.addWidget(self.label_28, 1, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.helmetlevellabel, 1, 0, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_7, 4, 1, 1, 1)
 
@@ -469,6 +476,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
 
+        self.rightMenuCreat()
         self.retranslateUi(Form)
 
         QMetaObject.connectSlotsByName(Form)
@@ -477,47 +485,46 @@ class Ui_cardForm(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle("我的卡片")
-        self.label.setText("卡片列表")
-        self.label_2.setText("光环百分比")
-        self.label_3.setText("卡片类型")
+        self.cardlistlabel.setText("卡片列表")
+        self.halolabel.setText("光环百分比")
+        self.cardtypelabel.setText("卡片类型")
 
-        self.label_4.setText("卡片等级")
+        self.levellabel.setText("卡片等级")
         self.remainder_point_text.setText("可用点数")
-        self.label_5.setText("力量")
-        self.label_6.setText("敏捷")
-        self.label_7.setText("智力")
-        self.label_8.setText("体魄")
-        self.label_9.setText("精神")
-        self.label_10.setText("意志")
-        self.label_13.setText("武器类型")
-        self.label_14.setText("等级")
+        self.STRlabel.setText("力量")
+        self.AGIlabel.setText("敏捷")
+        self.INTlabel.setText("智力")
+        self.VITlabel.setText("体魄")
+        self.SPRlabel.setText("精神")
+        self.RESlabel.setText("意志")
+        self.weaponlabel.setText("武器类型")
+        self.weaponlevellabel.setText("等级")
 
         self.label_15.setText("属性百分比")
-        self.label_16.setText("神秘")
-        self.label_17.setText("手套类型")
-        self.label_18.setText("神秘")
+        self.weaponmysticallabel.setText("神秘")
+        self.glovetypelabel.setText("手套类型")
+        self.glovemysticallabel.setText("神秘")
 
-        self.label_19.setText("属性百分比")
-        self.label_20.setText("等级")
-        self.label_11.setText("技能位")
-        self.label_12.setText("技能")
+        self.gloveattrlabel.setText("属性百分比")
+        self.glovelevellabel.setText("等级")
+        self.skillslotlabel.setText("技能位")
+        self.skilllabel.setText("技能")
 
-        self.label_21.setText("护甲类型")
-        self.label_22.setText("神秘")
+        self.armortypelabel.setText("护甲类型")
+        self.armormysticallabel.setText("神秘")
 
         self.label_23.setText("属性百分比")
-        self.label_24.setText("等级")
-        self.label_25.setText("头盔类型")
-        self.label_26.setText("神秘")
+        self.armorlevellabel.setText("等级")
+        self.helmettypelabel.setText("头盔类型")
+        self.helmetmysticallabel.setText("神秘")
 
         self.label_27.setText("属性百分比")
-        self.label_28.setText("等级")
+        self.helmetlevellabel.setText("等级")
         self.pushButton.setText("存储卡片")
         self.pushButton_2.setText("覆盖当前卡片")
         self.pushButton_3.setText("删除当前卡片")
         self.pushButton_4.setText("装备导入")
         self.pushButton_5.setText("百分比分配属性")
-
         self.equipStorageButton.setText("装备仓库")
         self.weaponToStorage.setText("加入仓库")
         self.gloveToStorage.setText("加入仓库")
@@ -535,62 +542,62 @@ class Ui_cardForm(object):
         event.accept()
 
     def makeMyCard(self):
-        halo = self.lineEdit.text()
-        character = self.comboBox_7.currentIndex()
-        level = self.lineEdit_2.text()
-        attrSTR = self.spinBox.getValue()
-        attrAGI = self.spinBox_2.getValue()
-        attrINT = self.spinBox_3.getValue()
-        attrVIT = self.spinBox_4.getValue()
-        attrSPR = self.spinBox_5.getValue()
-        attrRES = self.spinBox_6.getValue()
+        halo = self.halolineEdit.text()
+        character = self.cardtypecomboBox.currentIndex()
+        level = self.levellineEdit.text()
+        attrSTR = self.STRspinBox.getValue()
+        attrAGI = self.AGIspinBox.getValue()
+        attrINT = self.INTspinBox.getValue()
+        attrVIT = self.VITspinBox.getValue()
+        attrSPR = self.SPRspinBox.getValue()
+        attrRES = self.RESspinBox.getValue()
         attrSet = cardAttr(attrSTR, attrAGI, attrINT, attrVIT, attrSPR, attrRES)
 
-        sklSlot = self.comboBox_2.currentIndex()
+        sklSlot = self.skillslotcomboBox.currentIndex()
 
-        skill_1 = skill(self.comboBox_3.currentIndex())
-        skill_2 = skill(self.comboBox_4.currentIndex())
-        skill_3 = skill(self.comboBox_5.currentIndex())
-        skill_4 = skill(self.comboBox_6.currentIndex())
+        skill_1 = skill(self.skill1comboBox.currentIndex())
+        skill_2 = skill(self.skill2comboBox.currentIndex())
+        skill_3 = skill(self.skill3comboBox.currentIndex())
+        skill_4 = skill(self.skill4comboBox.currentIndex())
         skillSet = SKILLSet(skill_1, skill_2, skill_3, skill_4)
 
-        weaponType = self.comboBox_8.currentIndex()
-        weaponLevel = self.lineEdit_3.text()
-        weaponAttr1 = self.lineEdit_4.text()
-        weaponAttr2 = self.lineEdit_5.text()
-        weaponAttr3 = self.lineEdit_6.text()
-        weaponAttr4 = self.lineEdit_7.text()
-        weaponHasMystical = self.comboBox_9.currentIndex()
+        weaponType = self.weapontypecomboBox.currentIndex()
+        weaponLevel = self.weaponlevellineEdit.text()
+        weaponAttr1 = self.weaponattr1lineEdit.text()
+        weaponAttr2 = self.weaponattr2lineEdit.text()
+        weaponAttr3 = self.weaponattr3lineEdit.text()
+        weaponAttr4 = self.weaponattr4lineEdit.text()
+        weaponHasMystical = self.weaponmysticalcomboBox.currentIndex()
         weapon = weaponEquip(weaponLevel, weaponAttr1, weaponAttr2, weaponAttr3, weaponAttr4, weaponHasMystical,
                              weaponType)
 
-        gloveType = self.comboBox_10.currentIndex()
-        gloveLevel = self.lineEdit_12.text()
-        gloveAttr1 = self.lineEdit_8.text()
-        gloveAttr2 = self.lineEdit_9.text()
-        gloveAttr3 = self.lineEdit_11.text()
-        gloveAttr4 = self.lineEdit_10.text()
-        gloveHasMystical = self.comboBox_11.currentIndex()
+        gloveType = self.glovetypecomboBox.currentIndex()
+        gloveLevel = self.glovelevellineEdit.text()
+        gloveAttr1 = self.gloveattr1lineEdit.text()
+        gloveAttr2 = self.gloveattr2lineEdit.text()
+        gloveAttr3 = self.gloveattr3lineEdit.text()
+        gloveAttr4 = self.gloveattr4lineEdit.text()
+        gloveHasMystical = self.glovemysticalcomboBox.currentIndex()
         glove = gloveEquip(gloveLevel, gloveAttr1, gloveAttr2, gloveAttr3, gloveAttr4, gloveHasMystical,
                            gloveType)
 
-        ArmorType = self.comboBox_12.currentIndex()
-        ArmorLevel = self.lineEdit_17.text()
-        ArmorAttr1 = self.lineEdit_13.text()
-        ArmorAttr2 = self.lineEdit_14.text()
-        ArmorAttr3 = self.lineEdit_16.text()
-        ArmorAttr4 = self.lineEdit_15.text()
-        ArmorHasMystical = self.comboBox_13.currentIndex()
+        ArmorType = self.armortypecomboBox.currentIndex()
+        ArmorLevel = self.armorlevellineEdit.text()
+        ArmorAttr1 = self.armorattr1lineEdit.text()
+        ArmorAttr2 = self.armorattr2lineEdit.text()
+        ArmorAttr3 = self.armorattr3lineEdit.text()
+        ArmorAttr4 = self.armorattr4lineEdit.text()
+        ArmorHasMystical = self.armormysticalcomboBox.currentIndex()
         Armor = ArmorEquip(ArmorLevel, ArmorAttr1, ArmorAttr2, ArmorAttr3, ArmorAttr4, ArmorHasMystical,
                            ArmorType)
 
-        helmetType = self.comboBox_14.currentIndex()
-        helmetLevel = self.lineEdit_22.text()
-        helmetAttr1 = self.lineEdit_18.text()
-        helmetAttr2 = self.lineEdit_19.text()
-        helmetAttr3 = self.lineEdit_21.text()
-        helmetAttr4 = self.lineEdit_20.text()
-        helmetHasMystical = self.comboBox_15.currentIndex()
+        helmetType = self.helmettypecomboBox.currentIndex()
+        helmetLevel = self.helmetlevellineEdit.text()
+        helmetAttr1 = self.helmetattr1lineEdit.text()
+        helmetAttr2 = self.helmetattr2lineEdit.text()
+        helmetAttr3 = self.helmetattr3lineEdit.text()
+        helmetAttr4 = self.helmetattr4lineEdit.text()
+        helmetHasMystical = self.helmetmysticalcomboBox.currentIndex()
         helmet = helmetEquip(helmetLevel, helmetAttr1, helmetAttr2, helmetAttr3, helmetAttr4, helmetHasMystical,
                              helmetType)
 
@@ -626,54 +633,54 @@ class Ui_cardForm(object):
         Armor = equipSet.Armor
         helmet = equipSet.helmet
 
-        self.lineEdit.setText(halo)
-        self.comboBox_7.setCurrentIndex(character)
-        self.lineEdit_2.setText(level)
-        self.spinBox.setValue(attrSTR)
-        self.spinBox_2.setValue(attrAGI)
-        self.spinBox_3.setValue(attrINT)
-        self.spinBox_4.setValue(attrVIT)
-        self.spinBox_5.setValue(attrSPR)
-        self.spinBox_6.setValue(attrRES)
+        self.halolineEdit.setText(halo)
+        self.cardtypecomboBox.setCurrentIndex(character)
+        self.levellineEdit.setText(level)
+        self.STRspinBox.setValue(attrSTR)
+        self.AGIspinBox.setValue(attrAGI)
+        self.INTspinBox.setValue(attrINT)
+        self.VITspinBox.setValue(attrVIT)
+        self.SPRspinBox.setValue(attrSPR)
+        self.RESspinBox.setValue(attrRES)
 
-        self.comboBox_2.setCurrentIndex(sklSlot)
+        self.skillslotcomboBox.setCurrentIndex(sklSlot)
 
-        self.comboBox_3.setCurrentIndex(skill_1.data)
-        self.comboBox_4.setCurrentIndex(skill_2.data)
-        self.comboBox_5.setCurrentIndex(skill_3.data)
-        self.comboBox_6.setCurrentIndex(skill_4.data)
+        self.skill1comboBox.setCurrentIndex(skill_1.data)
+        self.skill2comboBox.setCurrentIndex(skill_2.data)
+        self.skill3comboBox.setCurrentIndex(skill_3.data)
+        self.skill4comboBox.setCurrentIndex(skill_4.data)
 
-        self.comboBox_8.setCurrentIndex(weapon.equipType)
-        self.lineEdit_3.setText(weapon.level)
-        self.lineEdit_4.setText(weapon.attr0)
-        self.lineEdit_5.setText(weapon.attr1)
-        self.lineEdit_6.setText(weapon.attr2)
-        self.lineEdit_7.setText(weapon.attr3)
-        self.comboBox_9.setCurrentIndex(weapon.hasMystical)
+        self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
+        self.weaponlevellineEdit.setText(weapon.level)
+        self.weaponattr1lineEdit.setText(weapon.attr0)
+        self.weaponattr2lineEdit.setText(weapon.attr1)
+        self.weaponattr3lineEdit.setText(weapon.attr2)
+        self.weaponattr4lineEdit.setText(weapon.attr3)
+        self.weaponmysticalcomboBox.setCurrentIndex(weapon.hasMystical)
 
-        self.comboBox_10.setCurrentIndex(glove.equipType)
-        self.lineEdit_12.setText(glove.level)
-        self.lineEdit_8.setText(glove.attr0)
-        self.lineEdit_9.setText(glove.attr1)
-        self.lineEdit_11.setText(glove.attr2)
-        self.lineEdit_10.setText(glove.attr3)
-        self.comboBox_11.setCurrentIndex(glove.hasMystical)
+        self.glovetypecomboBox.setCurrentIndex(glove.equipType)
+        self.glovelevellineEdit.setText(glove.level)
+        self.gloveattr1lineEdit.setText(glove.attr0)
+        self.gloveattr2lineEdit.setText(glove.attr1)
+        self.gloveattr3lineEdit.setText(glove.attr2)
+        self.gloveattr4lineEdit.setText(glove.attr3)
+        self.glovemysticalcomboBox.setCurrentIndex(glove.hasMystical)
 
-        self.comboBox_12.setCurrentIndex(Armor.equipType)
-        self.lineEdit_17.setText(Armor.level)
-        self.lineEdit_13.setText(Armor.attr0)
-        self.lineEdit_14.setText(Armor.attr1)
-        self.lineEdit_16.setText(Armor.attr2)
-        self.lineEdit_15.setText(Armor.attr3)
-        self.comboBox_13.setCurrentIndex(Armor.hasMystical)
+        self.armortypecomboBox.setCurrentIndex(Armor.equipType)
+        self.armorlevellineEdit.setText(Armor.level)
+        self.armorattr1lineEdit.setText(Armor.attr0)
+        self.armorattr2lineEdit.setText(Armor.attr1)
+        self.armorattr3lineEdit.setText(Armor.attr2)
+        self.armorattr4lineEdit.setText(Armor.attr3)
+        self.armormysticalcomboBox.setCurrentIndex(Armor.hasMystical)
 
-        self.comboBox_14.setCurrentIndex(helmet.equipType)
-        self.lineEdit_22.setText(helmet.level)
-        self.lineEdit_18.setText(helmet.attr0)
-        self.lineEdit_19.setText(helmet.attr1)
-        self.lineEdit_21.setText(helmet.attr2)
-        self.lineEdit_20.setText(helmet.attr3)
-        self.comboBox_15.setCurrentIndex(helmet.hasMystical)
+        self.helmettypecomboBox.setCurrentIndex(helmet.equipType)
+        self.helmetlevellineEdit.setText(helmet.level)
+        self.helmetattr1lineEdit.setText(helmet.attr0)
+        self.helmetattr2lineEdit.setText(helmet.attr1)
+        self.helmetattr3lineEdit.setText(helmet.attr2)
+        self.helmetattr4lineEdit.setText(helmet.attr3)
+        self.helmetmysticalcomboBox.setCurrentIndex(helmet.hasMystical)
 
     def newMyCard(self):
         halo = "0"
@@ -701,62 +708,62 @@ class Ui_cardForm(object):
         Armor = ArmorEquip("0", "0", "0", "0", "0", 0, 0)
         helmet = helmetEquip("0", "0", "0", "0", "0", 0, 0)
 
-        self.lineEdit.setText(halo)
-        self.comboBox_7.setCurrentIndex(character)
-        self.lineEdit_2.setText(level)
-        self.spinBox.setValue(attrSTR)
-        self.spinBox_2.setValue(attrAGI)
-        self.spinBox_3.setValue(attrINT)
-        self.spinBox_4.setValue(attrVIT)
-        self.spinBox_5.setValue(attrSPR)
-        self.spinBox_6.setValue(attrRES)
+        self.halolineEdit.setText(halo)
+        self.cardtypecomboBox.setCurrentIndex(character)
+        self.levellineEdit.setText(level)
+        self.STRspinBox.setValue(attrSTR)
+        self.AGIspinBox.setValue(attrAGI)
+        self.INTspinBox.setValue(attrINT)
+        self.VITspinBox.setValue(attrVIT)
+        self.SPRspinBox.setValue(attrSPR)
+        self.RESspinBox.setValue(attrRES)
 
-        self.comboBox_2.setCurrentIndex(sklSlot)
+        self.skillslotcomboBox.setCurrentIndex(sklSlot)
 
-        self.comboBox_3.setCurrentIndex(skill_1)
-        self.comboBox_4.setCurrentIndex(skill_2)
-        self.comboBox_5.setCurrentIndex(skill_3)
-        self.comboBox_6.setCurrentIndex(skill_4)
+        self.skill1comboBox.setCurrentIndex(skill_1)
+        self.skill2comboBox.setCurrentIndex(skill_2)
+        self.skill3comboBox.setCurrentIndex(skill_3)
+        self.skill4comboBox.setCurrentIndex(skill_4)
 
-        self.comboBox_8.setCurrentIndex(weapon.equipType)
-        self.lineEdit_3.setText(weapon.level)
-        self.lineEdit_4.setText(weapon.attr0)
-        self.lineEdit_5.setText(weapon.attr1)
-        self.lineEdit_6.setText(weapon.attr2)
-        self.lineEdit_7.setText(weapon.attr3)
-        self.comboBox_9.setCurrentIndex(weapon.hasMystical)
+        self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
+        self.weaponlevellineEdit.setText(weapon.level)
+        self.weaponattr1lineEdit.setText(weapon.attr0)
+        self.weaponattr2lineEdit.setText(weapon.attr1)
+        self.weaponattr3lineEdit.setText(weapon.attr2)
+        self.weaponattr4lineEdit.setText(weapon.attr3)
+        self.weaponmysticalcomboBox.setCurrentIndex(weapon.hasMystical)
 
-        self.comboBox_10.setCurrentIndex(glove.equipType)
-        self.lineEdit_12.setText(glove.level)
-        self.lineEdit_8.setText(glove.attr0)
-        self.lineEdit_9.setText(glove.attr1)
-        self.lineEdit_11.setText(glove.attr2)
-        self.lineEdit_10.setText(glove.attr3)
-        self.comboBox_11.setCurrentIndex(glove.hasMystical)
+        self.glovetypecomboBox.setCurrentIndex(glove.equipType)
+        self.glovelevellineEdit.setText(glove.level)
+        self.gloveattr1lineEdit.setText(glove.attr0)
+        self.gloveattr2lineEdit.setText(glove.attr1)
+        self.gloveattr3lineEdit.setText(glove.attr2)
+        self.gloveattr4lineEdit.setText(glove.attr3)
+        self.glovemysticalcomboBox.setCurrentIndex(glove.hasMystical)
 
-        self.comboBox_12.setCurrentIndex(Armor.equipType)
-        self.lineEdit_17.setText(Armor.level)
-        self.lineEdit_13.setText(Armor.attr0)
-        self.lineEdit_14.setText(Armor.attr1)
-        self.lineEdit_16.setText(Armor.attr2)
-        self.lineEdit_15.setText(Armor.attr3)
-        self.comboBox_13.setCurrentIndex(Armor.hasMystical)
+        self.armortypecomboBox.setCurrentIndex(Armor.equipType)
+        self.armorlevellineEdit.setText(Armor.level)
+        self.armorattr1lineEdit.setText(Armor.attr0)
+        self.armorattr2lineEdit.setText(Armor.attr1)
+        self.armorattr3lineEdit.setText(Armor.attr2)
+        self.armorattr4lineEdit.setText(Armor.attr3)
+        self.armormysticalcomboBox.setCurrentIndex(Armor.hasMystical)
 
-        self.comboBox_14.setCurrentIndex(helmet.equipType)
-        self.lineEdit_22.setText(helmet.level)
-        self.lineEdit_18.setText(helmet.attr0)
-        self.lineEdit_19.setText(helmet.attr1)
-        self.lineEdit_21.setText(helmet.attr2)
-        self.lineEdit_20.setText(helmet.attr3)
-        self.comboBox_15.setCurrentIndex(helmet.hasMystical)
+        self.helmettypecomboBox.setCurrentIndex(helmet.equipType)
+        self.helmetlevellineEdit.setText(helmet.level)
+        self.helmetattr1lineEdit.setText(helmet.attr0)
+        self.helmetattr2lineEdit.setText(helmet.attr1)
+        self.helmetattr3lineEdit.setText(helmet.attr2)
+        self.helmetattr4lineEdit.setText(helmet.attr3)
+        self.helmetmysticalcomboBox.setCurrentIndex(helmet.hasMystical)
 
     def myCardListUpdate(self):
         myCardList = self.cardList
-        currentIndex = self.comboBox.currentIndex()
-        self.comboBox.clear()
+        currentIndex = self.cardlistcomboBox.currentIndex()
+        self.cardlistcomboBox.clear()
         for k, v in myCardList.items():
-            self.comboBox.addItem(k)
-        self.comboBox.setCurrentIndex(currentIndex)
+            self.cardlistcomboBox.addItem(k)
+        self.cardlistcomboBox.setCurrentIndex(currentIndex)
 
     def saveMyCard(self):
         (result, message) = self.ableCheck()
@@ -770,7 +777,7 @@ class Ui_cardForm(object):
                 QMessageBox.critical(self, "错误", "保存失败，与已有配置重名", QMessageBox.Yes)
                 return
             self.cardList[text] = newCard
-            self.comboBox.setCurrentText(text)
+            self.cardlistcomboBox.setCurrentText(text)
 
     def editMyCard(self):
         (result, message) = self.ableCheck()
@@ -779,7 +786,7 @@ class Ui_cardForm(object):
             return
         newCard = self.makeMyCard()
         # index = self.comboBox.currentIndex()
-        text = self.comboBox.currentText()
+        text = self.cardlistcomboBox.currentText()
         if text == "":
             QMessageBox.critical(self, "错误", "修改失败，空名称", QMessageBox.Yes)
             return
@@ -792,7 +799,7 @@ class Ui_cardForm(object):
 
     def delMyCard(self):
         # index = self.comboBox.currentIndex()
-        text = self.comboBox.currentText()
+        text = self.cardlistcomboBox.currentText()
         if text == "新卡片":
             QMessageBox.critical(self, "错误", "模板不可删除", QMessageBox.Yes)
             return
@@ -824,13 +831,13 @@ class Ui_cardForm(object):
         if global_env.test_mode:
             return True, "测试模式"
 
-        level = self.lineEdit_2.getValue()
-        STR = self.spinBox.getValue()
-        AGI = self.spinBox_2.getValue()
-        INT = self.spinBox_3.getValue()
-        VIT = self.spinBox_4.getValue()
-        SPR = self.spinBox_5.getValue()
-        RES = self.spinBox_6.getValue()
+        level = self.levellineEdit.getValue()
+        STR = self.STRspinBox.getValue()
+        AGI = self.AGIspinBox.getValue()
+        INT = self.INTspinBox.getValue()
+        VIT = self.VITspinBox.getValue()
+        SPR = self.SPRspinBox.getValue()
+        RES = self.RESspinBox.getValue()
 
         if level > 500:
             return False, "卡片不能超过500级"
@@ -843,15 +850,15 @@ class Ui_cardForm(object):
         # self.comboBox_4.setObjectName(u"技能2")
         # self.comboBox_5.setObjectName(u"技能3")
         # self.comboBox_6.setObjectName(u"技能4")
-        halo = self.lineEdit.getValue()
+        halo = self.halolineEdit.getValue()
         if halo > 200:
             return False, "光环不能大于200!"
-        sklSlotNum = self.comboBox_2.currentIndex() + 1
+        sklSlotNum = self.skillslotcomboBox.currentIndex() + 1
         sklList = []
-        skl_1 = self.comboBox_3.currentIndex()
-        skl_2 = self.comboBox_4.currentIndex()
-        skl_3 = self.comboBox_5.currentIndex()
-        skl_4 = self.comboBox_6.currentIndex()
+        skl_1 = self.skill1comboBox.currentIndex()
+        skl_2 = self.skill2comboBox.currentIndex()
+        skl_3 = self.skill3comboBox.currentIndex()
+        skl_4 = self.skill4comboBox.currentIndex()
         if skl_1 != 0:
             sklList.append(skl_1)
         if skl_2 != 0:
@@ -886,12 +893,12 @@ class Ui_cardForm(object):
         # self.lineEdit_5.setObjectName(u"武器属性2")
         # self.lineEdit_6.setObjectName(u"武器属性3")
         # self.lineEdit_7.setObjectName(u"武器属性4")
-        if self.comboBox_8.currentIndex() != 0:
-            if self.lineEdit_3.getValue() > 500:
+        if self.weapontypecomboBox.currentIndex() != 0:
+            if self.weaponlevellineEdit.getValue() > 500:
                 return False, "装备等级不能大于500!"
-            if self.lineEdit_4.getValue() < 50 or self.lineEdit_5.getValue() < 50 or self.lineEdit_6.getValue() < 50 or self.lineEdit_7.getValue() < 50:
+            if self.weaponattr1lineEdit.getValue() < 50 or self.weaponattr2lineEdit.getValue() < 50 or self.weaponattr3lineEdit.getValue() < 50 or self.weaponattr4lineEdit.getValue() < 50:
                 return False, "装备属性不能小于50!"
-            if self.lineEdit_4.getValue() > 150 or self.lineEdit_5.getValue() > 150 or self.lineEdit_6.getValue() > 150 or self.lineEdit_7.getValue() > 150:
+            if self.weaponattr1lineEdit.getValue() > 150 or self.weaponattr2lineEdit.getValue() > 150 or self.weaponattr3lineEdit.getValue() > 150 or self.weaponattr4lineEdit.getValue() > 150:
                 return False, "装备属性不能大于150!"
 
         # self.comboBox_10.setObjectName(u"手套类型")
@@ -900,12 +907,12 @@ class Ui_cardForm(object):
         # self.lineEdit_9.setObjectName(u"手套属性2")
         # self.lineEdit_11.setObjectName(u"手套属性3")
         # self.lineEdit_10.setObjectName(u"手套属性4")
-        if self.comboBox_10.currentIndex() != 0:
-            if self.lineEdit_12.getValue() > 500:
+        if self.glovetypecomboBox.currentIndex() != 0:
+            if self.glovelevellineEdit.getValue() > 500:
                 return False, "装备等级不能大于500!"
-            if self.lineEdit_8.getValue() < 50 or self.lineEdit_9.getValue() < 50 or self.lineEdit_11.getValue() < 50 or self.lineEdit_10.getValue() < 50:
+            if self.gloveattr1lineEdit.getValue() < 50 or self.gloveattr2lineEdit.getValue() < 50 or self.gloveattr3lineEdit.getValue() < 50 or self.gloveattr4lineEdit.getValue() < 50:
                 return False, "装备属性不能小于50!"
-            if self.lineEdit_8.getValue() > 150 or self.lineEdit_9.getValue() > 150 or self.lineEdit_11.getValue() > 150 or self.lineEdit_10.getValue() > 150:
+            if self.gloveattr1lineEdit.getValue() > 150 or self.gloveattr2lineEdit.getValue() > 150 or self.gloveattr3lineEdit.getValue() > 150 or self.gloveattr4lineEdit.getValue() > 150:
                 return False, "装备属性不能大于150!"
 
         # self.comboBox_12.setObjectName(u"护甲类型")
@@ -914,12 +921,12 @@ class Ui_cardForm(object):
         # self.lineEdit_14.setObjectName(u"护甲属性2")
         # self.lineEdit_16.setObjectName(u"护甲属性3")
         # self.lineEdit_15.setObjectName(u"护甲属性4")
-        if self.comboBox_12.currentIndex() != 0:
-            if self.lineEdit_17.getValue() > 500:
+        if self.armortypecomboBox.currentIndex() != 0:
+            if self.armorlevellineEdit.getValue() > 500:
                 return False, "装备等级不能大于500!"
-            if self.lineEdit_13.getValue() < 50 or self.lineEdit_14.getValue() < 50 or self.lineEdit_16.getValue() < 50 or self.lineEdit_15.getValue() < 50:
+            if self.armorattr1lineEdit.getValue() < 50 or self.armorattr2lineEdit.getValue() < 50 or self.armorattr3lineEdit.getValue() < 50 or self.armorattr4lineEdit.getValue() < 50:
                 return False, "装备属性不能小于50!"
-            if self.lineEdit_13.getValue() > 150 or self.lineEdit_14.getValue() > 150 or self.lineEdit_16.getValue() > 150 or self.lineEdit_15.getValue() > 150:
+            if self.armorattr1lineEdit.getValue() > 150 or self.armorattr2lineEdit.getValue() > 150 or self.armorattr3lineEdit.getValue() > 150 or self.armorattr4lineEdit.getValue() > 150:
                 return False, "装备属性不能大于150!"
 
         # self.comboBox_14.setObjectName(u"头盔类型")
@@ -928,12 +935,12 @@ class Ui_cardForm(object):
         # self.lineEdit_19.setObjectName(u"头盔属性2")
         # self.lineEdit_21.setObjectName(u"头盔属性3")
         # self.lineEdit_20.setObjectName(u"头盔属性4")
-        if self.comboBox_14.currentIndex() != 0:
-            if self.lineEdit_22.getValue() > 500:
+        if self.helmettypecomboBox.currentIndex() != 0:
+            if self.helmetlevellineEdit.getValue() > 500:
                 return False, "装备等级不能大于500!"
-            if self.lineEdit_18.getValue() < 50 or self.lineEdit_19.getValue() < 50 or self.lineEdit_21.getValue() < 50 or self.lineEdit_20.getValue() < 50:
+            if self.helmetattr1lineEdit.getValue() < 50 or self.helmetattr2lineEdit.getValue() < 50 or self.helmetattr3lineEdit.getValue() < 50 or self.helmetattr4lineEdit.getValue() < 50:
                 return False, "装备属性不能小于50!"
-            if self.lineEdit_18.getValue() > 150 or self.lineEdit_19.getValue() > 150 or self.lineEdit_21.getValue() > 150 or self.lineEdit_20.getValue() > 150:
+            if self.helmetattr1lineEdit.getValue() > 150 or self.helmetattr2lineEdit.getValue() > 150 or self.helmetattr3lineEdit.getValue() > 150 or self.helmetattr4lineEdit.getValue() > 150:
                 return False, "装备属性不能大于150!"
 
         return True, "无错误"
@@ -947,46 +954,46 @@ class Ui_cardForm(object):
 
     def equipSetImport(self, mySet):
         if mySet.weapon is not None:
-            self.comboBox_8.setCurrentIndex(mySet.weapon.equipType)
-            self.lineEdit_3.setText(mySet.weapon.level)
-            self.lineEdit_4.setText(mySet.weapon.attr0)
-            self.lineEdit_5.setText(mySet.weapon.attr1)
-            self.lineEdit_6.setText(mySet.weapon.attr2)
-            self.lineEdit_7.setText(mySet.weapon.attr3)
-            self.comboBox_9.setCurrentIndex(mySet.weapon.hasMystical)
+            self.weapontypecomboBox.setCurrentIndex(mySet.weapon.equipType)
+            self.weaponlevellineEdit.setText(mySet.weapon.level)
+            self.weaponattr1lineEdit.setText(mySet.weapon.attr0)
+            self.weaponattr2lineEdit.setText(mySet.weapon.attr1)
+            self.weaponattr3lineEdit.setText(mySet.weapon.attr2)
+            self.weaponattr4lineEdit.setText(mySet.weapon.attr3)
+            self.weaponmysticalcomboBox.setCurrentIndex(mySet.weapon.hasMystical)
         if mySet.glove is not None:
-            self.comboBox_10.setCurrentIndex(mySet.glove.equipType)
-            self.lineEdit_12.setText(mySet.glove.level)
-            self.lineEdit_8.setText(mySet.glove.attr0)
-            self.lineEdit_9.setText(mySet.glove.attr1)
-            self.lineEdit_11.setText(mySet.glove.attr2)
-            self.lineEdit_10.setText(mySet.glove.attr3)
-            self.comboBox_11.setCurrentIndex(mySet.glove.hasMystical)
+            self.glovetypecomboBox.setCurrentIndex(mySet.glove.equipType)
+            self.glovelevellineEdit.setText(mySet.glove.level)
+            self.gloveattr1lineEdit.setText(mySet.glove.attr0)
+            self.gloveattr2lineEdit.setText(mySet.glove.attr1)
+            self.gloveattr3lineEdit.setText(mySet.glove.attr2)
+            self.gloveattr4lineEdit.setText(mySet.glove.attr3)
+            self.glovemysticalcomboBox.setCurrentIndex(mySet.glove.hasMystical)
         if mySet.Armor is not None:
-            self.comboBox_12.setCurrentIndex(mySet.Armor.equipType)
-            self.lineEdit_17.setText(mySet.Armor.level)
-            self.lineEdit_13.setText(mySet.Armor.attr0)
-            self.lineEdit_14.setText(mySet.Armor.attr1)
-            self.lineEdit_16.setText(mySet.Armor.attr2)
-            self.lineEdit_15.setText(mySet.Armor.attr3)
-            self.comboBox_13.setCurrentIndex(mySet.Armor.hasMystical)
+            self.armortypecomboBox.setCurrentIndex(mySet.Armor.equipType)
+            self.armorlevellineEdit.setText(mySet.Armor.level)
+            self.armorattr1lineEdit.setText(mySet.Armor.attr0)
+            self.armorattr2lineEdit.setText(mySet.Armor.attr1)
+            self.armorattr3lineEdit.setText(mySet.Armor.attr2)
+            self.armorattr4lineEdit.setText(mySet.Armor.attr3)
+            self.armormysticalcomboBox.setCurrentIndex(mySet.Armor.hasMystical)
         if mySet.helmet is not None:
-            self.comboBox_14.setCurrentIndex(mySet.helmet.equipType)
-            self.lineEdit_22.setText(mySet.helmet.level)
-            self.lineEdit_18.setText(mySet.helmet.attr0)
-            self.lineEdit_19.setText(mySet.helmet.attr1)
-            self.lineEdit_21.setText(mySet.helmet.attr2)
-            self.lineEdit_20.setText(mySet.helmet.attr3)
-            self.comboBox_15.setCurrentIndex(mySet.helmet.hasMystical)
+            self.helmettypecomboBox.setCurrentIndex(mySet.helmet.equipType)
+            self.helmetlevellineEdit.setText(mySet.helmet.level)
+            self.helmetattr1lineEdit.setText(mySet.helmet.attr0)
+            self.helmetattr2lineEdit.setText(mySet.helmet.attr1)
+            self.helmetattr3lineEdit.setText(mySet.helmet.attr2)
+            self.helmetattr4lineEdit.setText(mySet.helmet.attr3)
+            self.helmetmysticalcomboBox.setCurrentIndex(mySet.helmet.hasMystical)
 
     def set_remainder_point(self):
-        level = self.lineEdit_2.getValue()
-        STR = self.spinBox.getValue()
-        AGI = self.spinBox_2.getValue()
-        INT = self.spinBox_3.getValue()
-        VIT = self.spinBox_4.getValue()
-        SPR = self.spinBox_5.getValue()
-        RES = self.spinBox_6.getValue()
+        level = self.levellineEdit.getValue()
+        STR = self.STRspinBox.getValue()
+        AGI = self.AGIspinBox.getValue()
+        INT = self.INTspinBox.getValue()
+        VIT = self.VITspinBox.getValue()
+        SPR = self.SPRspinBox.getValue()
+        RES = self.RESspinBox.getValue()
 
         maxPoint = level * 3 + 6
         remainder_point = maxPoint - (STR + AGI + INT + VIT + SPR + RES)
@@ -997,16 +1004,16 @@ class Ui_cardForm(object):
         if ok and text:
             percentage_text = text.split()
             attr_list = []
-            level = self.lineEdit_2.getValue()
+            level = self.levellineEdit.getValue()
             point = level * 3
             for i in range(6):
                 attr_list.append(int(point * int(percentage_text[i]) / 100 + 1))
-            self.spinBox.setValue(attr_list[0])
-            self.spinBox_2.setValue(attr_list[1])
-            self.spinBox_3.setValue(attr_list[2])
-            self.spinBox_4.setValue(attr_list[3])
-            self.spinBox_5.setValue(attr_list[4])
-            self.spinBox_6.setValue(attr_list[5])
+            self.STRspinBox.setValue(attr_list[0])
+            self.AGIspinBox.setValue(attr_list[1])
+            self.INTspinBox.setValue(attr_list[2])
+            self.VITspinBox.setValue(attr_list[3])
+            self.SPRspinBox.setValue(attr_list[4])
+            self.RESspinBox.setValue(attr_list[5])
             self.set_remainder_point()
 
     def openEquipChooseWindow(self):
@@ -1030,40 +1037,40 @@ class Ui_cardForm(object):
     def preEquipToStorage(self, equipParts):
         if equipParts == "weapon":
             equipClass = weaponEquip
-            equipType = self.comboBox_8.currentIndex()
-            level = self.lineEdit_3.text()
-            attr0 = self.lineEdit_4.text()
-            attr1 = self.lineEdit_5.text()
-            attr2 = self.lineEdit_6.text()
-            attr3 = self.lineEdit_7.text()
-            hasMystical = self.comboBox_9.currentIndex()
+            equipType = self.weapontypecomboBox.currentIndex()
+            level = self.weaponlevellineEdit.text()
+            attr0 = self.weaponattr1lineEdit.text()
+            attr1 = self.weaponattr2lineEdit.text()
+            attr2 = self.weaponattr3lineEdit.text()
+            attr3 = self.weaponattr4lineEdit.text()
+            hasMystical = self.weaponmysticalcomboBox.currentIndex()
         elif equipParts == "glove":
             equipClass = gloveEquip
-            equipType = self.comboBox_10.currentIndex()
-            level = self.lineEdit_12.text()
-            attr0 = self.lineEdit_8.text()
-            attr1 = self.lineEdit_9.text()
-            attr2 = self.lineEdit_11.text()
-            attr3 = self.lineEdit_10.text()
-            hasMystical = self.comboBox_11.currentIndex()
+            equipType = self.glovetypecomboBox.currentIndex()
+            level = self.glovelevellineEdit.text()
+            attr0 = self.gloveattr1lineEdit.text()
+            attr1 = self.gloveattr2lineEdit.text()
+            attr2 = self.gloveattr3lineEdit.text()
+            attr3 = self.gloveattr4lineEdit.text()
+            hasMystical = self.glovemysticalcomboBox.currentIndex()
         elif equipParts == "Armor":
             equipClass = ArmorEquip
-            equipType = self.comboBox_12.currentIndex()
-            level = self.lineEdit_17.text()
-            attr0 = self.lineEdit_13.text()
-            attr1 = self.lineEdit_14.text()
-            attr2 = self.lineEdit_16.text()
-            attr3 = self.lineEdit_15.text()
-            hasMystical = self.comboBox_13.currentIndex()
+            equipType = self.armortypecomboBox.currentIndex()
+            level = self.armorlevellineEdit.text()
+            attr0 = self.armorattr1lineEdit.text()
+            attr1 = self.armorattr2lineEdit.text()
+            attr2 = self.armorattr3lineEdit.text()
+            attr3 = self.armorattr4lineEdit.text()
+            hasMystical = self.armormysticalcomboBox.currentIndex()
         elif equipParts == "helmet":
             equipClass = helmetEquip
-            equipType = self.comboBox_14.currentIndex()
-            level = self.lineEdit_22.text()
-            attr0 = self.lineEdit_18.text()
-            attr1 = self.lineEdit_19.text()
-            attr2 = self.lineEdit_21.text()
-            attr3 = self.lineEdit_20.text()
-            hasMystical = self.comboBox_15.currentIndex()
+            equipType = self.helmettypecomboBox.currentIndex()
+            level = self.helmetlevellineEdit.text()
+            attr0 = self.helmetattr1lineEdit.text()
+            attr1 = self.helmetattr2lineEdit.text()
+            attr2 = self.helmetattr3lineEdit.text()
+            attr3 = self.helmetattr4lineEdit.text()
+            hasMystical = self.helmetmysticalcomboBox.currentIndex()
         else:
             return False, ""
         if equipType == 0:
@@ -1078,3 +1085,115 @@ class Ui_cardForm(object):
 
         result = equipClass(level, attr0, attr1, attr2, attr3, hasMystical, equipType)
         return True, result
+
+    def rightMenuCreat(self):
+        self.contextMenu = QMenu(self)
+        self.cardImport = self.contextMenu.addAction(u'卡片导入')
+        self.skillImport = self.contextMenu.addAction(u'技能导入')
+        self.equipImport = self.contextMenu.addAction(u'装备导入')
+        self.allImport = self.contextMenu.addAction(u'全部导入')
+        self.cardImport.triggered.connect(lambda: self.cardImportFun())
+        self.skillImport.triggered.connect(lambda: self.skillImportFun())
+        self.equipImport.triggered.connect(lambda: self.equipImportFun())
+        self.allImport.triggered.connect(lambda: self.allImportFun())
+
+    def rightMenuShow(self):
+        self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
+        self.contextMenu.show()
+
+    def cardImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入卡片', '咕咕镇计算器格式')
+            if not (ok and text):
+                return
+        data = text.split()
+        for i in range(len(all_character['data'])):
+            if data[0] == all_character['data'][i]:
+                self.cardtypecomboBox.setCurrentIndex(i)
+                break
+        self.levellineEdit.setText(data[1])
+        self.skillslotcomboBox.setCurrentText(data[2])
+        self.STRspinBox.setValue(int(data[3]))
+        self.AGIspinBox.setValue(int(data[4]))
+        self.INTspinBox.setValue(int(data[5]))
+        self.VITspinBox.setValue(int(data[6]))
+        self.SPRspinBox.setValue(int(data[7]))
+        self.RESspinBox.setValue(int(data[8]))
+
+    def skillImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入技能', '咕咕镇计算器格式')
+            if not (ok and text):
+                return
+        data = text.split()
+        sklBoxList = [self.skill1comboBox, self.skill2comboBox, self.skill3comboBox, self.skill4comboBox]
+        index = 0
+        for i in range(1, len(data)):
+            for j in range(len(all_skill['data'])):
+                if data[i] == all_skill['data'][j]:
+                    sklBoxList[index].setCurrentIndex(j + 1)
+                    index += 1
+                    break
+        for i in range(index, 4):
+            sklBoxList[i].setCurrentIndex(0)
+
+    def equipImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
+            if not (ok and text):
+                return
+        data = text.split()
+        data = [data[i:i + 7] for i in range(0, len(data), 7)]
+        for i in range(len(all_equip['data']["weapon"])):
+            if data[0][0] == all_equip['data']["weapon"][i]:
+                self.weapontypecomboBox.setCurrentIndex(i + 1)
+                self.weaponlevellineEdit.setText(data[0][1])
+                self.weaponattr1lineEdit.setText(data[0][2])
+                self.weaponattr2lineEdit.setText(data[0][3])
+                self.weaponattr3lineEdit.setText(data[0][4])
+                self.weaponattr4lineEdit.setText(data[0][5])
+                self.weaponmysticalcomboBox.setCurrentIndex(int(data[0][6]))
+                break
+        for i in range(len(all_equip['data']["glove"])):
+            if data[1][0] == all_equip['data']["glove"][i]:
+                self.glovetypecomboBox.setCurrentIndex(i + 1)
+                self.glovelevellineEdit.setText(data[1][1])
+                self.gloveattr1lineEdit.setText(data[1][2])
+                self.gloveattr2lineEdit.setText(data[1][3])
+                self.gloveattr3lineEdit.setText(data[1][4])
+                self.gloveattr4lineEdit.setText(data[1][5])
+                self.glovemysticalcomboBox.setCurrentIndex(int(data[1][6]))
+                break
+        for i in range(len(all_equip['data']["Armor"])):
+            if data[2][0] == all_equip['data']["Armor"][i]:
+                self.armortypecomboBox.setCurrentIndex(i + 1)
+                self.armorlevellineEdit.setText(data[2][1])
+                self.armorattr1lineEdit.setText(data[2][2])
+                self.armorattr2lineEdit.setText(data[2][3])
+                self.armorattr3lineEdit.setText(data[2][4])
+                self.armorattr4lineEdit.setText(data[2][5])
+                self.armormysticalcomboBox.setCurrentIndex(int(data[2][6]))
+                break
+        for i in range(len(all_equip['data']["helmet"])):
+            if data[3][0] == all_equip['data']["helmet"][i]:
+                self.helmettypecomboBox.setCurrentIndex(i + 1)
+                self.helmetlevellineEdit.setText(data[3][1])
+                self.helmetattr1lineEdit.setText(data[3][2])
+                self.helmetattr2lineEdit.setText(data[3][3])
+                self.helmetattr3lineEdit.setText(data[3][4])
+                self.helmetattr4lineEdit.setText(data[3][5])
+                self.helmetmysticalcomboBox.setCurrentIndex(int(data[3][6]))
+                break
+
+    def allImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
+            if not (ok and text):
+                return
+
+        text = re.sub(r"\n\n", "\n", text)
+        text = text.split("\n")
+        self.halolineEdit.setText(text[0])
+        self.cardImportFun(text[1] + "\n" + text[2])
+        self.equipImportFun(text[3] + "\n" + text[4] + "\n" + text[5] + "\n" + text[6])
+        self.skillImportFun(text[7])

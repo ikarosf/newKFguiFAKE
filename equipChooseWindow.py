@@ -194,4 +194,3 @@ class equipChooseWindow(Ui_equipChooseWindow, QMainWindow):
         super(equipChooseWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
-        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))

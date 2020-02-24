@@ -25,6 +25,8 @@ class Ui_npcForm(object):
         if Form.objectName():
             Form.setObjectName(u"Form")
         Form.resize(281, 403)
+        self.Form = Form
+        # self.gridLayout = QGridLayout(Form)
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setObjectName(u"gridLayout")
         self.label_2 = QLabel(Form)
@@ -125,6 +127,32 @@ class Ui_npcForm(object):
         self.pushButton_3.setText("删除当前")
 
     # retranslateUi
+    def changeToLine(self):
+        self.label_2.hide()
+        self.label.hide()
+        # self.label_3.hide()
+        self.label_4.hide()
+        # self.label_5.hide()
+        self.pushButton.hide()
+        self.pushButton_2.hide()
+        self.pushButton_3.hide()
+        self.comboBox_2.hide()
+
+        self.gridLayout.addWidget(self.comboBox, 0, 0, 1, 1)
+        self.comboBox.addItem("不测试")
+        self.lvLabel = QLabel("lv")
+        self.gridLayout.addWidget(self.lvLabel, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.lineEdit, 0, 2, 1, 1)
+        self.gridLayout.setColumnMinimumWidth(2,30)
+        self.label_5.setText("强度")
+        self.gridLayout.addWidget(self.label_5, 0, 3, 1, 1)
+        self.comboBox_4.addItem("全部强度")
+        self.gridLayout.addWidget(self.comboBox_4, 0, 4, 1, 1)
+        self.gridLayout.addWidget(self.label_3, 0, 5, 1, 1)
+        self.gridLayout.addWidget(self.skillComboBox0, 0, 6, 1, 1)
+        self.gridLayout.addWidget(self.skillComboBox1, 0, 7, 1, 1)
+        self.gridLayout.addWidget(self.skillComboBox2, 0, 8, 1, 1)
+        self.gridLayout.addWidget(self.skillComboBox3, 0, 9, 1, 1)
 
     def open(self):
         global_env.mainWin.hide()
@@ -147,6 +175,21 @@ class Ui_npcForm(object):
 
         thisNpc = npc(npcType, skillSet, npcLevel, npcHighGain)
         return thisNpc
+
+    def makeNpcList(self):
+        npcType = self.comboBox.currentIndex()
+        if npcType == 4:
+            return []
+        npcHighGain = self.comboBox_4.currentIndex()
+        npcList = []
+        if npcHighGain == 4:
+            for i in range(4):
+                self.comboBox_4.setCurrentIndex(i)
+                npcList.append(self.makeNpc())
+            self.comboBox_4.setCurrentIndex(4)
+        else:
+            npcList.append(self.makeNpc())
+        return npcList
 
     def setNpc(self, thisNpc):
         npcType = thisNpc.role

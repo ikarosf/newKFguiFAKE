@@ -17,6 +17,16 @@ class npc:
         text += str(self.highGain)
         return text
 
+    def toFullString(self):
+        text = ''
+        text += all_npc['name'][self.role]
+        text += " LV:"
+        text += self.level
+        text += " 难度："
+        text += str(self.highGain)
+        text += self.skillSet.toString()
+        return text
+
     def make_gu_text(self):
         text = ""
         text += all_npc['data'][self.role]

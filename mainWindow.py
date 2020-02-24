@@ -58,7 +58,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_7 = QPushButton(self.centralwidget)
         self.pushButton_7.setObjectName(u"pushButton_7")
-
+        self.pushButton_7.clicked.connect(global_env.dailyBattleWindow.open)
         self.gridLayout.addWidget(self.pushButton_7, 2, 0, 1, 1)
 
         self.pushButton_8 = QPushButton(self.centralwidget)
@@ -99,7 +99,7 @@ class Ui_MainWindow(object):
         self.pushButton_4.setText("模拟战斗")
         self.pushButton_5.setText("设置newkf.exe路径")
         self.pushButton_6.setText("PushButton")
-        self.pushButton_7.setText("PushButton")
+        self.pushButton_7.setText("日常战斗")
         self.pushButton_8.setText("TESTMODE")
         self.pushButton_9.setText("ABOUT")
 

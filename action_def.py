@@ -28,9 +28,31 @@ def execCmd(userarg="bnpc\nbpc"):
     return result_list
 
 
+def execCmdReturn(userarg="bnpc\nbpc"):
+    userarg = bytes(userarg, encoding="utf8")
+    # cmd = os.path.join(".", "newkf.exe")
+    cmd = global_env.saveData["setting"]["exeDir"]
+    if cmd == None:
+        cmd = os.path.join(".", "newkf.exe")
+    if not os.path.isfile(cmd):
+        return ["找不到newkf.exe"]
+    p1 = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # p2=subprocess.Popen('bnpc',shell=True,stdin=p1.stdout,stdout=subprocess.PIPE)
+    (stdoutdata, stderrdata) = p1.communicate(userarg)
+    p1.wait()
+    mystr = str(stdoutdata, encoding="utf8")
+    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)t <enemy>', mystr, re.S)
+    if len(result_list) == 0:
+        return False, mystr
+    # print(mystr)
+    # writeFile("mylog", mystr)
+    # return stdoutdata
+    return True, result_list
+
+
 def text_to_equipSet(text):
     text = re.sub(r"\t+(\n|$)", "\n", text)
-    text = re.sub(r"\n\n","\n",text)
+    text = re.sub(r"\n\n", "\n", text)
     equip_set_list = re.findall(r"(武器|手套|护甲|头盔)\n(.*?)\n(.*?)\n(.*?)(\n\[神秘属性\].*)?(\n|$)", text)
     equip_list = []
     for index, equipClass in enumerate([weaponEquip, gloveEquip, ArmorEquip, helmetEquip]):

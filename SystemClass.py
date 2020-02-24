@@ -243,3 +243,19 @@ class SKILLSet:
             text += "_"
             text += all_skill["data"][self.skill_4.data - 1]
         return text
+
+    def toString(self):
+        text = ""
+        if self.skill_1.data != 0:
+            text += "_"
+            text += all_skill["name"][self.skill_1.data - 1]
+        if self.skill_2.data != 0:
+            text += "_"
+            text += all_skill["name"][self.skill_2.data - 1]
+        if self.skill_3.data != 0:
+            text += "_"
+            text += all_skill["name"][self.skill_3.data - 1]
+        if self.skill_4.data != 0:
+            text += "_"
+            text += all_skill["name"][self.skill_4.data - 1]
+        return text
