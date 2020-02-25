@@ -117,7 +117,7 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 0.7\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.0\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def enterTestMode(self):

@@ -146,7 +146,7 @@ class Ui_dailybattlewindow(object):
         for i in textList:
             i = re.sub(r'NPC\d\d', fun, i)
             thisText += i
-
+        thisText = re.sub(r"\n", "\n\n", thisText)
         global_env.mainWin.textBrowser.setText(thisText)
         self.close()
 
@@ -155,10 +155,11 @@ class Ui_dailybattlewindow(object):
             self.npcFormList[i].comboBox_4.setCurrentIndex(index)
 
     def npcImport(self):
-        text, ok = QInputDialog.getMultiLineText(self, '导入全部npc', '如“Lv60 铁皮木人”，一个一行：')
+        text, ok = QInputDialog.getMultiLineText(self, '导入全部npc', '如“Lv60 铁皮木人”：')
         if not (ok and text):
             return
-        npcList = re.findall(r'Lv(\d+) (\w+)', text)
+        npcList = re.findall(r'Lv(\d+) ([\u4E00-\u9FA5]+)', text)
+        print(npcList)
         for i in range(len(npcList)):
             thisType = npcList[i][1]
             thisLv = npcList[i][0]
@@ -176,6 +177,12 @@ class Ui_dailybattlewindow(object):
         self.myCardForm.gloveToStorage.hide()
         self.myCardForm.ArmorToStorage.hide()
         self.myCardForm.helmetToStorage.hide()
+        self.cardListUpdateButton = QPushButton(self)
+        self.myCardForm.myCardListUpdate()
+        self.cardListUpdateButton.clicked.connect(self.myCardForm.myCardListUpdate)
+        self.myCardForm.gridLayout_8.addWidget(self.cardListUpdateButton, 2, 0, 1, 1)
+        self.cardListUpdateButton.setText("更新卡片列表")
+
 
     def closeEvent(self, event):
         global_env.mainWin.show()
@@ -183,5 +190,4 @@ class Ui_dailybattlewindow(object):
 
     def open(self):
         global_env.mainWin.hide()
-        self.myCardForm.myCardListUpdate()
         self.show()

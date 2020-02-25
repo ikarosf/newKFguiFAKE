@@ -1187,7 +1187,7 @@ class Ui_cardForm(object):
 
     def allImportFun(self, text=None):
         if text is None:
-            text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
+            text, ok = QInputDialog.getMultiLineText(self, '导入光环、卡片、装备、技能', '咕咕镇计算器格式')
             if not (ok and text):
                 return
 
