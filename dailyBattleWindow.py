@@ -15,9 +15,9 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
 from PySide2.QtWidgets import *
 
 import global_env
-from Qclass import npcHighGainComboBox
+from Qclass import npcHighGainComboBox, intLineEdit
 from SystemClass import all_npc
-from action_def import  execCmdReturn
+from action_def import execCmdReturn
 
 
 class Ui_dailybattlewindow(object):
@@ -82,7 +82,7 @@ class Ui_dailybattlewindow(object):
         self.npcImportButton = QPushButton(self)
         self.npcImportButton.clicked.connect(self.npcImport)
         self.npcImportButton.setText(u"导入NPC")
-        self.grid_HBoxLayout.addWidget(self.npcImportButton,3)
+        self.grid_HBoxLayout.addWidget(self.npcImportButton, 3)
 
         # self.allDifficultyButton = QPushButton(self)
         # self.allDifficultyButton.clicked.connect(self.allDifficultyChoose)
@@ -93,26 +93,38 @@ class Ui_dailybattlewindow(object):
         self.combobox = npcHighGainComboBox(self)
         self.combobox.addItem("全部强度")
         self.combobox.currentIndexChanged.connect(lambda: self.allDifficultyChoose(self.combobox.currentIndex()))
-        self.grid_HBoxLayout.addWidget(self.label,1)
-        self.grid_HBoxLayout.addWidget(self.combobox,2)
+        self.grid_HBoxLayout.addWidget(self.label, 1)
+        self.grid_HBoxLayout.addWidget(self.combobox, 2)
+
+        self.label_2 = QLabel("次数:")
+        self.label_2.setAlignment(Qt.AlignRight | Qt.AlignCenter)
+        self.intLineEdit = intLineEdit(self, min=1000, max=10000)
+        self.grid_HBoxLayout.addWidget(self.label_2, 1)
+        self.grid_HBoxLayout.addWidget(self.intLineEdit, 2)
 
         self.battleStartButton = QPushButton(self)
         self.battleStartButton.clicked.connect(self.battleStart)
         self.battleStartButton.setText(u"开始测试")
-        self.grid_HBoxLayout.addWidget(self.battleStartButton,3)
+        self.grid_HBoxLayout.addWidget(self.battleStartButton, 3)
 
-    def battleStart(self):
+    def allAbleCheck(self):
         (result, message) = self.myCardForm.ableCheck()
         if not result:
             QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
-            return
-        newCard = self.myCardForm.makeMyCard()
-        npcList = []
+            return False
         for i in range(10):
             (result, message) = self.npcFormList[i].ableCheck()
             if not result:
                 QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
-                return
+                return False
+        return True
+
+    def battleStart(self):
+        if not self.allAbleCheck():
+            return
+        newCard = self.myCardForm.makeMyCard()
+        npcList = []
+        for i in range(10):
             newNpc = self.npcFormList[i].makeNpcList()
             npcList += newNpc
 
@@ -133,16 +145,20 @@ class Ui_dailybattlewindow(object):
         file_path = os.path.join(".", "newkf.in")
         with open(file_path, "w") as f:
             f.write(text)
-        result,textList = execCmdReturn("bnpc")
+
+        num = str(self.intLineEdit.getValue())
+        result, textList = execCmdReturn("bnpc " + num)
         thisText = ""
         if not result:
             global_env.mainWin.textBrowser.setText(textList)
             self.close()
             return
         self.index = 0
+
         def fun(matched):
-            self.index +=1
-            return npcList[self.index-1].toFullString()
+            self.index += 1
+            return npcList[self.index - 1].toFullString()
+
         for i in textList:
             i = re.sub(r'NPC\d\d', fun, i)
             thisText += i
@@ -182,7 +198,6 @@ class Ui_dailybattlewindow(object):
         self.cardListUpdateButton.clicked.connect(self.myCardForm.myCardListUpdate)
         self.myCardForm.gridLayout_8.addWidget(self.cardListUpdateButton, 2, 0, 1, 1)
         self.cardListUpdateButton.setText("更新卡片列表")
-
 
     def closeEvent(self, event):
         global_env.mainWin.show()

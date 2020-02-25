@@ -133,6 +133,8 @@ class hasOrNotComboBox(myComboBox):
 class intLineEdit(QLineEdit):
     def __init__(self, parent=None, min=0, max=9999):
         super(intLineEdit, self).__init__(parent)
+        self.min = min
+        self.max = max
         qiv = QIntValidator()
         qiv.setRange(min, max)
         self.setValidator(qiv)
@@ -143,7 +145,7 @@ class intLineEdit(QLineEdit):
     def text(self) -> str:
         text = super(intLineEdit, self).text()
         if text == '':
-            text = '0'
+            text = str(self.min)
         return text
 
 
