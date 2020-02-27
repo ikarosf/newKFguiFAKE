@@ -12,6 +12,8 @@ myCardList = None
 enemyCardList = None
 npcList = None
 equipStorageDict = None
+threads = 4
+tests = 1000
 
 run_args = "bnpc"
 saveData = None
@@ -80,19 +82,22 @@ def equipStorageDictINIT():
 
 
 def initSaveData():
-    global saveData, myCardList, enemyCardList, npcList
+    global saveData, myCardList, enemyCardList, npcList, threads, tests, equipStorageDict
     saveData = {
         'setting': {"exeDir": None},
         'data': {
             "myCardList": MyCardListClass({"新卡片": None}),
             "enemyCardList": EnemyCardListClass({"新卡片": None}),
             "npcList": NPCListClass({"新npc": None}),
-            "equipStorageDict": equipStorageDictINIT()
+            "equipStorageDict": equipStorageDictINIT(),
+            "threads": threads,
+            "tests": tests
         }
     }
     myCardList = saveData["data"]["myCardList"]
     enemyCardList = saveData["data"]["enemyCardList"]
     npcList = saveData["data"]["npcList"]
+    equipStorageDict = saveData["data"]["equipStorageDict"]
 
 
 def storeSaveData():
@@ -100,6 +105,8 @@ def storeSaveData():
     saveData["data"]["enemyCardList"] = enemyCardList
     saveData["data"]["npcList"] = npcList
     saveData["data"]["equipStorageDict"] = equipStorageDict
+    saveData["data"]["threads"] = threads
+    saveData["data"]["tests"] = tests
 
     file_path = os.path.join(".", "ggzgui")
     with open(file_path, 'wb') as f:
@@ -108,7 +115,7 @@ def storeSaveData():
 
 
 def readSaveData():
-    global saveData, myCardList, enemyCardList, npcList, equipStorageDict
+    global saveData, myCardList, enemyCardList, npcList, equipStorageDict, threads, tests
     file_path = os.path.join(".", "ggzgui")
     try:
         with open(file_path, 'rb') as f:
@@ -120,6 +127,10 @@ def readSaveData():
                 equipStorageDict = saveData["data"]["equipStorageDict"]
             else:
                 equipStorageDict = equipStorageDictINIT()
+            if saveData["data"].__contains__("threads"):
+                threads = saveData["data"]["threads"]
+            if saveData["data"].__contains__("tests"):
+                tests = saveData["data"]["tests"]
 
     except FileNotFoundError:
         return False

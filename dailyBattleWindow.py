@@ -14,6 +14,7 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt)
 from PySide2.QtWidgets import *
 
+import action_def
 import global_env
 from Qclass import npcHighGainComboBox, intLineEdit
 from SystemClass import all_npc
@@ -96,14 +97,13 @@ class Ui_dailybattlewindow(object):
         self.grid_HBoxLayout.addWidget(self.label, 1)
         self.grid_HBoxLayout.addWidget(self.combobox, 2)
 
-        self.label_2 = QLabel("次数:")
-        self.label_2.setAlignment(Qt.AlignRight | Qt.AlignCenter)
-        self.intLineEdit = intLineEdit(self, min=1000, max=10000)
-        self.grid_HBoxLayout.addWidget(self.label_2, 1)
-        self.grid_HBoxLayout.addWidget(self.intLineEdit, 2)
+        self.freebattlepushButton = QPushButton(self)
+        self.freebattlepushButton.clicked.connect(self.freeBattleStart)
+        self.freebattlepushButton.setText(u"自定义命令战斗")
+        self.grid_HBoxLayout.addWidget(self.freebattlepushButton, 3)
 
         self.battleStartButton = QPushButton(self)
-        self.battleStartButton.clicked.connect(self.battleStart)
+        self.battleStartButton.clicked.connect(lambda:self.battleStart())
         self.battleStartButton.setText(u"开始测试")
         self.grid_HBoxLayout.addWidget(self.battleStartButton, 3)
 
@@ -119,48 +119,49 @@ class Ui_dailybattlewindow(object):
                 return False
         return True
 
-    def battleStart(self):
+    def freeBattleStart(self):
         if not self.allAbleCheck():
             return
+        cmd_text, ok = QInputDialog.getMultiLineText(self, '自定义参数战斗', '输入参数：', text=global_env.run_args)
+        if not (ok and cmd_text):
+            return
+        global_env.run_args = cmd_text
+        self.battleStart(cmd_text)
+
+    def battleStart(self, cmd_text=None):
+        if not self.allAbleCheck():
+            return
+        if cmd_text is None:
+            items = ["bnpc", "anpc"]
+            cmd_text, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
+            if not (ok and cmd_text):
+                return
         newCard = self.myCardForm.makeMyCard()
         npcList = []
         for i in range(10):
             newNpc = self.npcFormList[i].makeNpcList()
             npcList += newNpc
 
-        text = ""
-        text += newCard.make_gu_text()
-        text += "\n"
-        text += "NPC\n"
-        for i in npcList:
-            text += i.make_gu_text()
-            text += "\n"
-        text += "ENDNPC\n"
-        text += "\n"
-
-        text += "PC\n"
-        text += "ENDPC\n"
-        text += "GEAR\nENDGEAR"
+        text = action_def.make_full_gu_text(newCard, npcList)
 
         file_path = os.path.join(".", "newkf.in")
         with open(file_path, "w") as f:
             f.write(text)
 
-        num = str(self.intLineEdit.getValue())
-        result, textList = execCmdReturn("bnpc " + num)
+        result, textList = execCmdReturn(cmd_text)
         thisText = ""
         if not result:
             global_env.mainWin.textBrowser.setText(textList)
             self.close()
             return
-        self.index = 0
+        # self.index = 0
 
-        def fun(matched):
-            self.index += 1
-            return npcList[self.index - 1].toFullString()
+        # def fun(matched):
+        #     self.index += 1
+        #     return npcList[self.index - 1].toFullString()
 
         for i in textList:
-            i = re.sub(r'NPC\d\d', fun, i)
+            # i = re.sub(r'NPC\d\d', fun, i)
             thisText += i
         thisText = re.sub(r"\n", "\n\n", thisText)
         global_env.mainWin.textBrowser.setText(thisText)

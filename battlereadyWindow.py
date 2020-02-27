@@ -13,6 +13,7 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt)
 from PySide2.QtWidgets import *
 
+import action_def
 import global_env
 from action_def import execCmd
 
@@ -82,13 +83,14 @@ class Ui_battleReadyForm(object):
 
         self.battlepushButton = QPushButton(Form)
         self.battlepushButton.setObjectName(u"battlepushButton")
-        self.battlepushButton.clicked.connect(self.runTest2)
+        self.battlepushButton.clicked.connect(self.runTest3)
         self.gridLayout.addWidget(self.battlepushButton, 1, 5, 1, 1)
 
         self.retranslateUi(Form)
 
         QMetaObject.connectSlotsByName(Form)
         self.flash()
+
     # setupUi
 
     def retranslateUi(self, Form):
@@ -198,6 +200,37 @@ class Ui_battleReadyForm(object):
         global_env.mainWin.textBrowser.setText(thisText)
         self.close()
 
+    def runTest3(self):
+        if len(self.mycardlistWidget.selectedItems()) == 0:
+            QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
+            return
+        if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
+            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
+            return
+        items = ["bnpc", "bpc", "anpc", "apc"]
+        item, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
+        if not (ok and item):
+            return
+
+        file_path = os.path.join(".", "newkf.in")
+        # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
+        try:
+            gu_text = self.make_full_gu_text2()
+        except:
+            QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
+            return
+        if not gu_text:
+            QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
+            return
+        with open(file_path, "w") as f:
+            f.write(gu_text)
+        result = execCmd(item)
+        thisText = ""
+        for i in result:
+            thisText += i
+
+        global_env.mainWin.textBrowser.setText(thisText)
+        self.close()
 
     def freeRunTest(self):
         if len(self.mycardlistWidget.selectedItems()) == 0:
@@ -225,7 +258,6 @@ class Ui_battleReadyForm(object):
 
         global_env.mainWin.textBrowser.setText(thisText)
         self.close()
-
 
     def make_full_gu_text(self):
         try:
@@ -281,24 +313,7 @@ class Ui_battleReadyForm(object):
         except KeyError:
             return False
 
-        text = ""
-        text += myCard.make_gu_text()
-        text += "\n"
-        text += "NPC\n"
-        for i in npcList:
-            text += i.make_gu_text()
-            text += "\n"
-        text += "ENDNPC\n"
-        text += "\n"
-
-        text += "PC\n"
-        for i in enemyCardList:
-            text += i.make_gu_text()
-            text += '\n'
-        text += "ENDPC\n"
-
-        text += "GEAR\nENDGEAR"
-
+        text = action_def.make_full_gu_text(myCard, npcList, enemyCardList)
         return text
 
     def flash(self):

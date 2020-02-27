@@ -140,6 +140,7 @@ class Ui_npcForm(object):
 
         self.gridLayout.addWidget(self.comboBox, 0, 0, 1, 1)
         self.comboBox.addItem("不测试")
+        self.comboBox.setCurrentText("不测试")
         self.lvLabel = QLabel("lv")
         self.gridLayout.addWidget(self.lvLabel, 0, 1, 1, 1)
         self.gridLayout.addWidget(self.lineEdit, 0, 2, 1, 1)

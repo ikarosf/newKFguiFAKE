@@ -19,7 +19,7 @@ def execCmd(userarg="bnpc\nbpc"):
     (stdoutdata, stderrdata) = p1.communicate(userarg)
     p1.wait()
     mystr = str(stdoutdata, encoding="utf8")
-    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)t <enemy>', mystr, re.S)
+    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)Number of threads', mystr, re.S)
     if len(result_list) == 0:
         return [mystr]
     # print(mystr)
@@ -41,7 +41,7 @@ def execCmdReturn(userarg="bnpc\nbpc"):
     (stdoutdata, stderrdata) = p1.communicate(userarg)
     p1.wait()
     mystr = str(stdoutdata, encoding="utf8")
-    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)t <enemy>', mystr, re.S)
+    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)Number of threads', mystr, re.S)
     if len(result_list) == 0:
         return False, mystr
     # print(mystr)
@@ -71,3 +71,33 @@ def text_to_equipSet(text):
         thisEquip = equipClass(level, attrSet[0], attrSet[1], attrSet[2], attrSet[3], hasMystical, equipType)
         equip_list.append(thisEquip)
     return EQUIPSet(equip_list[0], equip_list[1], equip_list[2], equip_list[3])
+
+
+def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[]):
+    # gearList = []
+    # gearList.append(global_env.equipStorageDict["weapon"]["短杖 LV.500"])
+    text = ""
+    text += myCard.make_gu_text()
+    text += "\n"
+    text += "NPC\n"
+    for i in npcList:
+        text += i.make_gu_text()
+        text += "\n"
+    text += "ENDNPC\n"
+    text += "\n"
+
+    text += "PC\n"
+    for i in enemyCardList:
+        text += i.make_gu_text()
+        text += '\n'
+    text += "ENDPC\n"
+
+    text += "GEAR\n"
+    for i in gearList:
+        text += i.make_gu_text()
+        text += '\n'
+    text += "ENDGEAR\n"
+
+    text += "THREADS " + str(global_env.threads) + "\n"
+    text += "TESTS " + str(global_env.tests) + "\n"
+    return text

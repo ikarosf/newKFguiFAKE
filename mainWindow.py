@@ -11,6 +11,8 @@
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt)
 from PySide2.QtWidgets import *
+
+import action_def
 import global_env
 
 QString = type("")
@@ -81,6 +83,15 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 800, 22))
         MainWindow.setMenuBar(self.menubar)
+
+        self.set_menu = self.menubar.addMenu("设置")
+
+        self.set_threads_action = self.set_menu.addAction('设置线程数')
+        self.set_threads_action.triggered.connect(self.set_threads)
+
+        self.set_tests_action = self.set_menu.addAction('设置回数')
+        self.set_tests_action.triggered.connect(self.set_tests)
+
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -117,10 +128,22 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.0\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.2\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def enterTestMode(self):
         yes = QMessageBox.warning(self, "进入测试模式？", "测试模式暂时唯一的功能是保存卡片时不再检测数值合法性", QMessageBox.Yes | QMessageBox.No)
         if yes == QMessageBox.Yes:
             global_env.test_mode = True
+
+    def set_threads(self):
+        text, ok = QInputDialog.getInt(self, '设置线程数', '', value=global_env.threads)
+        if not (ok and text):
+            return
+        global_env.threads = text
+
+    def set_tests(self):
+        text, ok = QInputDialog.getInt(self, '测试重复数', '', value=global_env.tests)
+        if not (ok and text):
+            return
+        global_env.tests = text
