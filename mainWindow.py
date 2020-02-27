@@ -147,3 +147,25 @@ class Ui_MainWindow(object):
         if not (ok and text):
             return
         global_env.tests = text
+
+    def disable_all_button(self):
+        self.myCardButton.setEnabled(False)
+        self.enemyCardButton.setEnabled(False)
+        self.npcSetButton.setEnabled(False)
+        self.pushButton_4.setEnabled(False)
+        self.pushButton_5.setEnabled(False)
+        self.pushButton_6.setEnabled(False)
+        self.pushButton_7.setEnabled(False)
+        self.pushButton_8.setEnabled(False)
+        self.pushButton_9.setEnabled(False)
+
+    def enable_all_button(self):
+        self.myCardButton.setEnabled(True)
+        self.enemyCardButton.setEnabled(True)
+        self.npcSetButton.setEnabled(True)
+        self.pushButton_4.setEnabled(True)
+        self.pushButton_5.setEnabled(True)
+        self.pushButton_6.setEnabled(True)
+        self.pushButton_7.setEnabled(True)
+        self.pushButton_8.setEnabled(True)
+        self.pushButton_9.setEnabled(True)

@@ -10,12 +10,11 @@
 import os
 
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-                            QRect, QSize, QUrl, Qt)
+                            QRect, QSize, QUrl, Qt, QThread, Signal)
 from PySide2.QtWidgets import *
 
 import action_def
 import global_env
-from action_def import execCmd
 
 QString = type("")
 
@@ -78,12 +77,12 @@ class Ui_battleReadyForm(object):
 
         self.freebattlepushButton = QPushButton(Form)
         self.freebattlepushButton.setObjectName(u"battlepushButton")
-        self.freebattlepushButton.clicked.connect(self.freeRunTest)
+        self.freebattlepushButton.clicked.connect(lambda: self.freeRunTest())
         self.gridLayout.addWidget(self.freebattlepushButton, 1, 4, 1, 1)
 
         self.battlepushButton = QPushButton(Form)
         self.battlepushButton.setObjectName(u"battlepushButton")
-        self.battlepushButton.clicked.connect(self.runTest3)
+        self.battlepushButton.clicked.connect(lambda: self.runTest3())
         self.gridLayout.addWidget(self.battlepushButton, 1, 5, 1, 1)
 
         self.retranslateUi(Form)
@@ -150,40 +149,81 @@ class Ui_battleReadyForm(object):
         for item in self.npclistView.selectedItems():
             self.npclistView.takeItem(self.npclistView.row(item))
 
-    def runTest(self):
-        if self.mycardlistWidget.count() == 0:
-            QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
-            return
-        if self.enemycardlistView.count() == 0 and self.npclistView.count() == 0:
-            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
-            return
-        file_path = os.path.join(".", "newkf.in")
-        # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
-        gu_text = self.make_full_gu_text()
-        if not gu_text:
-            QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
-            return
-        with open(file_path, "w") as f:
-            f.write(gu_text)
-        result = execCmd()
-        thisText = ""
-        for i in result:
-            thisText += i
+    # def runTest(self):
+    #     if self.mycardlistWidget.count() == 0:
+    #         QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
+    #         return
+    #     if self.enemycardlistView.count() == 0 and self.npclistView.count() == 0:
+    #         QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
+    #         return
+    #     file_path = os.path.join(".", "newkf.in")
+    #     # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
+    #     gu_text = self.make_full_gu_text()
+    #     if not gu_text:
+    #         QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
+    #         return
+    #     with open(file_path, "w") as f:
+    #         f.write(gu_text)
+    #     result, text = action_def.execCmdReturn()
+    #     if not result:
+    #         global_env.mainWin.textBrowser.setText(text)
+    #     else:
+    #         thisText = ""
+    #         for i in text:
+    #             thisText += i
+    #         global_env.mainWin.textBrowser.setText(thisText)
+    #     self.close()
+    #
+    # def runTest2(self):
+    #     if len(self.mycardlistWidget.selectedItems()) == 0:
+    #         QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
+    #         return
+    #     if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
+    #         QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
+    #         return
+    #     file_path = os.path.join(".", "newkf.in")
+    #     # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
+    #     try:
+    #         gu_text = self.make_full_gu_text2()
+    #     except:
+    #         QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
+    #         return
+    #     if not gu_text:
+    #         QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
+    #         return
+    #     with open(file_path, "w") as f:
+    #         f.write(gu_text)
+    #     result, text = action_def.execCmdReturn()
+    #     if not result:
+    #         global_env.mainWin.textBrowser.setText(text)
+    #     else:
+    #         thisText = ""
+    #         for i in text:
+    #             thisText += i
+    #         global_env.mainWin.textBrowser.setText(thisText)
+    #     self.close()
 
-        global_env.mainWin.textBrowser.setText(thisText)
-        self.close()
-
-    def runTest2(self):
+    def runTest3(self, item=None):
         if len(self.mycardlistWidget.selectedItems()) == 0:
             QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
             return
         if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
             QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
             return
+        if item is None:
+            items = ["bnpc", "bpc", "anpc", "apc"]
+            item, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
+            if not (ok and item):
+                return
+        aMode = False
+        if item.startswith("a"):
+            yes = QMessageBox.question(self, "自动置1", "算点时是否自动将卡片点数全置1", QMessageBox.Yes | QMessageBox.No)
+            if yes == QMessageBox.Yes:
+                aMode = True
         file_path = os.path.join(".", "newkf.in")
         # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
         try:
-            gu_text = self.make_full_gu_text2()
+            gu_text = self.make_full_gu_text2(aMode=aMode)
         except:
             QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
             return
@@ -192,114 +232,77 @@ class Ui_battleReadyForm(object):
             return
         with open(file_path, "w") as f:
             f.write(gu_text)
-        result = execCmd()
-        thisText = ""
-        for i in result:
-            thisText += i
-
-        global_env.mainWin.textBrowser.setText(thisText)
+        mythread = action_def.execCmdWorker(parent=self, item=item)
+        mythread.my_signal.connect(action_def.after_calculate)
+        action_def.before_calculate()
+        mythread.start()
+        # result, text = action_def.execCmdReturn(item, calculateMode)
+        # if not result:
+        #     global_env.mainWin.textBrowser.setText(text)
+        # else:
+        #     thisText = ""
+        #     for i in text:
+        #         thisText += i
+        #     global_env.mainWin.textBrowser.setText(thisText)
         self.close()
 
-    def runTest3(self):
-        if len(self.mycardlistWidget.selectedItems()) == 0:
-            QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
-            return
-        if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
-            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
-            return
-        items = ["bnpc", "bpc", "anpc", "apc"]
-        item, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
-        if not (ok and item):
-            return
 
-        file_path = os.path.join(".", "newkf.in")
-        # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
-        try:
-            gu_text = self.make_full_gu_text2()
-        except:
-            QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
-            return
-        if not gu_text:
-            QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
-            return
-        with open(file_path, "w") as f:
-            f.write(gu_text)
-        result = execCmd(item)
-        thisText = ""
-        for i in result:
-            thisText += i
-
-        global_env.mainWin.textBrowser.setText(thisText)
-        self.close()
 
     def freeRunTest(self):
-        if len(self.mycardlistWidget.selectedItems()) == 0:
-            QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
-            return
-        if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
-            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
-            return
         text, ok = QInputDialog.getMultiLineText(self, '自定义参数战斗', '输入参数：', text=global_env.run_args)
         if not (ok and text):
             return
         global_env.run_args = text
-        file_path = os.path.join(".", "newkf.in")
-        # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
-        gu_text = self.make_full_gu_text2()
-        if not gu_text:
-            QMessageBox.critical(self, "错误", "选择的数据可能已被删除", QMessageBox.Yes)
-            return
-        with open(file_path, "w") as f:
-            f.write(gu_text)
-        result = execCmd(text)
-        thisText = ""
-        for i in result:
-            thisText += i
+        self.runTest3(text)
 
-        global_env.mainWin.textBrowser.setText(thisText)
-        self.close()
+    # def make_full_gu_text(self):
+    #     try:
+    #         myCardName = self.mycardlistWidget.item(0).text()
+    #         myCard = global_env.myCardList[myCardName]
+    #
+    #         enemyCardList = []
+    #         npcList = []
+    #         for i in range(self.enemycardlistView.count()):
+    #             enemyCardName = self.enemycardlistView.item(i).text()
+    #             enemyCardList.append(global_env.enemyCardList[enemyCardName])
+    #
+    #         for i in range(self.npclistView.count()):
+    #             npcName = self.npclistView.item(i).text()
+    #             npcList.append(global_env.npcList[npcName])
+    #     except KeyError:
+    #         return False
+    #
+    #     text = ""
+    #     text += myCard.make_gu_text()
+    #     text += "\n"
+    #     text += "NPC\n"
+    #     for i in npcList:
+    #         text += i.make_gu_text()
+    #         text += "\n"
+    #     text += "ENDNPC\n"
+    #     text += "\n"
+    #
+    #     text += "PC\n"
+    #     for i in enemyCardList:
+    #         text += i.make_gu_text()
+    #         text += '\n'
+    #     text += "ENDPC\n"
+    #
+    #     text += "GEAR\nENDGEAR"
+    #
+    #     return text
 
-    def make_full_gu_text(self):
-        try:
-            myCardName = self.mycardlistWidget.item(0).text()
-            myCard = global_env.myCardList[myCardName]
-
-            enemyCardList = []
-            npcList = []
-            for i in range(self.enemycardlistView.count()):
-                enemyCardName = self.enemycardlistView.item(i).text()
-                enemyCardList.append(global_env.enemyCardList[enemyCardName])
-
-            for i in range(self.npclistView.count()):
-                npcName = self.npclistView.item(i).text()
-                npcList.append(global_env.npcList[npcName])
-        except KeyError:
-            return False
-
-        text = ""
-        text += myCard.make_gu_text()
-        text += "\n"
-        text += "NPC\n"
-        for i in npcList:
-            text += i.make_gu_text()
-            text += "\n"
-        text += "ENDNPC\n"
-        text += "\n"
-
-        text += "PC\n"
-        for i in enemyCardList:
-            text += i.make_gu_text()
-            text += '\n'
-        text += "ENDPC\n"
-
-        text += "GEAR\nENDGEAR"
-
-        return text
-
-    def make_full_gu_text2(self):
+    def make_full_gu_text2(self, aMode):
         try:
             myCardName = self.mycardlistWidget.selectedItems()[0].text()
             myCard = global_env.myCardList[myCardName]
+            if aMode:
+                myCard.attrSet.STR = 1
+                myCard.attrSet.AGI = 1
+                myCard.attrSet.INT = 1
+                myCard.attrSet.VIT = 1
+                myCard.attrSet.SPR = 1
+                myCard.attrSet.RES = 1
 
             enemyCardList = []
             npcList = []
@@ -329,3 +332,5 @@ class Ui_battleReadyForm(object):
         for i in global_env.npcList.keys():
             if i != "新npc":
                 self.npclistView.addItem(i)
+
+

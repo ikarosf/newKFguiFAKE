@@ -2,30 +2,32 @@ import os
 import subprocess
 import re
 
+from PySide2.QtCore import QThread, Signal
+
 import global_env
 from SystemClass import all_equip, weaponEquip, gloveEquip, ArmorEquip, helmetEquip, EQUIPSet
 
 
-def execCmd(userarg="bnpc\nbpc"):
-    userarg = bytes(userarg, encoding="utf8")
-    # cmd = os.path.join(".", "newkf.exe")
-    cmd = global_env.saveData["setting"]["exeDir"]
-    if cmd == None:
-        cmd = os.path.join(".", "newkf.exe")
-    if not os.path.isfile(cmd):
-        return ["找不到newkf.exe"]
-    p1 = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    # p2=subprocess.Popen('bnpc',shell=True,stdin=p1.stdout,stdout=subprocess.PIPE)
-    (stdoutdata, stderrdata) = p1.communicate(userarg)
-    p1.wait()
-    mystr = str(stdoutdata, encoding="utf8")
-    result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)Number of threads', mystr, re.S)
-    if len(result_list) == 0:
-        return [mystr]
-    # print(mystr)
-    # writeFile("mylog", mystr)
-    # return stdoutdata
-    return result_list
+# def execCmd(userarg="bnpc\nbpc"):
+#     userarg = bytes(userarg, encoding="utf8")
+#     # cmd = os.path.join(".", "newkf.exe")
+#     cmd = global_env.saveData["setting"]["exeDir"]
+#     if cmd == None:
+#         cmd = os.path.join(".", "newkf.exe")
+#     if not os.path.isfile(cmd):
+#         return ["找不到newkf.exe"]
+#     p1 = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#     # p2=subprocess.Popen('bnpc',shell=True,stdin=p1.stdout,stdout=subprocess.PIPE)
+#     (stdoutdata, stderrdata) = p1.communicate(userarg)
+#     p1.wait()
+#     mystr = str(stdoutdata, encoding="utf8")
+#     result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)Number of threads', mystr, re.S)
+#     if len(result_list) == 0:
+#         return [mystr]
+#     # print(mystr)
+#     # writeFile("mylog", mystr)
+#     # return stdoutdata
+#     return result_list
 
 
 def execCmdReturn(userarg="bnpc\nbpc"):
@@ -36,10 +38,11 @@ def execCmdReturn(userarg="bnpc\nbpc"):
         cmd = os.path.join(".", "newkf.exe")
     if not os.path.isfile(cmd):
         return ["找不到newkf.exe"]
+
     p1 = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     # p2=subprocess.Popen('bnpc',shell=True,stdin=p1.stdout,stdout=subprocess.PIPE)
     (stdoutdata, stderrdata) = p1.communicate(userarg)
-    p1.wait()
+    # p1.wait()
     mystr = str(stdoutdata, encoding="utf8")
     result_list = re.findall(r'<NPCType> <Level> <Power>(.*?)Number of threads', mystr, re.S)
     if len(result_list) == 0:
@@ -48,6 +51,34 @@ def execCmdReturn(userarg="bnpc\nbpc"):
     # writeFile("mylog", mystr)
     # return stdoutdata
     return True, result_list
+
+
+class execCmdWorker(QThread):
+    my_signal = Signal(str)
+
+    def __init__(self, parent=None, item=None):
+        super().__init__(parent)
+        self.item = item
+
+    def run(self):
+        result, text = execCmdReturn(self.item)
+        if not result:
+            self.my_signal.emit(text)
+        else:
+            thisText = ""
+            for i in text:
+                thisText += i
+            self.my_signal.emit(thisText)
+
+
+def after_calculate(text):
+    global_env.mainWin.textBrowser.setText(text)
+    global_env.mainWin.enable_all_button()
+
+
+def before_calculate():
+    global_env.mainWin.textBrowser.setText("计算中")
+    global_env.mainWin.disable_all_button()
 
 
 def text_to_equipSet(text):
