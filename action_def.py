@@ -1,7 +1,7 @@
 import os
 import subprocess
 import re
-
+import copy
 from PySide2.QtCore import QThread, Signal
 
 import global_env
@@ -104,9 +104,23 @@ def text_to_equipSet(text):
     return EQUIPSet(equip_list[0], equip_list[1], equip_list[2], equip_list[3])
 
 
-def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[]):
+def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting=None):
     # gearList = []
     # gearList.append(global_env.equipStorageDict["weapon"]["短杖 LV.500"])
+    myCard = copy.deepcopy(myCard)
+    if setting:
+        if setting[0]:
+            myCard.attrSet.STR = 1
+            myCard.attrSet.AGI = 1
+            myCard.attrSet.INT = 1
+            myCard.attrSet.VIT = 1
+            myCard.attrSet.SPR = 1
+            myCard.attrSet.RES = 1
+        if setting[1]:
+            myCard.skillSet.skill_1.data = 0
+            myCard.skillSet.skill_2.data = 0
+            myCard.skillSet.skill_3.data = 0
+            myCard.skillSet.skill_4.data = 0
     text = ""
     text += myCard.make_gu_text()
     text += "\n"

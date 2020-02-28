@@ -19,6 +19,7 @@ import global_env
 from Qclass import npcHighGainComboBox, intLineEdit
 from SystemClass import all_npc
 from action_def import execCmdReturn
+from mutliChooseDialog import mutliChooseWindow
 
 
 class Ui_dailybattlewindow(object):
@@ -103,7 +104,7 @@ class Ui_dailybattlewindow(object):
         self.grid_HBoxLayout.addWidget(self.freebattlepushButton, 3)
 
         self.battleStartButton = QPushButton(self)
-        self.battleStartButton.clicked.connect(lambda: self.battleStart())
+        self.battleStartButton.clicked.connect(lambda: self.runTestWindow())
         self.battleStartButton.setText(u"开始测试")
         self.grid_HBoxLayout.addWidget(self.battleStartButton, 3)
 
@@ -128,20 +129,16 @@ class Ui_dailybattlewindow(object):
         global_env.run_args = cmd_text
         self.battleStart(cmd_text)
 
-    def battleStart(self, cmd_text=None):
+    def runTestWindow(self):
+        mcw, text, setting = mutliChooseWindow.simpleLaunch(self)
+        if mcw:
+            self.battleStart(text, setting)
+
+    def battleStart(self, cmd_text,setting=None):
         if not self.allAbleCheck():
             return
-        if cmd_text is None:
-            items = ["bnpc", "anpc"]
-            cmd_text, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
-            if not (ok and cmd_text):
-                return
-        aMode = False
-        if cmd_text.startswith("a"):
-            yes = QMessageBox.question(self, "自动置1", "算点时是否自动将卡片点数全置1", QMessageBox.Yes | QMessageBox.No)
-            if yes == QMessageBox.Yes:
-                aMode = True
-        text = self.make_full_gu_text(aMode)
+
+        text = self.make_full_gu_text(setting)
         file_path = os.path.join(".", "newkf.in")
         with open(file_path, "w") as f:
             f.write(text)
@@ -152,21 +149,14 @@ class Ui_dailybattlewindow(object):
         mythread.start()
         self.close()
 
-    def make_full_gu_text(self, aMode=False):
+    def make_full_gu_text(self, setting):
         newCard = self.myCardForm.makeMyCard()
-        if aMode:
-            newCard.attrSet.STR = 1
-            newCard.attrSet.AGI = 1
-            newCard.attrSet.INT = 1
-            newCard.attrSet.VIT = 1
-            newCard.attrSet.SPR = 1
-            newCard.attrSet.RES = 1
         npcList = []
         for i in range(10):
             newNpc = self.npcFormList[i].makeNpcList()
             npcList += newNpc
 
-        text = action_def.make_full_gu_text(newCard, npcList)
+        text = action_def.make_full_gu_text(newCard, npcList,setting=setting)
         return text
 
     def allDifficultyChoose(self, index):

@@ -15,6 +15,7 @@ from PySide2.QtWidgets import *
 
 import action_def
 import global_env
+from mutliChooseDialog import mutliChooseWindow
 
 QString = type("")
 
@@ -82,7 +83,7 @@ class Ui_battleReadyForm(object):
 
         self.battlepushButton = QPushButton(Form)
         self.battlepushButton.setObjectName(u"battlepushButton")
-        self.battlepushButton.clicked.connect(lambda: self.runTest3())
+        self.battlepushButton.clicked.connect(lambda: self.runTestWindow())
         self.gridLayout.addWidget(self.battlepushButton, 1, 5, 1, 1)
 
         self.retranslateUi(Form)
@@ -202,28 +203,23 @@ class Ui_battleReadyForm(object):
     #             thisText += i
     #         global_env.mainWin.textBrowser.setText(thisText)
     #     self.close()
+    def runTestWindow(self):
+        mcw, text, setting = mutliChooseWindow.launch(self)
+        if mcw:
+            self.runTest3(text, setting)
 
-    def runTest3(self, item=None):
+    def runTest3(self, item, setting=None):
         if len(self.mycardlistWidget.selectedItems()) == 0:
             QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
             return
         if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
             QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
             return
-        if item is None:
-            items = ["bnpc", "bpc", "anpc", "apc"]
-            item, ok = QInputDialog.getItem(self, "选择命令", '', items, 0, False)
-            if not (ok and item):
-                return
-        aMode = False
-        if item.startswith("a"):
-            yes = QMessageBox.question(self, "自动置1", "算点时是否自动将卡片点数全置1", QMessageBox.Yes | QMessageBox.No)
-            if yes == QMessageBox.Yes:
-                aMode = True
+
         file_path = os.path.join(".", "newkf.in")
         # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")
         try:
-            gu_text = self.make_full_gu_text2(aMode=aMode)
+            gu_text = self.make_full_gu_text2(setting=setting)
         except:
             QMessageBox.critical(self, "错误", "选择的配置不兼容现版本", QMessageBox.Yes)
             return
@@ -245,8 +241,6 @@ class Ui_battleReadyForm(object):
         #         thisText += i
         #     global_env.mainWin.textBrowser.setText(thisText)
         self.close()
-
-
 
     def freeRunTest(self):
         text, ok = QInputDialog.getMultiLineText(self, '自定义参数战斗', '输入参数：', text=global_env.run_args)
@@ -292,18 +286,10 @@ class Ui_battleReadyForm(object):
     #
     #     return text
 
-    def make_full_gu_text2(self, aMode):
+    def make_full_gu_text2(self, setting):
         try:
             myCardName = self.mycardlistWidget.selectedItems()[0].text()
             myCard = global_env.myCardList[myCardName]
-            if aMode:
-                myCard.attrSet.STR = 1
-                myCard.attrSet.AGI = 1
-                myCard.attrSet.INT = 1
-                myCard.attrSet.VIT = 1
-                myCard.attrSet.SPR = 1
-                myCard.attrSet.RES = 1
-
             enemyCardList = []
             npcList = []
             for i in self.enemycardlistView.selectedItems():
@@ -316,7 +302,7 @@ class Ui_battleReadyForm(object):
         except KeyError:
             return False
 
-        text = action_def.make_full_gu_text(myCard, npcList, enemyCardList)
+        text = action_def.make_full_gu_text(myCard, npcList, enemyCardList, setting=setting)
         return text
 
     def flash(self):
@@ -332,5 +318,3 @@ class Ui_battleReadyForm(object):
         for i in global_env.npcList.keys():
             if i != "新npc":
                 self.npclistView.addItem(i)
-
-

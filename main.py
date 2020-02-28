@@ -11,8 +11,8 @@ import os
 
 # if hasattr(sys,'frozen'):
 #     os.environ['PATH'] = sys._MEIPASS + ";" + os.environ['PATH']
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QApplication
+# from PySide2.QtCore import Qt
+# from PySide2.QtWidgets import QApplication
 from topWindowClass import *
 import global_env
 # import logging

@@ -1,4 +1,5 @@
-from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox, QFrame
+from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox, QFrame, QDialog
+# from PySide2.QtCore import Qt
 from PySide2 import QtGui
 
 from battlereadyWindow import Ui_battleReadyForm
@@ -7,6 +8,7 @@ from mainWindow import Ui_MainWindow
 from mycardWindow import Ui_mycardForm
 from enemycardWindow import Ui_enemycardForm
 from npcWindow import Ui_npcForm
+
 import global_env
 
 
@@ -90,3 +92,6 @@ class dailyBattleWindow(Ui_dailybattlewindow, QMainWindow):
 
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
+
+
+
