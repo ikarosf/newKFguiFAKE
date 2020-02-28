@@ -22,6 +22,7 @@ class Ui_mutliChooseDialog(object):
         self.value = ""
         self.attrClear = False
         self.skillClear = False
+        self.equipClear = False
 
     def setupUi(self, Dialog):
         if Dialog.objectName():
@@ -66,6 +67,10 @@ class Ui_mutliChooseDialog(object):
         self.checkbox2.setChecked(True)
         self.gridLayout_3.addWidget(self.checkbox2, 0, 2, 1, 1)
 
+        self.checkbox3 = QCheckBox(Dialog)
+        self.checkbox3.setChecked(True)
+        self.gridLayout_3.addWidget(self.checkbox3, 0, 3, 1, 1)
+
         self.buttonBox = QDialogButtonBox(Dialog)
         self.buttonBox.setObjectName(u"buttonBox")
         self.buttonBox.setOrientation(Qt.Horizontal)
@@ -89,6 +94,7 @@ class Ui_mutliChooseDialog(object):
         self.pushButton_4.setText("apc")
         self.checkbox.setText("属性自动置1")
         self.checkbox2.setText("技能自动清空")
+        self.checkbox3.setText("装备自动清空")
 
     # retranslateUi
     def return_value(self, text, aMode):
@@ -98,6 +104,8 @@ class Ui_mutliChooseDialog(object):
                 self.attrClear = True
             if self.checkbox2.isChecked():
                 self.skillClear = True
+            if self.checkbox3.isChecked():
+                self.equipClear = True
         self.accept()
 
 
@@ -113,7 +121,7 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg = mutliChooseWindow(parent)
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear)
+            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear)
         return False, None, None
 
     @staticmethod
@@ -123,5 +131,5 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg.pushButton_4.hide()
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear)
+            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear)
         return False, None, None

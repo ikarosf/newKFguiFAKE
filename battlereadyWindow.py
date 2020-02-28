@@ -15,12 +15,17 @@ from PySide2.QtWidgets import *
 
 import action_def
 import global_env
+from equipChooseWindow import GearSetWindow
 from mutliChooseDialog import mutliChooseWindow
 
 QString = type("")
 
 
 class Ui_battleReadyForm(object):
+    def __init__(self, *args, **kwargs):
+        super(Ui_battleReadyForm, self).__init__(*args, **kwargs)
+        self.GearList = []
+
     def setupUi(self, Form):
         if Form.objectName():
             Form.setObjectName(u"Form")
@@ -75,6 +80,15 @@ class Ui_battleReadyForm(object):
         # self.addnpcpushButton.setObjectName(u"addnpcpushButton")
         # self.addnpcpushButton.clicked.connect(self.chooseNpcCard)
         # self.gridLayout.addWidget(self.addnpcpushButton, 1, 3, 1, 1)
+        self.showGearButton = QPushButton(Form)
+        self.showGearButton.setObjectName(u"battlepushButton")
+        self.showGearButton.clicked.connect(lambda: self.showGear())
+        self.gridLayout.addWidget(self.showGearButton, 1, 2, 1, 1)
+
+        self.openGearWindowButton = QPushButton(Form)
+        self.openGearWindowButton.setObjectName(u"battlepushButton")
+        self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
+        self.gridLayout.addWidget(self.openGearWindowButton, 1, 3, 1, 1)
 
         self.freebattlepushButton = QPushButton(Form)
         self.freebattlepushButton.setObjectName(u"battlepushButton")
@@ -101,6 +115,8 @@ class Ui_battleReadyForm(object):
         # self.delenemycardpushButton.setText("移除选择敌方")
         # self.delnpcpushButton.setText("移除选择NPC")
         # self.addnpcpushButton.setText("添加NPC")
+        self.showGearButton.setText("查看备选装备")
+        self.openGearWindowButton.setText("设置备选装备")
         self.freebattlepushButton.setText("自定义命令战斗")
         self.battlepushButton.setText("模拟战斗！")
 
@@ -292,6 +308,7 @@ class Ui_battleReadyForm(object):
             myCard = global_env.myCardList[myCardName]
             enemyCardList = []
             npcList = []
+            gearList = self.GearList
             for i in self.enemycardlistView.selectedItems():
                 enemyCardName = i.text()
                 enemyCardList.append(global_env.enemyCardList[enemyCardName])
@@ -302,7 +319,7 @@ class Ui_battleReadyForm(object):
         except KeyError:
             return False
 
-        text = action_def.make_full_gu_text(myCard, npcList, enemyCardList, setting=setting)
+        text = action_def.make_full_gu_text(myCard, npcList, enemyCardList, gearList, setting=setting)
         return text
 
     def flash(self):
@@ -318,3 +335,19 @@ class Ui_battleReadyForm(object):
         for i in global_env.npcList.keys():
             if i != "新npc":
                 self.npclistView.addItem(i)
+
+    def openGearWindow(self):
+        ecw = GearSetWindow(self, self.GearList)
+        ecw.setWindowModality(Qt.ApplicationModal)
+        ecw.Signal_OneParameter.connect(self.GearSet)
+        ecw.open()
+
+    def GearSet(self, GearList):
+        self.GearList = GearList
+
+    def showGear(self):
+        text = ""
+        for i in self.GearList:
+            text += i.toString() + "\n"
+        text += " " * 100
+        QMessageBox.information(self, "备选详细数据", text, QMessageBox.Yes)

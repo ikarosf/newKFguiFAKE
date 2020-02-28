@@ -107,8 +107,8 @@ def text_to_equipSet(text):
 def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting=None):
     # gearList = []
     # gearList.append(global_env.equipStorageDict["weapon"]["短杖 LV.500"])
-    myCard = copy.deepcopy(myCard)
     if setting:
+        myCard = copy.deepcopy(myCard)
         if setting[0]:
             myCard.attrSet.STR = 1
             myCard.attrSet.AGI = 1
@@ -121,6 +121,12 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
             myCard.skillSet.skill_2.data = 0
             myCard.skillSet.skill_3.data = 0
             myCard.skillSet.skill_4.data = 0
+        if setting[2]:
+            myCard.equipSet.weapon.equipType = 0
+            myCard.equipSet.glove.equipType = 0
+            myCard.equipSet.Armor.equipType = 0
+            myCard.equipSet.helmet.equipType = 0
+
     text = ""
     text += myCard.make_gu_text()
     text += "\n"

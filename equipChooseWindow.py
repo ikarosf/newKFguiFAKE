@@ -9,7 +9,7 @@
 ################################################################################
 
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-                            QRect, QSize, QUrl, Qt, SIGNAL,Signal)
+                            QRect, QSize, QUrl, Qt, SIGNAL, Signal)
 from PySide2 import QtGui
 from PySide2.QtWidgets import *
 import global_env
@@ -18,6 +18,7 @@ from SystemClass import EQUIPSet
 
 class Ui_equipChooseWindow(object):
     Signal_OneParameter = Signal(EQUIPSet)
+
     def setupUi(self, equipChooseWindow):
         if equipChooseWindow.objectName():
             equipChooseWindow.setObjectName(u"equipChooseWindow")
@@ -40,6 +41,11 @@ class Ui_equipChooseWindow(object):
         self.pushButton_4.setObjectName(u"pushButton_4")
         self.pushButton_4.clicked.connect(self.useEquip)
         self.gridLayout.addWidget(self.pushButton_4, 1, 3, 1, 1)
+
+        self.pushButton_5 = QPushButton(self.centralwidget)
+        self.pushButton_5.setObjectName(u"GEAR设置")
+        self.pushButton_5.clicked.connect(self.useGear)
+        self.gridLayout.addWidget(self.pushButton_5, 1, 3, 1, 1)
 
         self.pushButton = QPushButton(self.centralwidget)
         self.pushButton.setObjectName(u"pushButton")
@@ -92,6 +98,7 @@ class Ui_equipChooseWindow(object):
         self.pushButton.setText("刷新列表")
         self.pushButton_3.setText("删除选中")
         self.pushButton_2.setText("查看详细")
+        self.pushButton_5.setText("设为备用")
 
         self.flash()
 
@@ -188,9 +195,64 @@ class Ui_equipChooseWindow(object):
         self.Signal_OneParameter.emit(equipset)
         self.close()
 
+    def useGear(self):
+        gearList = []
+        for item in self.weaponlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
+            gearList.append(global_env.equipStorageDict["weapon"][item.text()])
+        for item in self.glovelistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
+            gearList.append(global_env.equipStorageDict["glove"][item.text()])
+        for item in self.ArmorlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
+            gearList.append(global_env.equipStorageDict["Armor"][item.text()])
+        for item in self.helmetlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
+            gearList.append(global_env.equipStorageDict["helmet"][item.text()])
+
+        # self.emit(SIGNAL("EquipSetChoose"), equipset)
+        self.Signal_OneParameter.emit(gearList)
+        self.close()
+
+    # def setChosen(self,GearList):
+    #     listWidget = None
+    #     for i in GearList:
+    #         if i.partsText == "weapon":
+    #             listWidget = self.weaponlistWidget
+    #         elif i.partsText == "glove":
+    #             listWidget = self.glovelistWidget
+    #         elif i.partsText == "Armor":
+    #             listWidget = self.ArmorlistWidget
+    #         elif i.partsText == "helmet":
+    #             listWidget = self.helmetlistWidget
+    #         else:
+    #             return
+    #         listWidget.findItems()
+
+
 
 class equipChooseWindow(Ui_equipChooseWindow, QMainWindow):
     def __init__(self, parent=None):
         super(equipChooseWindow, self).__init__(parent)
+
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.pushButton_5.hide()
+
+
+class GearSetWindow(Ui_equipChooseWindow, QMainWindow):
+    def __init__(self, parent=None, GearList=[]):
+        super(GearSetWindow, self).__init__(parent)
+        # self.setAcceptDrops(True)
+
+        self.setupUi(self)
+        self.pushButton_4.hide()
+        self.weaponlistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.glovelistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.ArmorlistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.helmetlistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+

@@ -19,6 +19,7 @@ import global_env
 from Qclass import npcHighGainComboBox, intLineEdit
 from SystemClass import all_npc
 from action_def import execCmdReturn
+from equipChooseWindow import GearSetWindow
 from mutliChooseDialog import mutliChooseWindow
 
 
@@ -27,6 +28,7 @@ class Ui_dailybattlewindow(object):
         super(Ui_dailybattlewindow, self).__init__(*args, **kwargs)
         self.npcFormList = None
         self.myCardForm = None
+        self.GearList = []
 
     def setupUi(self, dailybattlewindow):
         if dailybattlewindow.objectName():
@@ -108,6 +110,26 @@ class Ui_dailybattlewindow(object):
         self.battleStartButton.setText(u"开始测试")
         self.grid_HBoxLayout.addWidget(self.battleStartButton, 3)
 
+        self.grid_HBoxLayout2 = QHBoxLayout()
+        self.gridLayout_2.addLayout(self.grid_HBoxLayout2)
+
+        self.showGearButton = QPushButton(self)
+        self.showGearButton.setObjectName(u"查看Gear")
+        self.showGearButton.setText(u"查看备选装备")
+        self.showGearButton.clicked.connect(lambda: self.showGear())
+        self.grid_HBoxLayout2.addWidget(self.showGearButton, 1)
+
+        self.openGearWindowButton = QPushButton(self)
+        self.openGearWindowButton.setObjectName(u"设置Gear")
+        self.openGearWindowButton.setText(u"设置备选装备")
+        self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
+        self.grid_HBoxLayout2.addWidget(self.openGearWindowButton, 1)
+
+        self.QLabel = QLabel(self)
+        # self.openGearWindowButton.setObjectName(u"battlepushButton")
+        # self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
+        self.grid_HBoxLayout2.addWidget(self.QLabel, 2)
+
     def allAbleCheck(self):
         (result, message) = self.myCardForm.ableCheck()
         if not result:
@@ -134,7 +156,7 @@ class Ui_dailybattlewindow(object):
         if mcw:
             self.battleStart(text, setting)
 
-    def battleStart(self, cmd_text,setting=None):
+    def battleStart(self, cmd_text, setting=None):
         if not self.allAbleCheck():
             return
 
@@ -152,11 +174,12 @@ class Ui_dailybattlewindow(object):
     def make_full_gu_text(self, setting):
         newCard = self.myCardForm.makeMyCard()
         npcList = []
+        gearList = self.GearList
         for i in range(10):
             newNpc = self.npcFormList[i].makeNpcList()
             npcList += newNpc
 
-        text = action_def.make_full_gu_text(newCard, npcList,setting=setting)
+        text = action_def.make_full_gu_text(newCard, npcList, gearList=gearList, setting=setting)
         return text
 
     def allDifficultyChoose(self, index):
@@ -199,3 +222,19 @@ class Ui_dailybattlewindow(object):
     def open(self):
         global_env.mainWin.hide()
         self.show()
+
+    def openGearWindow(self):
+        ecw = GearSetWindow(self, self.GearList)
+        ecw.setWindowModality(Qt.ApplicationModal)
+        ecw.Signal_OneParameter.connect(self.GearSet)
+        ecw.open()
+
+    def GearSet(self, GearList):
+        self.GearList = GearList
+
+    def showGear(self):
+        text = ""
+        for i in self.GearList:
+            text += i.toString() + "\n"
+        text += " " * 100
+        QMessageBox.information(self, "备用详细数据", text, QMessageBox.Yes)
