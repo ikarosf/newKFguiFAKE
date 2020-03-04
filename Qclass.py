@@ -30,6 +30,12 @@ class skillComboBox(myComboBox):
         return all_skill["data"][self.currentIndex() - 1]
 
 
+class npcSkillComboBox(skillComboBox):
+    def __init__(self, parent=None):
+        super(npcSkillComboBox, self).__init__(parent)
+        self.addItem("随机技能")
+
+
 class skillSlotNum(myComboBox):
     def __init__(self, parent=None):
         super(skillSlotNum, self).__init__(parent)

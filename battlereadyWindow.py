@@ -15,6 +15,7 @@ from PySide2.QtWidgets import *
 
 import action_def
 import global_env
+from ansyrun import execCmdWorkerAnsy
 from equipChooseWindow import GearSetWindow
 from mutliChooseDialog import mutliChooseWindow
 
@@ -244,9 +245,9 @@ class Ui_battleReadyForm(object):
             return
         with open(file_path, "w") as f:
             f.write(gu_text)
-        mythread = action_def.execCmdWorker(parent=self, item=item)
-        mythread.my_signal.connect(action_def.after_calculate)
-        action_def.before_calculate()
+        mythread = execCmdWorkerAnsy(parent=self, item=item)
+        # mythread.my_signal.connect(action_def.after_calculate)
+        # action_def.before_calculate()
         mythread.start()
         # result, text = action_def.execCmdReturn(item, calculateMode)
         # if not result:

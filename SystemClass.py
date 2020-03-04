@@ -239,7 +239,10 @@ class SKILLSet:
         if self.skill_3.data != 0:
             text += "_"
             text += all_skill["data"][self.skill_3.data - 1]
-        if self.skill_4.data != 0:
+        if self.skill_4.data == 12:
+            text += "_"
+            text += "RAND"
+        elif self.skill_4.data != 0:
             text += "_"
             text += all_skill["data"][self.skill_4.data - 1]
         return text

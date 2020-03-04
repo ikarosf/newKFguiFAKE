@@ -13,7 +13,7 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
 from PySide2.QtWidgets import *
 
 import global_env
-from Qclass import skillComboBox, npcTypeComboBox, npcHighGainComboBox, intLineEdit, myComboBox
+from Qclass import skillComboBox, npcTypeComboBox, npcHighGainComboBox, intLineEdit, myComboBox, npcSkillComboBox
 from SystemClass import skill, SKILLSet
 from npcClass import npc
 
@@ -67,7 +67,7 @@ class Ui_npcForm(object):
         self.skillComboBox2.setObjectName(u"skillComboBox2")
         self.gridLayout.addWidget(self.skillComboBox2, 4, 1, 1, 2)
 
-        self.skillComboBox3 = skillComboBox(Form)
+        self.skillComboBox3 = npcSkillComboBox(Form)
         self.skillComboBox3.setObjectName(u"skillComboBox3")
         self.gridLayout.addWidget(self.skillComboBox3, 5, 1, 1, 2)
 

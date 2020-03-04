@@ -16,9 +16,9 @@ from PySide2.QtWidgets import *
 
 import action_def
 import global_env
-from Qclass import npcHighGainComboBox, intLineEdit
+from Qclass import npcHighGainComboBox
 from SystemClass import all_npc
-from action_def import execCmdReturn
+from ansyrun import execCmdWorkerAnsy
 from equipChooseWindow import GearSetWindow
 from mutliChooseDialog import mutliChooseWindow
 
@@ -165,9 +165,7 @@ class Ui_dailybattlewindow(object):
         with open(file_path, "w") as f:
             f.write(text)
 
-        mythread = action_def.execCmdWorker(parent=self, item=cmd_text)
-        mythread.my_signal.connect(action_def.after_calculate)
-        action_def.before_calculate()
+        mythread = execCmdWorkerAnsy(parent=self, item=cmd_text)
         mythread.start()
         self.close()
 

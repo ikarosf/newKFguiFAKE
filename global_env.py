@@ -14,6 +14,7 @@ npcList = None
 equipStorageDict = None
 threads = 4
 tests = 1000
+verbose = 1
 
 run_args = "bnpc"
 saveData = None
@@ -82,7 +83,7 @@ def equipStorageDictINIT():
 
 
 def initSaveData():
-    global saveData, myCardList, enemyCardList, npcList, threads, tests, equipStorageDict
+    global saveData, myCardList, enemyCardList, npcList, threads, tests, verbose, equipStorageDict
     saveData = {
         'setting': {"exeDir": None},
         'data': {
@@ -91,7 +92,8 @@ def initSaveData():
             "npcList": NPCListClass({"新npc": None}),
             "equipStorageDict": equipStorageDictINIT(),
             "threads": threads,
-            "tests": tests
+            "tests": tests,
+            "verbose": verbose
         }
     }
     myCardList = saveData["data"]["myCardList"]
@@ -107,6 +109,7 @@ def storeSaveData():
     saveData["data"]["equipStorageDict"] = equipStorageDict
     saveData["data"]["threads"] = threads
     saveData["data"]["tests"] = tests
+    saveData["data"]["verbose"] = verbose
 
     file_path = os.path.join(".", "ggzgui")
     with open(file_path, 'wb') as f:
@@ -115,7 +118,7 @@ def storeSaveData():
 
 
 def readSaveData():
-    global saveData, myCardList, enemyCardList, npcList, equipStorageDict, threads, tests
+    global saveData, myCardList, enemyCardList, npcList, equipStorageDict, threads, tests, verbose
     file_path = os.path.join(".", "ggzgui")
     try:
         with open(file_path, 'rb') as f:
@@ -131,6 +134,8 @@ def readSaveData():
                 threads = saveData["data"]["threads"]
             if saveData["data"].__contains__("tests"):
                 tests = saveData["data"]["tests"]
+            if saveData["data"].__contains__("verbose"):
+                verbose = saveData["data"]["verbose"]
 
     except FileNotFoundError:
         return False

@@ -92,12 +92,14 @@ class Ui_MainWindow(object):
         self.set_tests_action = self.set_menu.addAction('设置回数')
         self.set_tests_action.triggered.connect(self.set_tests)
 
+        self.set_verbose_action = self.set_menu.addAction('设置显示进度')
+        self.set_verbose_action.triggered.connect(self.set_verbose)
+
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-
         QMetaObject.connectSlotsByName(MainWindow)
 
     # setupUi
@@ -128,7 +130,7 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.2\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.3\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def enterTestMode(self):
@@ -147,6 +149,13 @@ class Ui_MainWindow(object):
         if not (ok and text):
             return
         global_env.tests = text
+
+    def set_verbose(self):
+        yes = QMessageBox.question(self, "请选择", "是否显示计算进度", QMessageBox.Yes | QMessageBox.No)
+        if yes == QMessageBox.Yes:
+            global_env.verbose = 1
+        elif yes == QMessageBox.No:
+            global_env.verbose = 0
 
     def disable_all_button(self):
         self.myCardButton.setEnabled(False)
