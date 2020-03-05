@@ -108,7 +108,8 @@ class execCmdWorkerAnsy(QThread):
     def __init__(self, parent=None, item=None):
         super().__init__(parent)
         self.item = item
-        global_env.mainWin.textBrowser.setText("计算中")
+        global_env.mainWin.textBrowser.setText("")
+        global_env.mainWin.statusbar.showMessage("计算中。。。")
         global_env.mainWin.disable_all_button()
         self.append_signal.connect(append_signal_do)
         self.status_signal.connect(status_signal_do)
@@ -133,7 +134,7 @@ def status_signal_do(text):
 
 
 def append_signal_do(text):
-    global_env.mainWin.textBrowser.append(text)
+    global_env.mainWin.textBrowser.insertPlainText(text)
 
 
 def end_signal_do():
