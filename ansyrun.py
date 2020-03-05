@@ -56,19 +56,19 @@ def unbuffered(proc, stream='stdout'):
     stream = getattr(proc, stream)
     with contextlib.closing(stream):
         while True:
-            out = []
-            last = stream.read(1)
+            # out = []
+            last = stream.readline()
             # Don't loop forever
             if last == '' and proc.poll() is not None:
                 break
-            while last not in newlines:
-                # Don't loop forever
-                if last == '' and proc.poll() is not None:
-                    break
-                out.append(last)
-                last = stream.read(1)
-            out = ''.join(out)
-            yield out
+            # while last not in newlines:
+            #     # Don't loop forever
+            #     if last == '' and proc.poll() is not None:
+            #         break
+            #     out.append(last)
+            #     last = stream.read(1)
+            # out = ''.join(out)
+            yield last
 
 
 def example(cmd):
@@ -120,6 +120,8 @@ class execCmdWorkerAnsy(QThread):
                 continue
             elif text_in_list(line, progressing):
                 self.status_signal.emit(line)
+            elif line.strip() == "":
+                pass
             else:
                 self.append_signal.emit(line)
 
