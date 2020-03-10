@@ -229,9 +229,9 @@ class Ui_battleReadyForm(object):
         if len(self.mycardlistWidget.selectedItems()) == 0:
             QMessageBox.critical(self, "错误", "未选择我方卡片", QMessageBox.Yes)
             return
-        if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
-            QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
-            return
+        # if len(self.enemycardlistView.selectedItems()) == 0 and len(self.npclistView.selectedItems()) == 0:
+        #     QMessageBox.critical(self, "错误", "未选择敌人", QMessageBox.Yes)
+        #     return
 
         file_path = os.path.join(".", "newkf.in")
         # file_path = os.path.join("E:\\tools\\newkf", "newkf.in")

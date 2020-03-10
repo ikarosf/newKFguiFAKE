@@ -13,7 +13,7 @@ from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
 from PySide2 import QtGui
 from PySide2.QtWidgets import *
 import global_env
-from SystemClass import EQUIPSet
+from SystemClass import EQUIPSet, all_equip, weaponEquip, gloveEquip, ArmorEquip, helmetEquip
 
 
 class Ui_equipChooseWindow(object):
@@ -32,50 +32,61 @@ class Ui_equipChooseWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
+
+        self.gridLayout2 = QGridLayout(self.centralwidget)
+        self.gridLayout.addLayout(self.gridLayout2, 0, 0, 1, 1)
+        self.gridLayout3 = QGridLayout(self.centralwidget)
+        self.gridLayout.addLayout(self.gridLayout3, 1, 0, 1, 1)
+
         self.weaponlistWidget = QListWidget(self.centralwidget)
         self.weaponlistWidget.setObjectName(u"weaponlistWidget")
         self.weaponlistWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.gridLayout.addWidget(self.weaponlistWidget, 0, 0, 1, 1)
-
-        self.pushButton_4 = QPushButton(self.centralwidget)
-        self.pushButton_4.setObjectName(u"pushButton_4")
-        self.pushButton_4.clicked.connect(self.useEquip)
-        self.gridLayout.addWidget(self.pushButton_4, 1, 3, 1, 1)
-
-        self.pushButton_5 = QPushButton(self.centralwidget)
-        self.pushButton_5.setObjectName(u"GEAR设置")
-        self.pushButton_5.clicked.connect(self.useGear)
-        self.gridLayout.addWidget(self.pushButton_5, 1, 3, 1, 1)
-
-        self.pushButton = QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.clicked.connect(self.flash)
-        self.gridLayout.addWidget(self.pushButton, 1, 0, 1, 1)
+        self.gridLayout2.addWidget(self.weaponlistWidget, 0, 0, 1, 1)
 
         self.glovelistWidget = QListWidget(self.centralwidget)
         self.glovelistWidget.setObjectName(u"glovelistWidget")
         self.glovelistWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.gridLayout.addWidget(self.glovelistWidget, 0, 1, 1, 1)
-
-        self.pushButton_3 = QPushButton(self.centralwidget)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.clicked.connect(self.delEquip)
-        self.gridLayout.addWidget(self.pushButton_3, 1, 2, 1, 1)
+        self.gridLayout2.addWidget(self.glovelistWidget, 0, 1, 1, 1)
 
         self.helmetlistWidget = QListWidget(self.centralwidget)
         self.helmetlistWidget.setObjectName(u"helmetlistWidget")
         self.helmetlistWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.gridLayout.addWidget(self.helmetlistWidget, 0, 3, 1, 1)
-
-        self.pushButton_2 = QPushButton(self.centralwidget)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.clicked.connect(self.detailCat)
-        self.gridLayout.addWidget(self.pushButton_2, 1, 1, 1, 1)
+        self.gridLayout2.addWidget(self.helmetlistWidget, 0, 3, 1, 1)
 
         self.ArmorlistWidget = QListWidget(self.centralwidget)
         self.ArmorlistWidget.setObjectName(u"ArmorlistWidget")
         self.ArmorlistWidget.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.gridLayout.addWidget(self.ArmorlistWidget, 0, 2, 1, 1)
+        self.gridLayout2.addWidget(self.ArmorlistWidget, 0, 2, 1, 1)
+
+        self.pushButton_4 = QPushButton(self.centralwidget)
+        self.pushButton_4.setObjectName(u"pushButton_4")
+        self.pushButton_4.clicked.connect(self.useEquip)
+        self.gridLayout3.addWidget(self.pushButton_4, 0, 4, 1, 1)
+
+        self.pushButton_5 = QPushButton(self.centralwidget)
+        self.pushButton_5.setObjectName(u"GEAR设置")
+        self.pushButton_5.clicked.connect(self.useGear)
+        self.gridLayout3.addWidget(self.pushButton_5, 0, 4, 1, 1)
+
+        self.pushButton = QPushButton(self.centralwidget)
+        self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.clicked.connect(self.flash)
+        self.gridLayout3.addWidget(self.pushButton, 0, 0, 1, 1)
+
+        self.pushButton_3 = QPushButton(self.centralwidget)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.pushButton_3.clicked.connect(self.delEquip)
+        self.gridLayout3.addWidget(self.pushButton_3, 0, 3, 1, 1)
+
+        self.pushButton_2 = QPushButton(self.centralwidget)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.clicked.connect(self.detailCat)
+        self.gridLayout3.addWidget(self.pushButton_2, 0, 1, 1, 1)
+
+        self.importEquipFromTextButton = QPushButton(self.centralwidget)
+        self.importEquipFromTextButton.setObjectName(u"")
+        self.importEquipFromTextButton.clicked.connect(self.importEquipFromText)
+        self.gridLayout3.addWidget(self.importEquipFromTextButton, 0, 2, 1, 1)
 
         equipChooseWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(equipChooseWindow)
@@ -99,6 +110,7 @@ class Ui_equipChooseWindow(object):
         self.pushButton_3.setText("删除选中")
         self.pushButton_2.setText("查看详细")
         self.pushButton_5.setText("设为备用")
+        self.importEquipFromTextButton.setText("导入装备")
 
         self.flash()
 
@@ -218,6 +230,71 @@ class Ui_equipChooseWindow(object):
         self.Signal_OneParameter.emit(gearList)
         self.close()
 
+    def importEquipFromText(self):
+        text, ok = QInputDialog.getText(self, '导入单件装备', '咕咕镇计算器格式')
+        if not (ok and text):
+            return
+        data = text.split()
+        data = [data[i:i + 7] for i in range(0, len(data), 7)]
+        fequip = data[0]
+        equipClass = None
+        for i in range(len(all_equip['data']["weapon"])):
+            if fequip[0] == all_equip['data']["weapon"][i]:
+                equiptype = i + 1
+                equipClass = weaponEquip
+        if equipClass is None:
+            for i in range(len(all_equip['data']["glove"])):
+                if fequip[0] == all_equip['data']["glove"][i]:
+                    equiptype = i + 1
+                    equipClass = gloveEquip
+        if equipClass is None:
+            for i in range(len(all_equip['data']["Armor"])):
+                if fequip[0] == all_equip['data']["Armor"][i]:
+                    equiptype = i + 1
+                    equipClass = ArmorEquip
+        if equipClass is None:
+            for i in range(len(all_equip['data']["Armor"])):
+                if fequip[0] == all_equip['data']["Armor"][i]:
+                    equiptype = i + 1
+                    equipClass = helmetEquip
+        if equipClass is None:
+            return
+
+        level = fequip[1]
+        attr1 = fequip[2]
+        attr2 = fequip[3]
+        attr3 = fequip[4]
+        attr4 = fequip[5]
+        mystical = int(fequip[6])
+        equip = equipClass(level, attr1, attr2, attr3, attr4, mystical, equiptype)
+
+        equipParts = equip.partsText
+
+        result0, result1 = self.preEquipToStorage(equip)
+        if not result0:
+            QMessageBox.critical(self, "错误", result1, QMessageBox.Yes)
+            return
+        text, ok = QInputDialog.getText(self, '设置装备显示名', '输入名称：', text=equip.toSimpleString())
+        if ok and text:
+            if text in global_env.equipStorageDict[equipParts].keys():
+                QMessageBox.critical(self, "错误", "保存失败，与已有配置重名", QMessageBox.Yes)
+                return
+            global_env.equipStorageDict[equipParts][text] = equip
+            self.flash()
+
+    def preEquipToStorage(self, equip):
+        if equip.equipType == 0:
+            return False, "无类型装备无法添加!"
+        if not global_env.test_mode:
+            if int(equip.level) > 500:
+                return False, "装备等级不能大于500!"
+            if int(equip.attr0) < 50 or int(equip.attr1) < 50 or int(equip.attr2) < 50 or int(equip.attr3) < 50:
+                return False, "装备属性不能小于50!"
+            if int(equip.attr0) > 150 or int(equip.attr1) > 150 or int(equip.attr2) > 150 or int(equip.attr3) > 150:
+                return False, "装备属性不能大于150!"
+
+        return True, 'yes'
+
     # def setChosen(self,GearList):
     #     listWidget = None
     #     for i in GearList:
@@ -232,7 +309,6 @@ class Ui_equipChooseWindow(object):
     #         else:
     #             return
     #         listWidget.findItems()
-
 
 
 class equipChooseWindow(Ui_equipChooseWindow, QMainWindow):
@@ -255,4 +331,3 @@ class GearSetWindow(Ui_equipChooseWindow, QMainWindow):
         self.glovelistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
         self.ArmorlistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
         self.helmetlistWidget.setSelectionMode(QAbstractItemView.MultiSelection)
-

@@ -467,12 +467,13 @@ class Ui_cardForm(object):
         self.pushButton_4 = QPushButton(Form)
         self.pushButton_4.clicked.connect(self.text_equipSet)
         self.pushButton_4.setObjectName(u"快捷写入装备")
-        self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
+        # self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
+        self.pushButton_4.hide()
 
         self.pushButton_5 = QPushButton(Form)
         self.pushButton_5.clicked.connect(self.percentage_attr)
         self.pushButton_5.setObjectName(u"比例分配属性")
-        self.gridLayout_8.addWidget(self.pushButton_5, 1, 1, 1, 1)
+        self.gridLayout_8.addWidget(self.pushButton_5, 1, 0, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
 

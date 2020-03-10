@@ -55,7 +55,7 @@ class Ui_MainWindow(object):
 
         self.pushButton_6 = QPushButton(self.centralwidget)
         self.pushButton_6.setObjectName(u"pushButton_6")
-
+        self.pushButton_6.clicked.connect(self.helpWindowOpen)
         self.gridLayout.addWidget(self.pushButton_6, 1, 2, 1, 1)
 
         self.pushButton_7 = QPushButton(self.centralwidget)
@@ -111,7 +111,7 @@ class Ui_MainWindow(object):
         self.npcSetButton.setText("NPC")
         self.pushButton_4.setText("模拟战斗")
         self.pushButton_5.setText("设置newkf.exe路径")
-        self.pushButton_6.setText("PushButton")
+        self.pushButton_6.setText("HELP")
         self.pushButton_7.setText("日常战斗")
         self.pushButton_8.setText("TESTMODE")
         self.pushButton_9.setText("ABOUT")
@@ -130,8 +130,15 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.3\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.4\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
+
+    def helpWindowOpen(self):
+        QMessageBox.information(self, "帮助", """
+然而并没有什么可以帮你的
+出现问题请确认计算器和界面都是最新版且下载完整
+最好分别放在各自的文件夹内然后再设置newkf.exe路径
+                """)
 
     def enterTestMode(self):
         yes = QMessageBox.warning(self, "进入测试模式？", "测试模式暂时唯一的功能是保存卡片时不再检测数值合法性", QMessageBox.Yes | QMessageBox.No)

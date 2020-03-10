@@ -15,6 +15,8 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QFont,
                            QRadialGradient)
 from PySide2.QtWidgets import *
 
+from ALDialogWindow import Ui_ALWindow
+
 
 class Ui_mutliChooseDialog(object):
     def __init__(self, *args, **kwargs):
@@ -27,7 +29,7 @@ class Ui_mutliChooseDialog(object):
     def setupUi(self, Dialog):
         if Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(434, 116)
+        Dialog.resize(400, 130)
         self.gridLayout_2 = QGridLayout(Dialog)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout = QGridLayout()
@@ -45,38 +47,57 @@ class Ui_mutliChooseDialog(object):
 
         self.pushButton_3 = QPushButton(Dialog)
         self.pushButton_3.setObjectName(u"pushButton_3")
+        self.pushButton_3.setStyleSheet("color:red;")
         self.pushButton_3.clicked.connect(lambda: self.return_value("anpc", True))
         self.gridLayout.addWidget(self.pushButton_3, 0, 2, 1, 1)
 
         self.pushButton_4 = QPushButton(Dialog)
         self.pushButton_4.setObjectName(u"pushButton_4")
+        self.pushButton_4.setStyleSheet("color:red;")
         self.pushButton_4.clicked.connect(lambda: self.return_value("apc", True))
         self.gridLayout.addWidget(self.pushButton_4, 0, 3, 1, 1)
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 4)
 
+        self.pushButton_5 = QPushButton(Dialog)
+        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.pushButton_5.setStyleSheet("color:red;")
+        self.pushButton_5.clicked.connect(lambda: self.openALDialog())
+        self.gridLayout_2.addWidget(self.pushButton_5, 1, 0, 1, 2)
+
         self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName(u"gridLayout3")
         self.gridLayout_2.addLayout(self.gridLayout_3, 1, 2, 1, 2)
 
+        self.gridLayout_4 = QGridLayout()
+        self.gridLayout_4.setObjectName(u"gridLayout3")
+        self.gridLayout_2.addLayout(self.gridLayout_4, 2, 3, 1, 2)
+
         self.checkbox = QCheckBox(Dialog)
         self.checkbox.setChecked(True)
+        self.checkbox.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox, 0, 1, 1, 1)
 
         self.checkbox2 = QCheckBox(Dialog)
         self.checkbox2.setChecked(True)
+        self.checkbox2.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox2, 0, 2, 1, 1)
 
         self.checkbox3 = QCheckBox(Dialog)
         self.checkbox3.setChecked(True)
+        self.checkbox3.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox3, 0, 3, 1, 1)
+
+        self.tiplabel = QLabel(Dialog)
+        self.tiplabel.setStyleSheet("color:red;")
+        self.gridLayout_4.addWidget(self.tiplabel, 0, 1, 1, 1)
 
         self.buttonBox = QDialogButtonBox(Dialog)
         self.buttonBox.setObjectName(u"buttonBox")
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel)
 
-        self.gridLayout_2.addWidget(self.buttonBox, 2, 0, 1, 4)
+        self.gridLayout_2.addWidget(self.buttonBox, 3, 1, 1, 4)
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept)
@@ -92,9 +113,11 @@ class Ui_mutliChooseDialog(object):
         self.pushButton_2.setText("bpc")
         self.pushButton_3.setText("anpc")
         self.pushButton_4.setText("apc")
+        self.pushButton_5.setText("al")
         self.checkbox.setText("属性自动置1")
         self.checkbox2.setText("技能自动清空")
         self.checkbox3.setText("装备自动清空")
+        self.tiplabel.setText("选择装备清空请先设置备选装备")
 
     # retranslateUi
     def return_value(self, text, aMode):
@@ -107,6 +130,14 @@ class Ui_mutliChooseDialog(object):
             if self.checkbox3.isChecked():
                 self.equipClear = True
         self.accept()
+
+    def openALDialog(self):
+        mcw, startLevel, difficultyList = Ui_ALWindow.launch(self)
+        if mcw:
+            text = "startlevel " + str(startLevel) + "\nal "
+            for item in difficultyList:
+                text += str(item) + " "
+            self.return_value(text, True)
 
 
 class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):

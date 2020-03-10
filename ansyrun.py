@@ -1,5 +1,6 @@
 import contextlib
 import os
+import re
 import subprocess
 
 from PySide2.QtCore import QThread, Signal
@@ -49,6 +50,9 @@ export_start = [
     "verbose [",
     "q : qui",
     "<enemy> := ",
+    "Start level",
+    "al <Power>",
+    "startlevel <n",
 ]
 
 
@@ -124,6 +128,7 @@ class execCmdWorkerAnsy(QThread):
             elif line.strip() == "":
                 pass
             else:
+                line = re.sub(r"NONE", "不选择装备", line)
                 self.append_signal.emit(line)
 
         self.end_signal.emit()
