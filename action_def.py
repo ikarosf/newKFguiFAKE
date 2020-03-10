@@ -1,8 +1,10 @@
+import os
 import re
 import copy
 
 import global_env
 from SystemClass import all_equip, weaponEquip, gloveEquip, ArmorEquip, helmetEquip, EQUIPSet
+
 
 # def execCmdReturn(userarg="bnpc\nbpc"):
 #     userarg = bytes(userarg, encoding="utf8")
@@ -127,3 +129,7 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
     text += "TESTS " + str(global_env.tests) + "\n"
     text += "VERBOSE " + str(global_env.verbose) + "\n"
     return text
+
+
+def stopNewFKEXE():
+    os.system("taskkill /f /im newkf.exe")

@@ -50,6 +50,11 @@ class MyWindow(Ui_MainWindow, QMainWindow):
         # else:
         #     event.accept()
 
+    def resizeEvent(self, event):
+        if not self.mpShadeWindow.isHidden():
+            self.mpShadeWindow.setGeometry(0, 0, self.width(), self.height())
+        event.accept()
+
 
 class myCardWindow(Ui_mycardForm, QFrame):
     def __init__(self, parent=None):
@@ -92,6 +97,3 @@ class dailyBattleWindow(Ui_dailybattlewindow, QMainWindow):
 
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
-
-
-

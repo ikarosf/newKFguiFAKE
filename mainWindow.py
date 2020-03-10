@@ -99,6 +99,15 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        self.mpShadeWindow = QWidget(MainWindow)
+        self.mpShadeWindow.setStyleSheet("QWidget{background-color:rgba(0,0,0,0.3);}")
+        self.mpShadeWindow.hide()
+
+        self.mpgridLayout = QHBoxLayout(self.mpShadeWindow)
+        self.mpButton = QPushButton(self.mpShadeWindow)
+        self.mpButton.clicked.connect(self.mpBreak)
+        self.mpgridLayout.addWidget(self.mpButton, 0.1, Qt.AlignCenter)
+
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
 
@@ -115,6 +124,7 @@ class Ui_MainWindow(object):
         self.pushButton_7.setText("日常战斗")
         self.pushButton_8.setText("TESTMODE")
         self.pushButton_9.setText("ABOUT")
+        self.mpButton.setText("中止计算")
 
     # retranslateUi
 
@@ -165,23 +175,19 @@ class Ui_MainWindow(object):
             global_env.verbose = 0
 
     def disable_all_button(self):
-        self.myCardButton.setEnabled(False)
-        self.enemyCardButton.setEnabled(False)
-        self.npcSetButton.setEnabled(False)
-        self.pushButton_4.setEnabled(False)
-        self.pushButton_5.setEnabled(False)
-        self.pushButton_6.setEnabled(False)
-        self.pushButton_7.setEnabled(False)
-        self.pushButton_8.setEnabled(False)
-        self.pushButton_9.setEnabled(False)
+        self.mpShadeWindowShow()
 
     def enable_all_button(self):
-        self.myCardButton.setEnabled(True)
-        self.enemyCardButton.setEnabled(True)
-        self.npcSetButton.setEnabled(True)
-        self.pushButton_4.setEnabled(True)
-        self.pushButton_5.setEnabled(True)
-        self.pushButton_6.setEnabled(True)
-        self.pushButton_7.setEnabled(True)
-        self.pushButton_8.setEnabled(True)
-        self.pushButton_9.setEnabled(True)
+        self.mpShadeWindowHide()
+
+    def mpShadeWindowShow(self):
+        self.mpShadeWindow.setGeometry(0, 0, self.width(), self.height())
+        self.mpShadeWindow.show()
+
+    def mpShadeWindowHide(self):
+        self.mpShadeWindow.hide()
+
+    def mpBreak(self):
+        action_def.stopNewFKEXE()
+        self.textBrowser.insertPlainText("计算中止！")
+

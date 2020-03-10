@@ -253,8 +253,8 @@ class Ui_equipChooseWindow(object):
                     equiptype = i + 1
                     equipClass = ArmorEquip
         if equipClass is None:
-            for i in range(len(all_equip['data']["Armor"])):
-                if fequip[0] == all_equip['data']["Armor"][i]:
+            for i in range(len(all_equip['data']["helmet"])):
+                if fequip[0] == all_equip['data']["helmet"][i]:
                     equiptype = i + 1
                     equipClass = helmetEquip
         if equipClass is None:

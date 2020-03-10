@@ -77,10 +77,11 @@ def unbuffered(proc, stream='stdout'):
 
 def example(cmd):
     exe = global_env.saveData["setting"]["exeDir"]
-    if exe == None:
+    if exe is None:
         exe = os.path.join(".", "newkf.exe")
     if not os.path.isfile(exe):
-        return "找不到newkf.exe"
+        yield "找不到newkf.exe"
+        return
     # cmd = "anpc\r\nanpc\r\nq\r\n"
     proc = subprocess.Popen(
         exe,
