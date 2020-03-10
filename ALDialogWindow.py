@@ -17,6 +17,12 @@ from PySide2.QtWidgets import *
 
 from Qclass import npcHighGainComboBox, bigSpinBox
 
+startLevel = 50
+MUDifficulty = 3
+ZHUDifficulty = 3
+DENGDifficulty = 3
+SHOUDifficulty = 3
+
 
 class Ui_ALDialog(object):
     def __init__(self, *args, **kwargs):
@@ -40,7 +46,6 @@ class Ui_ALDialog(object):
 
         self.MUcomboBox = npcHighGainComboBox(ALDialog)
         self.MUcomboBox.addItem("不挑战")
-        self.MUcomboBox.setCurrentIndex(3)
         self.MUcomboBox.setObjectName(u"MUcomboBox")
 
         self.gridLayout.addWidget(self.MUcomboBox, 0, 1, 1, 2)
@@ -52,7 +57,6 @@ class Ui_ALDialog(object):
 
         self.ZHUcomboBox = npcHighGainComboBox(ALDialog)
         self.ZHUcomboBox.addItem("不挑战")
-        self.ZHUcomboBox.setCurrentIndex(3)
         self.ZHUcomboBox.setObjectName(u"ZHUcomboBox")
 
         self.gridLayout.addWidget(self.ZHUcomboBox, 0, 4, 1, 1)
@@ -64,7 +68,7 @@ class Ui_ALDialog(object):
 
         self.DENGcomboBox = npcHighGainComboBox(ALDialog)
         self.DENGcomboBox.addItem("不挑战")
-        self.DENGcomboBox.setCurrentIndex(3)
+
         self.DENGcomboBox.setObjectName(u"DENGcomboBox")
 
         self.gridLayout.addWidget(self.DENGcomboBox, 1, 1, 1, 2)
@@ -76,7 +80,7 @@ class Ui_ALDialog(object):
 
         self.SHOUcomboBox = npcHighGainComboBox(ALDialog)
         self.SHOUcomboBox.addItem("不挑战")
-        self.SHOUcomboBox.setCurrentIndex(3)
+
         self.SHOUcomboBox.setObjectName(u"SHOUcomboBox")
 
         self.gridLayout.addWidget(self.SHOUcomboBox, 1, 4, 1, 1)
@@ -87,7 +91,7 @@ class Ui_ALDialog(object):
         self.gridLayout.addWidget(self.startlevellabel, 2, 0, 1, 1)
 
         self.startlevelspinBox = bigSpinBox(ALDialog, min=1, max=200)
-        self.startlevelspinBox.setValue(50)
+
         self.startlevelspinBox.setObjectName(u"startlevelspinBox")
 
         self.gridLayout.addWidget(self.startlevelspinBox, 2, 1, 1, 1)
@@ -116,14 +120,13 @@ class Ui_ALDialog(object):
         self.startlevellabel.setText(QCoreApplication.translate("ALDialog", u"起始层", None))
 
 
-
-
 class Ui_ALWindow(Ui_ALDialog, QDialog):
     def __init__(self, parent=None):
         super(Ui_ALWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
         self.setWindowModality(Qt.ApplicationModal)
+        self.valueInit()
 
     @staticmethod
     def launch(parent):
@@ -135,21 +138,35 @@ class Ui_ALWindow(Ui_ALDialog, QDialog):
 
     # retranslateUi
     def accept(self):
-        self.startLevel = self.startlevelspinBox.getValue()
-        self.MUDifficulty = self.MUcomboBox.currentIndex()
+        global startLevel, MUDifficulty, ZHUDifficulty, DENGDifficulty, SHOUDifficulty
+        startLevel = self.startlevelspinBox.getValue()
+        MUDifficulty = self.MUcomboBox.currentIndex()
+        ZHUDifficulty = self.ZHUcomboBox.currentIndex()
+        DENGDifficulty = self.DENGcomboBox.currentIndex()
+        SHOUDifficulty = self.SHOUcomboBox.currentIndex()
+
+        self.startLevel = startLevel
+        self.MUDifficulty = MUDifficulty
         if self.MUDifficulty == 4:
             self.MUDifficulty = -1
 
-        self.ZHUDifficulty = self.ZHUcomboBox.currentIndex()
+        self.ZHUDifficulty = ZHUDifficulty
         if self.ZHUDifficulty == 4:
             self.ZHUDifficulty = -1
 
-        self.DENGDifficulty = self.DENGcomboBox.currentIndex()
+        self.DENGDifficulty = DENGDifficulty
         if self.DENGDifficulty == 4:
             self.DENGDifficulty = -1
 
-        self.SHOUDifficulty = self.SHOUcomboBox.currentIndex()
+        self.SHOUDifficulty = SHOUDifficulty
         if self.SHOUDifficulty == 4:
             self.SHOUDifficulty = -1
 
         QDialog.accept(self)
+
+    def valueInit(self):
+        self.MUcomboBox.setCurrentIndex(MUDifficulty)
+        self.ZHUcomboBox.setCurrentIndex(ZHUDifficulty)
+        self.DENGcomboBox.setCurrentIndex(DENGDifficulty)
+        self.SHOUcomboBox.setCurrentIndex(SHOUDifficulty)
+        self.startlevelspinBox.setValue(startLevel)

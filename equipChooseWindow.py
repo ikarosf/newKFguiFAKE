@@ -133,24 +133,32 @@ class Ui_equipChooseWindow(object):
 
     def delEquip(self):
         for item in self.weaponlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
             yes = QMessageBox.question(self, "提问对话框", "确认删除[" + item.text() + "]？", QMessageBox.Yes | QMessageBox.No)
             if yes == QMessageBox.Yes:
                 del (global_env.equipStorageDict["weapon"][item.text()])
                 self.weaponlistWidget.takeItem(self.weaponlistWidget.row(item))
 
         for item in self.glovelistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
             yes = QMessageBox.question(self, "提问对话框", "确认删除[" + item.text() + "]？", QMessageBox.Yes | QMessageBox.No)
             if yes == QMessageBox.Yes:
                 del (global_env.equipStorageDict["glove"][item.text()])
                 self.glovelistWidget.takeItem(self.glovelistWidget.row(item))
 
         for item in self.ArmorlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
             yes = QMessageBox.question(self, "提问对话框", "确认删除[" + item.text() + "]？", QMessageBox.Yes | QMessageBox.No)
             if yes == QMessageBox.Yes:
                 del (global_env.equipStorageDict["Armor"][item.text()])
                 self.ArmorlistWidget.takeItem(self.ArmorlistWidget.row(item))
 
         for item in self.helmetlistWidget.selectedItems():
+            if item.text() == "不改变":
+                continue
             yes = QMessageBox.question(self, "提问对话框", "确认删除[" + item.text() + "]？", QMessageBox.Yes | QMessageBox.No)
             if yes == QMessageBox.Yes:
                 del (global_env.equipStorageDict["helmet"][item.text()])
@@ -231,56 +239,56 @@ class Ui_equipChooseWindow(object):
         self.close()
 
     def importEquipFromText(self):
-        text, ok = QInputDialog.getText(self, '导入单件装备', '咕咕镇计算器格式')
+        text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
         if not (ok and text):
             return
         data = text.split()
         data = [data[i:i + 7] for i in range(0, len(data), 7)]
-        fequip = data[0]
-        equipClass = None
-        for i in range(len(all_equip['data']["weapon"])):
-            if fequip[0] == all_equip['data']["weapon"][i]:
-                equiptype = i + 1
-                equipClass = weaponEquip
-        if equipClass is None:
-            for i in range(len(all_equip['data']["glove"])):
-                if fequip[0] == all_equip['data']["glove"][i]:
+        for fequip in data:
+            equipClass = None
+            for i in range(len(all_equip['data']["weapon"])):
+                if fequip[0] == all_equip['data']["weapon"][i]:
                     equiptype = i + 1
-                    equipClass = gloveEquip
-        if equipClass is None:
-            for i in range(len(all_equip['data']["Armor"])):
-                if fequip[0] == all_equip['data']["Armor"][i]:
-                    equiptype = i + 1
-                    equipClass = ArmorEquip
-        if equipClass is None:
-            for i in range(len(all_equip['data']["helmet"])):
-                if fequip[0] == all_equip['data']["helmet"][i]:
-                    equiptype = i + 1
-                    equipClass = helmetEquip
-        if equipClass is None:
-            return
+                    equipClass = weaponEquip
+            if equipClass is None:
+                for i in range(len(all_equip['data']["glove"])):
+                    if fequip[0] == all_equip['data']["glove"][i]:
+                        equiptype = i + 1
+                        equipClass = gloveEquip
+            if equipClass is None:
+                for i in range(len(all_equip['data']["Armor"])):
+                    if fequip[0] == all_equip['data']["Armor"][i]:
+                        equiptype = i + 1
+                        equipClass = ArmorEquip
+            if equipClass is None:
+                for i in range(len(all_equip['data']["helmet"])):
+                    if fequip[0] == all_equip['data']["helmet"][i]:
+                        equiptype = i + 1
+                        equipClass = helmetEquip
+            if equipClass is None:
+                continue
 
-        level = fequip[1]
-        attr1 = fequip[2]
-        attr2 = fequip[3]
-        attr3 = fequip[4]
-        attr4 = fequip[5]
-        mystical = int(fequip[6])
-        equip = equipClass(level, attr1, attr2, attr3, attr4, mystical, equiptype)
+            level = fequip[1]
+            attr1 = fequip[2]
+            attr2 = fequip[3]
+            attr3 = fequip[4]
+            attr4 = fequip[5]
+            mystical = int(fequip[6])
+            equip = equipClass(level, attr1, attr2, attr3, attr4, mystical, equiptype)
 
-        equipParts = equip.partsText
+            equipParts = equip.partsText
 
-        result0, result1 = self.preEquipToStorage(equip)
-        if not result0:
-            QMessageBox.critical(self, "错误", result1, QMessageBox.Yes)
-            return
-        text, ok = QInputDialog.getText(self, '设置装备显示名', '输入名称：', text=equip.toSimpleString())
-        if ok and text:
-            if text in global_env.equipStorageDict[equipParts].keys():
-                QMessageBox.critical(self, "错误", "保存失败，与已有配置重名", QMessageBox.Yes)
-                return
-            global_env.equipStorageDict[equipParts][text] = equip
-            self.flash()
+            result0, result1 = self.preEquipToStorage(equip)
+            if not result0:
+                QMessageBox.critical(self, "错误", result1, QMessageBox.Yes)
+                continue
+            text, ok = QInputDialog.getText(self, '设置装备显示名', '输入名称：', text=equip.toSimpleString())
+            if ok and text:
+                if text in global_env.equipStorageDict[equipParts].keys():
+                    QMessageBox.critical(self, "错误", "保存失败，与已有配置重名", QMessageBox.Yes)
+                    continue
+                global_env.equipStorageDict[equipParts][text] = equip
+                self.flash()
 
     def preEquipToStorage(self, equip):
         if equip.equipType == 0:

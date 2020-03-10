@@ -17,6 +17,10 @@ from PySide2.QtWidgets import *
 
 from ALDialogWindow import Ui_ALWindow
 
+attrClear = True
+skillClear = True
+equipClear = True
+
 
 class Ui_mutliChooseDialog(object):
     def __init__(self, *args, **kwargs):
@@ -74,17 +78,17 @@ class Ui_mutliChooseDialog(object):
         self.gridLayout_2.addLayout(self.gridLayout_4, 2, 3, 1, 2)
 
         self.checkbox = QCheckBox(Dialog)
-        self.checkbox.setChecked(True)
+
         self.checkbox.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox, 0, 1, 1, 1)
 
         self.checkbox2 = QCheckBox(Dialog)
-        self.checkbox2.setChecked(True)
+
         self.checkbox2.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox2, 0, 2, 1, 1)
 
         self.checkbox3 = QCheckBox(Dialog)
-        self.checkbox3.setChecked(True)
+
         self.checkbox3.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox3, 0, 3, 1, 1)
 
@@ -146,6 +150,7 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         # self.setAcceptDrops(True)
         self.setupUi(self)
         self.setWindowModality(Qt.ApplicationModal)
+        self.valueInit()
 
     @staticmethod
     def launch(parent):
@@ -164,3 +169,15 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         if r:
             return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear)
         return False, None, None
+
+    def accept(self):
+        global attrClear, skillClear, equipClear
+        attrClear = self.checkbox.isChecked()
+        skillClear = self.checkbox2.isChecked()
+        equipClear = self.checkbox3.isChecked()
+        QDialog.accept(self)
+
+    def valueInit(self):
+        self.checkbox.setChecked(attrClear)
+        self.checkbox2.setChecked(skillClear)
+        self.checkbox3.setChecked(equipClear)
