@@ -464,16 +464,21 @@ class Ui_cardForm(object):
         self.pushButton_3.setObjectName(u"删除卡片")
         self.gridLayout_8.addWidget(self.pushButton_3, 0, 2, 1, 1)
 
-        self.pushButton_4 = QPushButton(Form)
-        self.pushButton_4.clicked.connect(self.text_equipSet)
-        self.pushButton_4.setObjectName(u"快捷写入装备")
+        # self.pushButton_4 = QPushButton(Form)
+        # self.pushButton_4.clicked.connect(self.text_equipSet)
+        # self.pushButton_4.setObjectName(u"快捷写入装备")
         # self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
-        self.pushButton_4.hide()
+        # self.pushButton_4.hide()
+
+        self.pushButton_4 = QPushButton(Form)
+        self.pushButton_4.clicked.connect(self.accuracy_attr)
+        self.pushButton_4.setObjectName(u"分配属性点")
+        self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
 
         self.pushButton_5 = QPushButton(Form)
         self.pushButton_5.clicked.connect(self.percentage_attr)
         self.pushButton_5.setObjectName(u"比例分配属性")
-        self.gridLayout_8.addWidget(self.pushButton_5, 1, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.pushButton_5, 1, 1, 1, 1)
 
         self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
 
@@ -524,7 +529,7 @@ class Ui_cardForm(object):
         self.pushButton.setText("存储卡片")
         self.pushButton_2.setText("覆盖当前卡片")
         self.pushButton_3.setText("删除当前卡片")
-        self.pushButton_4.setText("装备导入")
+        self.pushButton_4.setText("分配属性点")
         self.pushButton_5.setText("百分比分配属性")
         self.equipStorageButton.setText("装备仓库")
         self.weaponToStorage.setText("加入仓库")
@@ -1001,7 +1006,7 @@ class Ui_cardForm(object):
         self.remainder_point.setText(str(remainder_point))
 
     def percentage_attr(self):
-        text, ok = QInputDialog.getText(self, '分配属性', '输入6个整数，空格分割')
+        text, ok = QInputDialog.getText(self, '百分比分配属性', '输入6个整数，空格分割')
         if ok and text:
             percentage_text = text.split()
             attr_list = []
@@ -1009,6 +1014,21 @@ class Ui_cardForm(object):
             point = level * 3
             for i in range(6):
                 attr_list.append(int(point * int(percentage_text[i]) / 100 + 1))
+            self.STRspinBox.setValue(attr_list[0])
+            self.AGIspinBox.setValue(attr_list[1])
+            self.INTspinBox.setValue(attr_list[2])
+            self.VITspinBox.setValue(attr_list[3])
+            self.SPRspinBox.setValue(attr_list[4])
+            self.RESspinBox.setValue(attr_list[5])
+            self.set_remainder_point()
+
+    def accuracy_attr(self):
+        text, ok = QInputDialog.getText(self, '直接分配属性', '输入6个整数，空格分割')
+        if ok and text:
+            accuracy_text = text.split()
+            attr_list = []
+            for i in range(6):
+                attr_list.append(int(accuracy_text[i]))
             self.STRspinBox.setValue(attr_list[0])
             self.AGIspinBox.setValue(attr_list[1])
             self.INTspinBox.setValue(attr_list[2])

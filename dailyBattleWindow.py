@@ -12,6 +12,7 @@ import re
 
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt)
+from PySide2.QtGui import QCursor
 from PySide2.QtWidgets import *
 
 import action_def
@@ -130,6 +131,10 @@ class Ui_dailybattlewindow(object):
         # self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
         self.grid_HBoxLayout2.addWidget(self.QLabel, 2)
 
+        self.rightMenuCreat()
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.rightMenuShow)
+
     def allAbleCheck(self):
         (result, message) = self.myCardForm.ableCheck()
         if not result:
@@ -236,3 +241,14 @@ class Ui_dailybattlewindow(object):
             text += i.toString() + "\n"
         text += " " * 100
         QMessageBox.information(self, "备用详细数据", text, QMessageBox.Yes)
+
+    def rightMenuShow(self):
+        self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
+        self.contextMenu.show()
+
+    def rightMenuCreat(self):
+        self.contextMenu = QMenu(self)
+
+        self.allImport = self.contextMenu.addAction(u'设置测试回数')
+
+        self.allImport.triggered.connect(global_env.mainWin.set_tests)
