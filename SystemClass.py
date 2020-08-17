@@ -36,16 +36,16 @@ all_npc = {
 
 all_equip = {
     "name": {
-        "weapon": ["剑", "短弓", "短杖", "荣誉之刃"],
+        "weapon": ["剑", "短弓", "短杖", "荣誉之刃","刺杀弓"],
         "glove": ["手套", "手环"],
         "Armor": ["铁甲", "皮甲", "布甲", "灵光袍", "荆棘重甲"],
-        "helmet": ["头巾"],
+        "helmet": ["头巾","发饰"],
     },
     "data": {
-        "weapon": ["SWORD", "BOW", "STAFF", "BLADE"],
+        "weapon": ["SWORD", "BOW", "STAFF", "BLADE","ASSBOW"],
         "glove": ["GLOVES", "BRACELET"],
         "Armor": ["PLATE", "LEATHER", "CLOTH", "CLOAK", "THORN"],
-        "helmet": ["SCARF"],
+        "helmet": ["SCARF","TIARA"],
     }
 }
 

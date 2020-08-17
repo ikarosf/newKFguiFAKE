@@ -75,7 +75,6 @@ class Ui_MainWindow(object):
 
         self.textBrowser = QTextBrowser(self.centralwidget)
         self.textBrowser.setObjectName(u"textBrowser")
-
         self.gridLayout.addWidget(self.textBrowser, 3, 0, 1, 3)
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -140,7 +139,7 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.4\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.5\nlink: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def helpWindowOpen(self):

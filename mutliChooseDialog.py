@@ -136,9 +136,9 @@ class Ui_mutliChooseDialog(object):
         self.accept()
 
     def openALDialog(self):
-        mcw, startLevel, difficultyList = Ui_ALWindow.launch(self)
+        mcw, cmd, startLevel, difficultyList = Ui_ALWindow.launch(self)
         if mcw:
-            text = "startlevel " + str(startLevel) + "\nal "
+            text = "startlevel " + str(startLevel) + "\n" + cmd + " "
             for item in difficultyList:
                 text += str(item) + " "
             self.return_value(text, True)

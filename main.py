@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import signal
 import sys
 import os
 
@@ -49,4 +49,5 @@ if __name__ == '__main__':
     mainWin.setupUi(mainWin)
 
     mainWin.show()
+
     sys.exit(app.exec_())

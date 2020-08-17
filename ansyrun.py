@@ -53,6 +53,7 @@ export_start = [
     "Start level",
     "al <Power>",
     "startlevel <n",
+    "alc <Powe"
 ]
 
 
@@ -94,6 +95,7 @@ def example(cmd):
     )
     proc.stdin.write(cmd + "\r\nq\r\n")
     proc.stdin.flush()
+
     for line in unbuffered(proc):
         yield line
 
@@ -140,7 +142,9 @@ def status_signal_do(text):
 
 
 def append_signal_do(text):
-    global_env.mainWin.textBrowser.insertPlainText(text)
+    textBrowser = global_env.mainWin.textBrowser
+    textBrowser.insertPlainText(text)
+    textBrowser.moveCursor(textBrowser.textCursor().End)
 
 
 def end_signal_do():

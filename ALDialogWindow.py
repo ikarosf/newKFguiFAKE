@@ -32,6 +32,7 @@ class Ui_ALDialog(object):
         self.ZHUDifficulty = 3
         self.DENGDifficulty = 3
         self.SHOUDifficulty = 3
+        self.cmd = "al"
 
     def setupUi(self, ALDialog):
         if ALDialog.objectName():
@@ -96,16 +97,20 @@ class Ui_ALDialog(object):
 
         self.gridLayout.addWidget(self.startlevelspinBox, 2, 1, 1, 1)
 
-        self.buttonBox = QDialogButtonBox(ALDialog)
-        self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Ok)
+        self.buttonBox = QGridLayout(ALDialog)
+        self.gridLayout.addLayout(self.buttonBox, 2, 2, 1, 3)
 
-        self.gridLayout.addWidget(self.buttonBox, 2, 2, 1, 3)
+        self.ALButton = QPushButton(ALDialog)
+        self.ALButton.setObjectName(u"ALButton")
+        self.ALButton.clicked.connect(lambda: self.return_value("al"))
+        self.buttonBox.addWidget(self.ALButton, 0, 0, 1, 1)
+
+        self.ALCButton = QPushButton(ALDialog)
+        self.ALCButton.setObjectName(u"ALCButton")
+        self.ALCButton.clicked.connect(lambda: self.return_value("alc"))
+        self.buttonBox.addWidget(self.ALCButton, 0, 1, 1, 1)
 
         self.retranslateUi(ALDialog)
-        self.buttonBox.accepted.connect(ALDialog.accept)
-        self.buttonBox.rejected.connect(ALDialog.reject)
 
         QMetaObject.connectSlotsByName(ALDialog)
 
@@ -118,26 +123,10 @@ class Ui_ALDialog(object):
         self.DENGlabel.setText(QCoreApplication.translate("ALDialog", u"魔灯", None))
         self.SHOUlabel.setText(QCoreApplication.translate("ALDialog", u"食铁兽", None))
         self.startlevellabel.setText(QCoreApplication.translate("ALDialog", u"起始层", None))
+        self.ALButton.setText("AL")
+        self.ALCButton.setText("ALC")
 
-
-class Ui_ALWindow(Ui_ALDialog, QDialog):
-    def __init__(self, parent=None):
-        super(Ui_ALWindow, self).__init__(parent)
-        # self.setAcceptDrops(True)
-        self.setupUi(self)
-        self.setWindowModality(Qt.ApplicationModal)
-        self.valueInit()
-
-    @staticmethod
-    def launch(parent):
-        dlg = Ui_ALWindow(parent)
-        r = dlg.exec_()
-        if r:
-            return True, dlg.startLevel, (dlg.MUDifficulty, dlg.ZHUDifficulty, dlg.DENGDifficulty, dlg.SHOUDifficulty)
-        return False, None, None
-
-    # retranslateUi
-    def accept(self):
+    def return_value(self, cmd):
         global startLevel, MUDifficulty, ZHUDifficulty, DENGDifficulty, SHOUDifficulty
         startLevel = self.startlevelspinBox.getValue()
         MUDifficulty = self.MUcomboBox.currentIndex()
@@ -162,7 +151,26 @@ class Ui_ALWindow(Ui_ALDialog, QDialog):
         if self.SHOUDifficulty == 4:
             self.SHOUDifficulty = -1
 
-        QDialog.accept(self)
+        self.cmd = cmd
+        self.accept()
+
+
+class Ui_ALWindow(Ui_ALDialog, QDialog):
+    def __init__(self, parent=None):
+        super(Ui_ALWindow, self).__init__(parent)
+        # self.setAcceptDrops(True)
+        self.setupUi(self)
+        self.setWindowModality(Qt.ApplicationModal)
+        self.valueInit()
+
+    @staticmethod
+    def launch(parent):
+        dlg = Ui_ALWindow(parent)
+        r = dlg.exec_()
+        if r:
+            return True, dlg.cmd, dlg.startLevel, (
+            dlg.MUDifficulty, dlg.ZHUDifficulty, dlg.DENGDifficulty, dlg.SHOUDifficulty)
+        return False, None, None, None
 
     def valueInit(self):
         self.MUcomboBox.setCurrentIndex(MUDifficulty)

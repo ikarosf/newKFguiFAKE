@@ -1163,6 +1163,10 @@ class Ui_cardForm(object):
             text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
             if not (ok and text):
                 return
+        if text.startswith("武器"):
+            mySet = text_to_equipSet(text)
+            self.equipSetImport(mySet)
+            return
         data = text.split()
         data = [data[i:i + 7] for i in range(0, len(data), 7)]
         for i in range(len(all_equip['data']["weapon"])):
