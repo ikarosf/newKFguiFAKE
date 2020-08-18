@@ -1022,20 +1022,23 @@ class Ui_cardForm(object):
             self.RESspinBox.setValue(attr_list[5])
             self.set_remainder_point()
 
-    def accuracy_attr(self):
-        text, ok = QInputDialog.getText(self, '直接分配属性', '输入6个整数，空格分割')
-        if ok and text:
-            accuracy_text = text.split()
-            attr_list = []
-            for i in range(6):
-                attr_list.append(int(accuracy_text[i]))
-            self.STRspinBox.setValue(attr_list[0])
-            self.AGIspinBox.setValue(attr_list[1])
-            self.INTspinBox.setValue(attr_list[2])
-            self.VITspinBox.setValue(attr_list[3])
-            self.SPRspinBox.setValue(attr_list[4])
-            self.RESspinBox.setValue(attr_list[5])
-            self.set_remainder_point()
+    def accuracy_attr(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getText(self, '直接分配属性', '输入6个整数，空格分割')
+            if not (ok and text):
+                return
+
+        accuracy_text = text.split()
+        attr_list = []
+        for i in range(6):
+            attr_list.append(int(accuracy_text[i]))
+        self.STRspinBox.setValue(attr_list[0])
+        self.AGIspinBox.setValue(attr_list[1])
+        self.INTspinBox.setValue(attr_list[2])
+        self.VITspinBox.setValue(attr_list[3])
+        self.SPRspinBox.setValue(attr_list[4])
+        self.RESspinBox.setValue(attr_list[5])
+        self.set_remainder_point()
 
     def openEquipChooseWindow(self):
         ecw = equipChooseWindow(self)
@@ -1113,10 +1116,12 @@ class Ui_cardForm(object):
         self.skillImport = self.contextMenu.addAction(u'技能导入')
         self.equipImport = self.contextMenu.addAction(u'装备导入')
         self.allImport = self.contextMenu.addAction(u'全部导入')
+        self.caclImport = self.contextMenu.addAction(u'结果导入')
         self.cardImport.triggered.connect(lambda: self.cardImportFun())
         self.skillImport.triggered.connect(lambda: self.skillImportFun())
         self.equipImport.triggered.connect(lambda: self.equipImportFun())
         self.allImport.triggered.connect(lambda: self.allImportFun())
+        self.caclImport.triggered.connect(lambda: self.caclImportFun())
 
     def rightMenuShow(self):
         self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
@@ -1222,3 +1227,25 @@ class Ui_cardForm(object):
         self.cardImportFun(text[1] + "\n" + text[2])
         self.equipImportFun(text[3] + "\n" + text[4] + "\n" + text[5] + "\n" + text[6])
         self.skillImportFun(text[7])
+
+    def caclImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入、加点、装备、技能', '咕咕镇计算器结果')
+            if not (ok and text):
+                return
+
+        text = re.sub(r"\n\n", "\n", text)
+        text = text.split("\n")
+        myindex = 0
+        for num in range(len(text)):
+            if re.match(r"\d+ \d+ \d+ \d+ \d+ \d+", text[num]):
+                myindex = num
+                break
+            if num+1 == len(text):
+                QMessageBox.critical(self, "错误", "格式错误", QMessageBox.Yes)
+                return
+
+        self.accuracy_attr(text[myindex])
+        self.equipImportFun(
+            text[myindex + 1] + "\n" + text[myindex + 2] + "\n" + text[myindex + 3] + "\n" + text[myindex + 4])
+        self.skillImportFun(text[myindex + 5])
