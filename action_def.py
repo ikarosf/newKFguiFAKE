@@ -128,6 +128,8 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
     text += "THREADS " + str(global_env.threads) + "\n"
     text += "TESTS " + str(global_env.tests) + "\n"
     text += "VERBOSE " + str(global_env.verbose) + "\n"
+    if setting and setting[3]:
+        text += "DEFENDER 1\n"
     return text
 
 

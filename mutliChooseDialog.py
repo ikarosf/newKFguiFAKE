@@ -20,6 +20,7 @@ from ALDialogWindow import Ui_ALWindow
 attrClear = True
 skillClear = True
 equipClear = True
+DEFENDERmode = False
 
 
 class Ui_mutliChooseDialog(object):
@@ -29,6 +30,7 @@ class Ui_mutliChooseDialog(object):
         self.attrClear = False
         self.skillClear = False
         self.equipClear = False
+        self.DEFENDERmode = False
 
     def setupUi(self, Dialog):
         if Dialog.objectName():
@@ -78,19 +80,19 @@ class Ui_mutliChooseDialog(object):
         self.gridLayout_2.addLayout(self.gridLayout_4, 2, 3, 1, 2)
 
         self.checkbox = QCheckBox(Dialog)
-
         self.checkbox.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox, 0, 1, 1, 1)
 
         self.checkbox2 = QCheckBox(Dialog)
-
         self.checkbox2.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox2, 0, 2, 1, 1)
 
         self.checkbox3 = QCheckBox(Dialog)
-
         self.checkbox3.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox3, 0, 3, 1, 1)
+
+        self.checkbox4 = QCheckBox(Dialog)
+        self.gridLayout_3.addWidget(self.checkbox4, 0, 4, 1, 1)
 
         self.tiplabel = QLabel(Dialog)
         self.tiplabel.setStyleSheet("color:red;")
@@ -121,6 +123,7 @@ class Ui_mutliChooseDialog(object):
         self.checkbox.setText("属性自动置1")
         self.checkbox2.setText("技能自动清空")
         self.checkbox3.setText("装备自动清空")
+        self.checkbox4.setText("防守模式")
         self.tiplabel.setText("选择装备清空请先设置备选装备")
 
     # retranslateUi
@@ -133,6 +136,8 @@ class Ui_mutliChooseDialog(object):
                 self.skillClear = True
             if self.checkbox3.isChecked():
                 self.equipClear = True
+        if self.checkbox4.isChecked():
+            self.DEFENDERmode = True
         self.accept()
 
     def openALDialog(self):
@@ -157,7 +162,7 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg = mutliChooseWindow(parent)
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear)
+            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
         return False, None, None
 
     @staticmethod
@@ -167,17 +172,19 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg.pushButton_4.hide()
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear)
+            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
         return False, None, None
 
     def accept(self):
-        global attrClear, skillClear, equipClear
+        global attrClear, skillClear, equipClear,DEFENDERmode
         attrClear = self.checkbox.isChecked()
         skillClear = self.checkbox2.isChecked()
         equipClear = self.checkbox3.isChecked()
+        DEFENDERmode = self.checkbox4.isChecked()
         QDialog.accept(self)
 
     def valueInit(self):
         self.checkbox.setChecked(attrClear)
         self.checkbox2.setChecked(skillClear)
         self.checkbox3.setChecked(equipClear)
+        self.checkbox4.setChecked(DEFENDERmode)

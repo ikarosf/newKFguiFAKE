@@ -471,7 +471,7 @@ class Ui_cardForm(object):
         # self.pushButton_4.hide()
 
         self.pushButton_4 = QPushButton(Form)
-        self.pushButton_4.clicked.connect(self.accuracy_attr)
+        self.pushButton_4.clicked.connect(lambda: self.accuracy_attr())
         self.pushButton_4.setObjectName(u"分配属性点")
         self.gridLayout_8.addWidget(self.pushButton_4, 1, 0, 1, 1)
 
