@@ -63,9 +63,13 @@ class Ui_MainWindow(object):
         self.pushButton_7.clicked.connect(global_env.dailyBattleWindow.open)
         self.gridLayout.addWidget(self.pushButton_7, 2, 0, 1, 1)
 
+        # self.pushButton_8 = QPushButton(self.centralwidget)
+        # self.pushButton_8.setObjectName(u"pushButton_8")
+        # self.pushButton_8.clicked.connect(self.enterTestMode)
+        # self.gridLayout.addWidget(self.pushButton_8, 2, 1, 1, 1)
         self.pushButton_8 = QPushButton(self.centralwidget)
-        self.pushButton_8.setObjectName(u"pushButton_8")
-        self.pushButton_8.clicked.connect(self.enterTestMode)
+        self.pushButton_8.setObjectName(u"PVP")
+        self.pushButton_8.clicked.connect(global_env.pvpWindow.open)
         self.gridLayout.addWidget(self.pushButton_8, 2, 1, 1, 1)
 
         self.pushButton_9 = QPushButton(self.centralwidget)
@@ -121,7 +125,7 @@ class Ui_MainWindow(object):
         self.pushButton_5.setText("设置newkf.exe路径")
         self.pushButton_6.setText("HELP")
         self.pushButton_7.setText("日常战斗")
-        self.pushButton_8.setText("TESTMODE")
+        self.pushButton_8.setText("PVP战斗")
         self.pushButton_9.setText("ABOUT")
         self.mpButton.setText("中止计算")
 
@@ -139,7 +143,10 @@ class Ui_MainWindow(object):
         global_env.saveData["setting"]["exeDir"] = fileName_choose
 
     def aboutWindowOpen(self):
-        QMessageBox.about(self, "关于", """autor: ikarosf @kf \ntitle: 咕咕镇计算器图形化界面(伪（伪）)\nvision: 1.62\nlink: 
+        QMessageBox.about(self, "关于", """autor: ikarosf @kf 
+        title: 咕咕镇计算器图形化界面(伪（伪）)
+        vision: 1.63
+        link: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
     def helpWindowOpen(self):

@@ -166,10 +166,22 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         return False, None, None
 
     @staticmethod
-    def simpleLaunch(parent):
+    def npcLaunch(parent):
         dlg = mutliChooseWindow(parent)
         dlg.pushButton_2.hide()
         dlg.pushButton_4.hide()
+        dlg.checkbox4.hide()
+        r = dlg.exec_()
+        if r:
+            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
+        return False, None, None
+
+    @staticmethod
+    def pcLaunch(parent):
+        dlg = mutliChooseWindow(parent)
+        dlg.pushButton.hide()
+        dlg.pushButton_3.hide()
+        dlg.pushButton_5.hide()
         r = dlg.exec_()
         if r:
             return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)

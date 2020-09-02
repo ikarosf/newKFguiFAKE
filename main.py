@@ -46,6 +46,9 @@ if __name__ == '__main__':
     global_env.dailyBattleWindow = dailyBattleWindow
     # dailyBattleWindow.setWindowModality(Qt.ApplicationModal)
 
+    pvpWindow = PVPWindow()
+    global_env.pvpWindow = pvpWindow
+
     mainWin.setupUi(mainWin)
 
     mainWin.show()

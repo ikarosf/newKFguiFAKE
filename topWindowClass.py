@@ -2,6 +2,7 @@ from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox, QFrame, QD
 # from PySide2.QtCore import Qt
 from PySide2 import QtGui
 
+from PVPWindow import Ui_pvpwindow
 from battlereadyWindow import Ui_battleReadyForm
 from dailyBattleWindow import Ui_dailybattlewindow
 from mainWindow import Ui_MainWindow
@@ -94,6 +95,17 @@ class dailyBattleWindow(Ui_dailybattlewindow, QMainWindow):
         # self.setAcceptDrops(True)
         self.myCardForm = myCardWindow(self)
         self.npcFormList = [npcWindow(self) for i in range(10)]
+
+        self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))
+
+
+class PVPWindow(Ui_pvpwindow, QMainWindow):
+    def __init__(self, parent=None):
+        super(PVPWindow, self).__init__(parent)
+        # self.setAcceptDrops(True)
+        self.myCardForm = myCardWindow(self)
+        self.enemyCardForm = enemyCardWindow(self)
 
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon(':/bitbug_favicon.ico'))

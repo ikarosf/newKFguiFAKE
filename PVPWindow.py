@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-################################################################################
-## Form generated from reading UI file 'dailyBattleWindow.ui'
-##
-## Created by: Qt User Interface Compiler version 5.14.0
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
 import os
 import re
 
@@ -17,25 +8,23 @@ from PySide2.QtWidgets import *
 
 import action_def
 import global_env
-from Qclass import npcHighGainComboBox
-from SystemClass import all_npc
 from ansyrun import execCmdWorkerAnsy
 from equipChooseWindow import GearSetWindow
 from mutliChooseDialog import mutliChooseWindow
 
 
-class Ui_dailybattlewindow(object):
+class Ui_pvpwindow(object):
     def __init__(self, *args, **kwargs):
-        super(Ui_dailybattlewindow, self).__init__(*args, **kwargs)
-        self.npcFormList = None
+        super(Ui_pvpwindow, self).__init__(*args, **kwargs)
         self.myCardForm = None
+        self.enemyCardForm = None
         self.GearList = []
 
-    def setupUi(self, dailybattlewindow):
-        if dailybattlewindow.objectName():
-            dailybattlewindow.setObjectName(u"dailybattlewindow")
-        dailybattlewindow.resize(800, 600)
-        self.centralwidget = QWidget(dailybattlewindow)
+    def setupUi(self, pvpwindow):
+        if pvpwindow.objectName():
+            pvpwindow.setObjectName(u"pvpwindow")
+        pvpwindow.resize(1100, 600)
+        self.centralwidget = QWidget(pvpwindow)
         self.centralwidget.setObjectName(u"centralwidget")
 
         self.gridLayout_4 = QGridLayout(self.centralwidget)
@@ -43,63 +32,73 @@ class Ui_dailybattlewindow(object):
 
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
+        self.myCardForm.setMaximumWidth(575)
+        self.gridLayout.addWidget(self.myCardForm)
         self.gridLayout_4.addLayout(self.gridLayout, 0, 0, 1, 1)
 
-        self.gridLayout.addWidget(self.myCardForm, 0, 0, 1, 1)
-
-        self.gridLayout_2 = QVBoxLayout()
+        self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.addWidget(self.enemyCardForm)
         self.gridLayout_4.addLayout(self.gridLayout_2, 0, 1, 1, 1)
 
-        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3 = QVBoxLayout()
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_4.addLayout(self.gridLayout_3, 1, 0, 1, 2)
 
-        dailybattlewindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(dailybattlewindow)
+        pvpwindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(pvpwindow)
         self.menubar.setObjectName(u"menubar")
         self.menubar.setGeometry(QRect(0, 0, 800, 22))
-        dailybattlewindow.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(dailybattlewindow)
+        pvpwindow.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(pvpwindow)
         self.statusbar.setObjectName(u"statusbar")
-        dailybattlewindow.setStatusBar(self.statusbar)
+        pvpwindow.setStatusBar(self.statusbar)
 
-        self.myCardFormSet()
-        self.npcFormSet()
-        self.retranslateUi(dailybattlewindow)
-        QMetaObject.connectSlotsByName(dailybattlewindow)
+        self.CardFormSet()
+        # self.npcFormSet()
+        self.buttonFormSet()
+        self.retranslateUi(pvpwindow)
+        QMetaObject.connectSlotsByName(pvpwindow)
 
     # setupUi
 
-    def retranslateUi(self, dailybattlewindow):
-        dailybattlewindow.setWindowTitle("日常战斗")
+    def retranslateUi(self, pvpwindow):
+        pvpwindow.setWindowTitle("日常战斗")
 
     # retranslateUi
 
-    def npcFormSet(self):
-        for i in range(10):
-            self.gridLayout_2.addWidget(self.npcFormList[i])
-            self.npcFormList[i].changeToLine()
-
+    def buttonFormSet(self):
         self.grid_HBoxLayout = QHBoxLayout()
-        self.gridLayout_2.addLayout(self.grid_HBoxLayout)
+        self.gridLayout_3.addLayout(self.grid_HBoxLayout)
 
-        self.npcImportButton = QPushButton(self)
-        self.npcImportButton.clicked.connect(self.npcImport)
-        self.npcImportButton.setText(u"导入NPC")
-        self.grid_HBoxLayout.addWidget(self.npcImportButton, 3)
+        # self.npcImportButton = QPushButton(self)
+        # self.npcImportButton.clicked.connect(self.npcImport)
+        # self.npcImportButton.setText(u"导入NPC")
+        # self.grid_HBoxLayout.addWidget(self.npcImportButton, 3)
 
         # self.allDifficultyButton = QPushButton(self)
         # self.allDifficultyButton.clicked.connect(self.allDifficultyChoose)
         # self.allDifficultyButton.setText(u"选择全部难度")
         # self.gridLayout_2_1.addWidget(self.allDifficultyButton)
-        self.label = QLabel("难度:")
-        self.label.setAlignment(Qt.AlignRight | Qt.AlignCenter)
-        self.combobox = npcHighGainComboBox(self)
-        self.combobox.addItem("全部强度")
-        self.combobox.currentIndexChanged.connect(lambda: self.allDifficultyChoose(self.combobox.currentIndex()))
-        self.grid_HBoxLayout.addWidget(self.label, 1)
-        self.grid_HBoxLayout.addWidget(self.combobox, 2)
+        # self.label = QLabel("难度:")
+        # self.label.setAlignment(Qt.AlignRight | Qt.AlignCenter)
+        # self.combobox = npcHighGainComboBox(self)
+        # self.combobox.addItem("全部强度")
+        # self.combobox.currentIndexChanged.connect(lambda: self.allDifficultyChoose(self.combobox.currentIndex()))
+        # self.grid_HBoxLayout.addWidget(self.label, 1)
+        # self.grid_HBoxLayout.addWidget(self.combobox, 2)
+
+        self.showGearButton = QPushButton(self)
+        self.showGearButton.setObjectName(u"查看Gear")
+        self.showGearButton.setText(u"查看备选装备")
+        self.showGearButton.clicked.connect(lambda: self.showGear())
+        self.grid_HBoxLayout.addWidget(self.showGearButton, 1)
+
+        self.openGearWindowButton = QPushButton(self)
+        self.openGearWindowButton.setObjectName(u"设置Gear")
+        self.openGearWindowButton.setText(u"设置备选装备")
+        self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
+        self.grid_HBoxLayout.addWidget(self.openGearWindowButton, 1)
 
         self.freebattlepushButton = QPushButton(self)
         self.freebattlepushButton.clicked.connect(self.freeBattleStart)
@@ -111,25 +110,10 @@ class Ui_dailybattlewindow(object):
         self.battleStartButton.setText(u"开始测试")
         self.grid_HBoxLayout.addWidget(self.battleStartButton, 3)
 
-        self.grid_HBoxLayout2 = QHBoxLayout()
-        self.gridLayout_2.addLayout(self.grid_HBoxLayout2)
-
-        self.showGearButton = QPushButton(self)
-        self.showGearButton.setObjectName(u"查看Gear")
-        self.showGearButton.setText(u"查看备选装备")
-        self.showGearButton.clicked.connect(lambda: self.showGear())
-        self.grid_HBoxLayout2.addWidget(self.showGearButton, 1)
-
-        self.openGearWindowButton = QPushButton(self)
-        self.openGearWindowButton.setObjectName(u"设置Gear")
-        self.openGearWindowButton.setText(u"设置备选装备")
-        self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
-        self.grid_HBoxLayout2.addWidget(self.openGearWindowButton, 1)
-
-        self.QLabel = QLabel(self)
+        # self.QLabel = QLabel(self)
         # self.openGearWindowButton.setObjectName(u"battlepushButton")
         # self.openGearWindowButton.clicked.connect(lambda: self.openGearWindow())
-        self.grid_HBoxLayout2.addWidget(self.QLabel, 2)
+        # self.grid_HBoxLayout2.addWidget(self.QLabel, 2)
 
         self.rightMenuCreat()
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -138,13 +122,12 @@ class Ui_dailybattlewindow(object):
     def allAbleCheck(self):
         (result, message) = self.myCardForm.ableCheck()
         if not result:
-            QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
+            QMessageBox.critical(self, "我方卡片设置错误", message, QMessageBox.Yes)
             return False
-        for i in range(10):
-            (result, message) = self.npcFormList[i].ableCheck()
-            if not result:
-                QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
-                return False
+        (result, message) = self.enemyCardForm.ableCheck()
+        if not result:
+            QMessageBox.critical(self, "敌方卡片错误", message, QMessageBox.Yes)
+            return False
         return True
 
     def freeBattleStart(self):
@@ -157,7 +140,7 @@ class Ui_dailybattlewindow(object):
         self.battleStart(cmd_text)
 
     def runTestWindow(self):
-        mcw, text, setting = mutliChooseWindow.npcLaunch(self)
+        mcw, text, setting = mutliChooseWindow.pcLaunch(self)
         if mcw:
             self.battleStart(text, setting)
 
@@ -176,35 +159,19 @@ class Ui_dailybattlewindow(object):
 
     def make_full_gu_text(self, setting):
         newCard = self.myCardForm.makeMyCard()
+        enemyCard = self.enemyCardForm.makeMyCard()
+        enemyCardList = [enemyCard]
         npcList = []
         gearList = self.GearList
-        for i in range(10):
-            newNpc = self.npcFormList[i].makeNpcList()
-            npcList += newNpc
 
-        text = action_def.make_full_gu_text(newCard, npcList, gearList=gearList, setting=setting)
+        text = action_def.make_full_gu_text(newCard, npcList, enemyCardList, gearList=gearList, setting=setting)
         return text
 
     def allDifficultyChoose(self, index):
         for i in range(10):
             self.npcFormList[i].comboBox_4.setCurrentIndex(index)
 
-    def npcImport(self):
-        text, ok = QInputDialog.getMultiLineText(self, '导入全部npc', '如“Lv60 铁皮木人”：')
-        if not (ok and text):
-            return
-        npcList = re.findall(r'Lv(\d+) ([\u4E00-\u9FA5]+)', text)
-        print(npcList)
-        for i in range(len(npcList)):
-            thisType = npcList[i][1]
-            thisLv = npcList[i][0]
-            for j in range(len(all_npc["name"])):
-                if all_npc["name"][j] in thisType:
-                    self.npcFormList[i].comboBox.setCurrentIndex(j)
-                    self.npcFormList[i].lineEdit.setText(thisLv)
-                    break
-
-    def myCardFormSet(self):
+    def CardFormSet(self):
         # self.myCardForm.pushButton.hide()
         # self.myCardForm.pushButton_2.hide()
         # self.myCardForm.pushButton_3.hide()
@@ -217,6 +184,22 @@ class Ui_dailybattlewindow(object):
         self.cardListUpdateButton.clicked.connect(self.myCardForm.myCardListUpdate)
         self.myCardForm.gridLayout_8.addWidget(self.cardListUpdateButton, 2, 0, 1, 1)
         self.cardListUpdateButton.setText("更新卡片列表")
+
+        self.enemyCardForm.weaponToStorage.hide()
+        self.enemyCardForm.gloveToStorage.hide()
+        self.enemyCardForm.ArmorToStorage.hide()
+        self.enemyCardForm.helmetToStorage.hide()
+        self.cardListUpdateButton = QPushButton(self)
+        self.myCardForm.myCardListUpdate()
+        self.cardListUpdateButton.clicked.connect(self.myCardForm.myCardListUpdate)
+        self.myCardForm.gridLayout_8.addWidget(self.cardListUpdateButton, 2, 0, 1, 1)
+        self.cardListUpdateButton.setText("更新卡片列表")
+
+        self.enemycardListUpdateButton = QPushButton(self)
+        self.enemyCardForm.myCardListUpdate()
+        self.enemycardListUpdateButton.clicked.connect(self.enemyCardForm.myCardListUpdate)
+        self.enemyCardForm.gridLayout_8.addWidget(self.enemycardListUpdateButton, 2, 0, 1, 1)
+        self.enemycardListUpdateButton.setText("更新卡片列表")
 
     def closeEvent(self, event):
         global_env.mainWin.show()

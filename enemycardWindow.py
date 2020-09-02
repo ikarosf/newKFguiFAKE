@@ -12,4 +12,5 @@ class Ui_enemycardForm(Ui_cardForm):
     def retranslateUi(self,Form):
         super().retranslateUi(Form)
         Form.setWindowTitle("敌方卡片")
+        self.cardlistlabel.setText("敌方卡片")
 
