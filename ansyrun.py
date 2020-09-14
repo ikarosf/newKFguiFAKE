@@ -37,7 +37,6 @@ export_start = [
     # "Damage Reflection",
     # "Aura Skill Set",
     "Number of",
-    "Number of",
     "Verbose mode",
     "t <enemy>",
     "b <enemy>",
@@ -55,7 +54,9 @@ export_start = [
     "startlevel <n",
     "alc <Powe",
     "Defender mode",
-    "defender [0|1]"
+    "defender [0|1]",
+    "Reduce rate",
+    "reducerate "
 ]
 
 

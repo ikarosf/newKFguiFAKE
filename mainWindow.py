@@ -98,6 +98,9 @@ class Ui_MainWindow(object):
         self.set_verbose_action = self.set_menu.addAction('设置显示进度')
         self.set_verbose_action.triggered.connect(self.set_verbose)
 
+        self.set_reducerate_action = self.set_menu.addAction('设置抵消率')
+        self.set_reducerate_action.triggered.connect(self.set_reducerate)
+
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -145,7 +148,7 @@ class Ui_MainWindow(object):
     def aboutWindowOpen(self):
         QMessageBox.about(self, "关于", """autor: ikarosf @kf 
         title: 咕咕镇计算器图形化界面(伪（伪）)
-        vision: 1.63
+        vision: 1.71
         link: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
@@ -179,6 +182,12 @@ class Ui_MainWindow(object):
             global_env.verbose = 1
         elif yes == QMessageBox.No:
             global_env.verbose = 0
+
+    def set_reducerate(self):
+        text, ok = QInputDialog.getText(self, '设置技能、暴击的抵消率', '如：“1 3”，填“0”为计算器默认设置', value=global_env.reducerate)
+        if not (ok and text):
+            return
+        global_env.reducerate = text
 
     def disable_all_button(self):
         self.mpShadeWindowShow()

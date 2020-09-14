@@ -13,4 +13,5 @@ class Ui_enemycardForm(Ui_cardForm):
         super().retranslateUi(Form)
         Form.setWindowTitle("敌方卡片")
         self.cardlistlabel.setText("敌方卡片")
+        self.toggleSTATButton.show()
 

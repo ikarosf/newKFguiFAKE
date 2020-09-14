@@ -128,6 +128,8 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
     text += "THREADS " + str(global_env.threads) + "\n"
     text += "TESTS " + str(global_env.tests) + "\n"
     text += "VERBOSE " + str(global_env.verbose) + "\n"
+    if global_env.reducerate != "0":
+        text += "REDUCERATE " + str(global_env.reducerate) + "\n"
     if setting and setting[3]:
         text += "DEFENDER 1\n"
     return text
@@ -135,3 +137,12 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
 
 def stopNewFKEXE():
     os.system("taskkill /f /im newkf.exe")
+
+
+def whatCardClass(card):
+    if hasattr(card, "halo"):
+        return 0
+    elif hasattr(card, "cardType"):
+        return 1
+    else:
+        return -1

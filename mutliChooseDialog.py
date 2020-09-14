@@ -120,6 +120,7 @@ class Ui_mutliChooseDialog(object):
         self.pushButton_3.setText("anpc")
         self.pushButton_4.setText("apc")
         self.pushButton_5.setText("al")
+        self.pushButton_5.hide()
         self.checkbox.setText("属性自动置1")
         self.checkbox2.setText("技能自动清空")
         self.checkbox3.setText("装备自动清空")

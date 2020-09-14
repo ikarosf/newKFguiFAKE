@@ -7,10 +7,10 @@ from PySide2.QtWidgets import *
 
 import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
-    ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox
+    ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox, STATCardPanel
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet, \
     all_character, all_skill, all_equip
-from action_def import text_to_equipSet
+from action_def import text_to_equipSet, whatCardClass
 from cardClass import myCard
 from equipChooseWindow import equipChooseWindow
 
@@ -23,8 +23,6 @@ class Ui_cardForm(object):
             Form.setObjectName(u"Form")
         self.Form = Form
         Form.resize(575, 602)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.rightMenuShow)
 
         self.gridLayout_9 = QGridLayout(Form)
         self.gridLayout_9.setObjectName(u"gridLayout_9")
@@ -32,8 +30,12 @@ class Ui_cardForm(object):
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.cardlistlabel = QLabel(Form)
         self.cardlistlabel.setObjectName(u"mycardlist")
+        self.toggleSTATButton = QPushButton(Form)
+        self.toggleSTATButton.clicked.connect(lambda: self.toggleSTAT())
+        self.toggleSTATButton.hide()
 
         self.gridLayout_3.addWidget(self.cardlistlabel, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.toggleSTATButton, 0, 1, 1, 1)
 
         self.cardlistcomboBox = myComboBox(Form)
         self.myCardListUpdate()
@@ -41,11 +43,24 @@ class Ui_cardForm(object):
             lambda: self.chooseMyCard(self.cardlistcomboBox.currentText()))
         self.cardlistcomboBox.setObjectName(u"mycardlist")
 
-        self.gridLayout_3.addWidget(self.cardlistcomboBox, 0, 1, 1, 3)
+        self.gridLayout_3.addWidget(self.cardlistcomboBox, 0, 2, 1, 3)
 
         self.gridLayout_9.addLayout(self.gridLayout_3, 0, 0, 1, 2)
+        self.stack = QStackedWidget(self)
+        self.stack1 = QWidget()
+        self.gridLayout_stack1 = QGridLayout(self.stack1)
+        self.gridLayout_stack1.setObjectName(u"gridLayout_stack1")
+        self.stack2 = QWidget()
+        self.gridLayout_stack2 = QGridLayout(self.stack2)
+        self.gridLayout_stack2.setObjectName(u"gridLayout_stack2")
+        self.stack.addWidget(self.stack1)
+        self.stack.addWidget(self.stack2)
+        self.gridLayout_9.addWidget(self.stack, 1, 0, 1, 2)
 
-        self.gridLayout = QGridLayout()
+        self.stack1.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.stack1.customContextMenuRequested.connect(self.rightMenuShow)
+
+        self.gridLayout = QGridLayout(self.stack1)
         self.gridLayout.setObjectName(u"gridLayout")
         self.halolabel = QLabel(Form)
         self.halolabel.setObjectName(u"光环")
@@ -144,7 +159,7 @@ class Ui_cardForm(object):
         self.RESspinBox.valueChanged.connect(self.set_remainder_point)
         self.gridLayout.addWidget(self.RESspinBox, 9, 1, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout, 1, 0, 2, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout, 1, 0, 2, 1)
 
         self.gridLayout_4 = QGridLayout()
         self.gridLayout_4.setObjectName(u"gridLayout_4")
@@ -213,7 +228,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_4.addWidget(self.weaponmysticallabel, 3, 0, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_4, 1, 1, 1, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_4, 1, 1, 1, 1)
 
         self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName(u"gridLayout_5")
@@ -277,7 +292,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_5.addWidget(self.glovelevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_5, 2, 1, 1, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_5, 2, 1, 1, 1)
 
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"技能组")
@@ -316,7 +331,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_2.addWidget(self.skill4comboBox, 4, 1, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_2, 3, 0, 2, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_2, 3, 0, 2, 1)
 
         self.gridLayout_6 = QGridLayout()
         self.gridLayout_6.setObjectName(u"护甲")
@@ -380,7 +395,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_6.addWidget(self.armorlevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_6, 3, 1, 1, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_6, 3, 1, 1, 1)
 
         self.gridLayout_7 = QGridLayout()
         self.gridLayout_7.setObjectName(u"头盔")
@@ -444,7 +459,7 @@ class Ui_cardForm(object):
 
         self.gridLayout_7.addWidget(self.helmetlevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_7, 4, 1, 1, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_7, 4, 1, 1, 1)
 
         self.gridLayout_8 = QGridLayout()
         self.gridLayout_8.setObjectName(u"按钮")
@@ -480,7 +495,10 @@ class Ui_cardForm(object):
         self.pushButton_5.setObjectName(u"比例分配属性")
         self.gridLayout_8.addWidget(self.pushButton_5, 1, 1, 1, 1)
 
-        self.gridLayout_9.addLayout(self.gridLayout_8, 5, 0, 1, 2)
+        self.gridLayout_stack1.addLayout(self.gridLayout_8, 5, 0, 1, 2)
+
+        self.STATCardForm = STATCardPanel(Form, cardList=self.cardList, cardlistcomboBox=self.cardlistcomboBox)
+        self.gridLayout_stack2.addWidget(self.STATCardForm)
 
         self.rightMenuCreat()
         self.retranslateUi(Form)
@@ -526,6 +544,7 @@ class Ui_cardForm(object):
 
         self.label_27.setText("属性百分比")
         self.helmetlevellabel.setText("等级")
+        self.toggleSTATButton.setText("STAT")
         self.pushButton.setText("存储卡片")
         self.pushButton_2.setText("覆盖当前卡片")
         self.pushButton_3.setText("删除当前卡片")
@@ -548,6 +567,8 @@ class Ui_cardForm(object):
         event.accept()
 
     def makeMyCard(self):
+        if self.isSTAT():
+            return self.STATCardForm.makeMyCard()
         halo = self.halolineEdit.text()
         character = self.cardtypecomboBox.currentIndex()
         level = self.levellineEdit.text()
@@ -614,6 +635,9 @@ class Ui_cardForm(object):
         return card
 
     def setMyCard(self, card):
+        if self.isSTAT():
+            self.STATCardForm.setMyCard(card)
+            return
         halo = card.halo
         character = card.character
         level = card.level
@@ -763,6 +787,8 @@ class Ui_cardForm(object):
         self.helmetattr4lineEdit.setText(helmet.attr3)
         self.helmetmysticalcomboBox.setCurrentIndex(helmet.hasMystical)
 
+        self.STATCardForm.newMyCard()
+
     def myCardListUpdate(self):
         myCardList = self.cardList
         currentIndex = self.cardlistcomboBox.currentIndex()
@@ -772,6 +798,9 @@ class Ui_cardForm(object):
         self.cardlistcomboBox.setCurrentIndex(currentIndex)
 
     def saveMyCard(self):
+        if self.isSTAT():
+            self.STATCardForm.saveMyCard()
+            return
         (result, message) = self.ableCheck()
         if not result:
             QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
@@ -786,6 +815,9 @@ class Ui_cardForm(object):
             self.cardlistcomboBox.setCurrentText(text)
 
     def editMyCard(self):
+        if self.isSTAT():
+            self.STATCardForm.editMyCard()
+            return
         (result, message) = self.ableCheck()
         if not result:
             QMessageBox.critical(self, "错误", message, QMessageBox.Yes)
@@ -804,6 +836,9 @@ class Ui_cardForm(object):
             self.cardList[text] = newCard
 
     def delMyCard(self):
+        if self.isSTAT():
+            self.STATCardForm.delMyCard()
+            return
         # index = self.comboBox.currentIndex()
         text = self.cardlistcomboBox.currentText()
         if text == "新卡片":
@@ -821,7 +856,15 @@ class Ui_cardForm(object):
             self.newMyCard()
         else:
             try:
-                self.setMyCard(card)
+                if whatCardClass(card) == 1:
+                    self.toggleSTAT(False)
+                    self.STATCardForm.setMyCard(card)
+                    return
+                elif whatCardClass(card) == 0:
+                    self.toggleSTAT(True)
+                    self.setMyCard(card)
+                else:
+                    return
             except:
                 QMessageBox.critical(self, "错误", "该配置出错不可用", QMessageBox.Yes)
         self.set_remainder_point()
@@ -1241,7 +1284,7 @@ class Ui_cardForm(object):
             if re.match(r"\d+ \d+ \d+ \d+ \d+ \d+", text[num]):
                 myindex = num
                 break
-            if num+1 == len(text):
+            if num + 1 == len(text):
                 QMessageBox.critical(self, "错误", "格式错误", QMessageBox.Yes)
                 return
 
@@ -1249,3 +1292,14 @@ class Ui_cardForm(object):
         self.equipImportFun(
             text[myindex + 1] + "\n" + text[myindex + 2] + "\n" + text[myindex + 3] + "\n" + text[myindex + 4])
         self.skillImportFun(text[myindex + 5])
+
+    def toggleSTAT(self, flag=None):
+        if flag is None:
+            flag = self.isSTAT()
+        if flag:
+            self.stack.setCurrentIndex(0)
+        else:
+            self.stack.setCurrentIndex(1)
+
+    def isSTAT(self):
+        return self.stack.currentIndex() == 1
