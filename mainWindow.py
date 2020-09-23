@@ -101,6 +101,9 @@ class Ui_MainWindow(object):
         self.set_reducerate_action = self.set_menu.addAction('设置抵消率')
         self.set_reducerate_action.triggered.connect(self.set_reducerate)
 
+        self.set_seedmax_action = self.set_menu.addAction('设置种子数')
+        self.set_seedmax_action.triggered.connect(self.set_seedmax)
+
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -148,7 +151,7 @@ class Ui_MainWindow(object):
     def aboutWindowOpen(self):
         QMessageBox.about(self, "关于", """autor: ikarosf @kf 
         title: 咕咕镇计算器图形化界面(伪（伪）)
-        vision: 1.71
+        vision: 1.72
         link: 
         https://bbs.ikfol.com/read.php?tid=809582&sf=44f""")
 
@@ -188,6 +191,12 @@ class Ui_MainWindow(object):
         if not (ok and text):
             return
         global_env.reducerate = text
+
+    def set_seedmax(self):
+        text, ok = QInputDialog.getInt(self, '设置初始候选方案最大数量', '默认值1000000(已百万)，最大值100000000（一亿）', value=global_env.seedmax)
+        if not (ok and text):
+            return
+        global_env.seedmax = text
 
     def disable_all_button(self):
         self.mpShadeWindowShow()

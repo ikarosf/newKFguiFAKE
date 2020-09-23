@@ -56,7 +56,10 @@ export_start = [
     "Defender mode",
     "defender [0|1]",
     "Reduce rate",
-    "reducerate "
+    "reducerate ",
+    "ti <ene",
+    "rank : Cal",
+    "seedmax <n> "
 ]
 
 
