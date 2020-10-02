@@ -2,12 +2,13 @@ import re
 
 from PySide2.QtGui import QIntValidator, QDoubleValidator, QCursor
 from PySide2.QtWidgets import QComboBox, QLineEdit, QSpinBox, QWidget, QGridLayout, QLabel, QCheckBox, QMenu, \
-    QInputDialog, QPushButton, QMessageBox
+    QInputDialog, QPushButton, QMessageBox, QVBoxLayout
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt, SIGNAL, Slot)
-from SystemClass import all_skill, all_character, all_equip, all_npc
+from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName
 from cardClass import STATCard
 import global_env
+from skillChooseDialog import skillChooseWindow
 
 
 class myComboBox(QComboBox):
@@ -27,7 +28,7 @@ class skillComboBox(myComboBox):
         super(skillComboBox, self).__init__(parent)
         self.addItem("")
         self.setItemText(0, "无")
-        for i in range(11):
+        for i in range(len(all_skill["name"])):
             self.addItem("")
             self.setItemText(i + 1, all_skill["name"][i])
 
@@ -368,7 +369,7 @@ class STATCardPanel(QWidget):
         self.gridLayout.addLayout(self.gridLayout5, 3, 0, 1, 2)
 
         self.comboBoxList = []
-        for i in range(5, 11):
+        for i in range(5, len(all_skill["name"])):
             name = all_skill["name"][i]
             attr = all_skill["data"][i]
             thisCombobox = STATSkillCheckBox(name, attr, self)
@@ -383,6 +384,8 @@ class STATCardPanel(QWidget):
         thisCombobox = STATSkillCheckBox("发饰", "TIARA", self)
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("幽梦匕首", "DAGGER", self)
+        self.comboBoxList.append(thisCombobox)
+        thisCombobox = STATSkillCheckBox("光辉法杖", "WAND", self)
         self.comboBoxList.append(thisCombobox)
 
         try:
@@ -629,3 +632,68 @@ class STATCardPanel(QWidget):
         self.SKILLLineEdit.setText(attrs4[1])
         self.REFLECTLineEdit.setText(attrs4[2])
         self.VAMPIRELineEdit.setText(attrs4[3])
+
+
+class cardSkillPanel(QWidget):
+    def __init__(self, parent=None):
+        super(cardSkillPanel, self).__init__(parent)
+        self.vBoxLayout = QVBoxLayout(self)
+        self.skilllabels = []
+        self.skillList = [0]
+
+        self.skillslotcomboBox = skillSlotNum()
+        self.skillslotcomboBox.setObjectName(u"技能位")
+        self.vBoxLayout.addWidget(self.skillslotcomboBox)
+
+        for i in range(4):
+            tempskilllabel = QLabel(self)
+            tempskilllabel.setText("无技能")
+            self.skilllabels.append(tempskilllabel)
+            self.vBoxLayout.addWidget(tempskilllabel)
+
+        self.selectSkillButton = QPushButton()
+        # self.selectSkillButton.clicked.connect(self.delMyCard)
+        self.selectSkillButton.setText(u"选择天赋")
+        self.vBoxLayout.addWidget(self.selectSkillButton)
+        self.selectSkillButton.clicked.connect(lambda: self.runSkillChooseDialog())
+
+    def runSkillChooseDialog(self):
+        scw, skillList = skillChooseWindow.launch(self)
+        if scw:
+            self.skillList = skillList
+            for i in range(4):
+                if i < len(skillList):
+                    self.skilllabels[i].setText(skillList[i])
+                else:
+                    self.skilllabels[i].setText("无技能")
+
+    def get4index(self):
+        indexlist = []
+        for i in range(4):
+            if i < len(self.skillList):
+                indexlist.append(getSkillIndexOfName(self.skillList[i]) + 1)
+            else:
+                indexlist.append(0)
+        return indexlist
+
+    def getshortindex(self):
+        indexlist = []
+        for i in range(min(4, len(self.skillList))):
+            indexlist.append(getSkillIndexOfName(self.skillList[i]) + 1)
+        return indexlist
+
+    def set4index(self, indexlist):
+        skillList = []
+        for i in range(4):
+            if indexlist[i] == 0:
+                break
+            skillList.append(all_skill["name"][indexlist[i] - 1])
+        self.skillList = skillList
+        for i in range(4):
+            if i < len(skillList):
+                self.skilllabels[i].setText(skillList[i])
+            else:
+                self.skilllabels[i].setText("无技能")
+
+    def ablecheck(self):
+        pass

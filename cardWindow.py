@@ -7,7 +7,8 @@ from PySide2.QtWidgets import *
 
 import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
-    ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox, STATCardPanel
+    ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox, STATCardPanel, \
+    cardSkillPanel
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet, \
     all_character, all_skill, all_equip
 from action_def import text_to_equipSet, whatCardClass
@@ -294,44 +295,46 @@ class Ui_cardForm(object):
 
         self.gridLayout_stack1.addLayout(self.gridLayout_5, 2, 1, 1, 1)
 
-        self.gridLayout_2 = QGridLayout()
-        self.gridLayout_2.setObjectName(u"技能组")
-        self.skillslotlabel = QLabel(Form)
-        self.skillslotlabel.setObjectName(u"技能位")
-
-        self.gridLayout_2.addWidget(self.skillslotlabel, 0, 0, 1, 1)
-
-        self.skillslotcomboBox = skillSlotNum(Form)
-        self.skillslotcomboBox.setObjectName(u"技能位")
-
-        self.gridLayout_2.addWidget(self.skillslotcomboBox, 0, 1, 1, 1)
-
-        self.skilllabel = QLabel(Form)
-        self.skilllabel.setObjectName(u"技能")
-
-        self.gridLayout_2.addWidget(self.skilllabel, 1, 0, 1, 1)
-
-        self.skill1comboBox = skillComboBox(Form)
-        self.skill1comboBox.setObjectName(u"技能1")
-
-        self.gridLayout_2.addWidget(self.skill1comboBox, 1, 1, 1, 1)
-
-        self.skill2comboBox = skillComboBox(Form)
-        self.skill2comboBox.setObjectName(u"技能2")
-
-        self.gridLayout_2.addWidget(self.skill2comboBox, 2, 1, 1, 1)
-
-        self.skill3comboBox = skillComboBox(Form)
-        self.skill3comboBox.setObjectName(u"技能3")
-
-        self.gridLayout_2.addWidget(self.skill3comboBox, 3, 1, 1, 1)
-
-        self.skill4comboBox = skillComboBox(Form)
-        self.skill4comboBox.setObjectName(u"技能4")
-
-        self.gridLayout_2.addWidget(self.skill4comboBox, 4, 1, 1, 1)
-
-        self.gridLayout_stack1.addLayout(self.gridLayout_2, 3, 0, 2, 1)
+        # self.gridLayout_2 = QGridLayout()
+        # self.gridLayout_2.setObjectName(u"技能组")
+        # self.skillslotlabel = QLabel(Form)
+        # self.skillslotlabel.setObjectName(u"技能位")
+        #
+        # self.gridLayout_2.addWidget(self.skillslotlabel, 0, 0, 1, 1)
+        #
+        # self.skillslotcomboBox = skillSlotNum(Form)
+        # self.skillslotcomboBox.setObjectName(u"技能位")
+        #
+        # self.gridLayout_2.addWidget(self.skillslotcomboBox, 0, 1, 1, 1)
+        #
+        # self.skilllabel = QLabel(Form)
+        # self.skilllabel.setObjectName(u"技能")
+        #
+        # self.gridLayout_2.addWidget(self.skilllabel, 1, 0, 1, 1)
+        #
+        # self.skill1comboBox = skillComboBox(Form)
+        # self.skill1comboBox.setObjectName(u"技能1")
+        #
+        # self.gridLayout_2.addWidget(self.skill1comboBox, 1, 1, 1, 1)
+        #
+        # self.skill2comboBox = skillComboBox(Form)
+        # self.skill2comboBox.setObjectName(u"技能2")
+        #
+        # self.gridLayout_2.addWidget(self.skill2comboBox, 2, 1, 1, 1)
+        #
+        # self.skill3comboBox = skillComboBox(Form)
+        # self.skill3comboBox.setObjectName(u"技能3")
+        #
+        # self.gridLayout_2.addWidget(self.skill3comboBox, 3, 1, 1, 1)
+        #
+        # self.skill4comboBox = skillComboBox(Form)
+        # self.skill4comboBox.setObjectName(u"技能4")
+        #
+        # self.gridLayout_2.addWidget(self.skill4comboBox, 4, 1, 1, 1)
+        #
+        # self.gridLayout_stack1.addLayout(self.gridLayout_2, 3, 0, 2, 1)
+        self.cardSkillPanel = cardSkillPanel(Form);
+        self.gridLayout_stack1.addWidget(self.cardSkillPanel, 3, 0, 2, 1)
 
         self.gridLayout_6 = QGridLayout()
         self.gridLayout_6.setObjectName(u"护甲")
@@ -531,8 +534,8 @@ class Ui_cardForm(object):
 
         self.gloveattrlabel.setText("属性百分比")
         self.glovelevellabel.setText("等级")
-        self.skillslotlabel.setText("技能位")
-        self.skilllabel.setText("技能")
+        # self.skillslotlabel.setText("技能位")
+        # self.skilllabel.setText("技能")
 
         self.armortypelabel.setText("护甲类型")
         self.armormysticallabel.setText("神秘")
@@ -580,12 +583,13 @@ class Ui_cardForm(object):
         attrRES = self.RESspinBox.getValue()
         attrSet = cardAttr(attrSTR, attrAGI, attrINT, attrVIT, attrSPR, attrRES)
 
-        sklSlot = self.skillslotcomboBox.currentIndex()
+        sklSlot = self.cardSkillPanel.skillslotcomboBox.currentIndex()
 
-        skill_1 = skill(self.skill1comboBox.currentIndex())
-        skill_2 = skill(self.skill2comboBox.currentIndex())
-        skill_3 = skill(self.skill3comboBox.currentIndex())
-        skill_4 = skill(self.skill4comboBox.currentIndex())
+        skillindexlist = self.cardSkillPanel.get4index()
+        skill_1 = skill(skillindexlist[0])
+        skill_2 = skill(skillindexlist[1])
+        skill_3 = skill(skillindexlist[2])
+        skill_4 = skill(skillindexlist[3])
         skillSet = SKILLSet(skill_1, skill_2, skill_3, skill_4)
 
         weaponType = self.weapontypecomboBox.currentIndex()
@@ -673,12 +677,10 @@ class Ui_cardForm(object):
         self.SPRspinBox.setValue(attrSPR)
         self.RESspinBox.setValue(attrRES)
 
-        self.skillslotcomboBox.setCurrentIndex(sklSlot)
+        self.cardSkillPanel.skillslotcomboBox.setCurrentIndex(sklSlot)
 
-        self.skill1comboBox.setCurrentIndex(skill_1.data)
-        self.skill2comboBox.setCurrentIndex(skill_2.data)
-        self.skill3comboBox.setCurrentIndex(skill_3.data)
-        self.skill4comboBox.setCurrentIndex(skill_4.data)
+        skillindexlist = [skill_1.data, skill_2.data, skill_3.data, skill_4.data]
+        self.cardSkillPanel.set4index(skillindexlist)
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -748,12 +750,9 @@ class Ui_cardForm(object):
         self.SPRspinBox.setValue(attrSPR)
         self.RESspinBox.setValue(attrRES)
 
-        self.skillslotcomboBox.setCurrentIndex(sklSlot)
+        self.cardSkillPanel.skillslotcomboBox.setCurrentIndex(sklSlot)
 
-        self.skill1comboBox.setCurrentIndex(skill_1)
-        self.skill2comboBox.setCurrentIndex(skill_2)
-        self.skill3comboBox.setCurrentIndex(skill_3)
-        self.skill4comboBox.setCurrentIndex(skill_4)
+        self.cardSkillPanel.set4index([0, 0, 0, 0])
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -900,40 +899,16 @@ class Ui_cardForm(object):
         # self.comboBox_5.setObjectName(u"技能3")
         # self.comboBox_6.setObjectName(u"技能4")
         halo = self.halolineEdit.getValue()
-        if halo > 200:
-            return False, "光环不能大于200!"
-        sklSlotNum = self.skillslotcomboBox.currentIndex() + 1
-        sklList = []
-        skl_1 = self.skill1comboBox.currentIndex()
-        skl_2 = self.skill2comboBox.currentIndex()
-        skl_3 = self.skill3comboBox.currentIndex()
-        skl_4 = self.skill4comboBox.currentIndex()
-        if skl_1 != 0:
-            sklList.append(skl_1)
-        if skl_2 != 0:
-            if skl_2 in sklList:
-                return False, "技能重复！"
-            sklList.append(skl_2)
-        if skl_3 != 0:
-            if skl_3 in sklList:
-                return False, "技能重复！"
-            sklList.append(skl_3)
-        if skl_4 != 0:
-            if skl_4 in sklList:
-                return False, "技能重复！"
-            sklList.append(skl_4)
+        # if halo > 200:
+        #     return False, "光环不能大于200!"
+        sklSlotNum = self.cardSkillPanel.skillslotcomboBox.currentIndex() + 1
+        sklList = self.cardSkillPanel.getshortindex()
+
         if len(sklList) > sklSlotNum:
             return False, "技能数量大于技能位!"
         used_halo = 0
         for skl in sklList:
-            if skl <= 3:
-                used_halo += 10
-            elif skl <= 5:
-                used_halo += 30
-            elif skl <= 8:
-                used_halo += 50
-            elif skl <= 11:
-                used_halo += 100
+            used_halo += all_skill["cost"][skl-1]
         if used_halo > halo:
             return False, "技能所需点数超过光环！"
         # self.comboBox_8.setObjectName(u"武器类型")
@@ -1181,7 +1156,7 @@ class Ui_cardForm(object):
                 self.cardtypecomboBox.setCurrentIndex(i)
                 break
         self.levellineEdit.setText(data[1])
-        self.skillslotcomboBox.setCurrentText(data[2])
+        self.cardSkillPanel.skillslotcomboBox.setCurrentText(data[2])
         self.STRspinBox.setValue(int(data[3]))
         self.AGIspinBox.setValue(int(data[4]))
         self.INTspinBox.setValue(int(data[5]))

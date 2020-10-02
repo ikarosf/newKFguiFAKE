@@ -14,15 +14,39 @@
 all_skill = {
     "name": ["启程之誓", "启程之心", "启程之风",
              "破壁之心", "破魔之心",
-             "伤口恶化", "精神创伤", "铁甲尖刺",
+             "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍",
              "沸血之志", "波澜不惊", "飓风之力"],
 
     "data": ["SHI", "XIN", "FENG",
              "BI", "MO",
-             "SHANG", "SHEN", "CI",
+             "SHANG", "SHEN", "CI", "REN",
              "FEI", "BO", "JU"
+             ],
+    "cost": [10, 10, 10,
+             30, 30,
+             50, 50, 50, 50,
+             100, 100, 100
              ]
 }
+
+
+def getSkillDataOfName(name):
+    for i in range(len(all_skill["name"])):
+        if all_skill["name"][i] == name:
+            return all_skill["data"][i]
+
+
+def getSkillCostOfName(name):
+    for i in range(len(all_skill["name"])):
+        if all_skill["name"][i] == name:
+            return all_skill["cost"][i]
+
+
+def getSkillIndexOfName(name):
+    for i in range(len(all_skill["name"])):
+        if all_skill["name"][i] == name:
+            return i
+
 
 all_character = {
     "name": ["琳", "默", "艾", "梦"],
@@ -36,16 +60,16 @@ all_npc = {
 
 all_equip = {
     "name": {
-        "weapon": ["剑", "短弓", "短杖", "荣誉之刃","刺杀弓","幽梦匕首"],
+        "weapon": ["剑", "短弓", "短杖", "荣誉之刃", "刺杀弓", "幽梦匕首", "光辉法杖"],
         "glove": ["手套", "手环"],
         "Armor": ["铁甲", "皮甲", "布甲", "灵光袍", "荆棘重甲"],
-        "helmet": ["头巾","发饰"],
+        "helmet": ["头巾", "发饰"],
     },
     "data": {
-        "weapon": ["SWORD", "BOW", "STAFF", "BLADE","ASSBOW","DAGGER"],
+        "weapon": ["SWORD", "BOW", "STAFF", "BLADE", "ASSBOW", "DAGGER", "WAND"],
         "glove": ["GLOVES", "BRACELET"],
         "Armor": ["PLATE", "LEATHER", "CLOTH", "CLOAK", "THORN"],
-        "helmet": ["SCARF","TIARA"],
+        "helmet": ["SCARF", "TIARA"],
     }
 }
 
