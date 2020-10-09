@@ -14,4 +14,6 @@ class Ui_enemycardForm(Ui_cardForm):
         Form.setWindowTitle("敌方卡片")
         self.cardlistlabel.setText("敌方卡片")
         self.toggleSTATButton.show()
+        self.nicknamelabel.show()
+        self.nicknamelineEdit.show()
 

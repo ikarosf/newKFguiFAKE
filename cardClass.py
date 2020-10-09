@@ -2,7 +2,7 @@ from SystemClass import all_character
 
 
 class card:
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet):
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
         self.halo = halo
         self.character = character
         self.level = level
@@ -22,8 +22,8 @@ class card:
 
 
 class myCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet):
-        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
+        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname)
 
     def make_gu_text(self):
         text = ''
@@ -44,12 +44,15 @@ class myCard(card):
 
 
 class enemyCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet):
-        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
+        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname)
+        self.nickname = nickname
 
     def make_gu_text(self):
         text = ''
         text += all_character['data'][self.character]
+        if self.nickname != "":
+            text += "_" + self.nickname
         text += " "
         text += self.level
         text += " "
@@ -62,19 +65,29 @@ class enemyCard(card):
         text += self.skillSet.make_gu_text()
         return text
 
+    def tostring(self):
+        if self.nickname != "":
+            return self.nickname
+        else:
+            text = super(enemyCard, self).tostring()
+            return text
+
 
 class STATCard:
-    def __init__(self, cardType, attrs1, attrs2, attrs3, attrs4, attrs5):
+    def __init__(self, cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname):
         self.cardType = cardType
         self.attrs1 = attrs1
         self.attrs2 = attrs2
         self.attrs3 = attrs3
         self.attrs4 = attrs4
         self.attrs5 = attrs5
+        self.nickname = nickname
 
     def make_gu_text(self):
         text = ''
         text += all_character['data'][self.cardType]
+        if self.nickname != "":
+            text += "_" + self.nickname
         text += " "
         text += "STAT"
         text += "\n"
@@ -90,6 +103,8 @@ class STATCard:
         return text
 
     def tostring(self):
+        if self.nickname != "":
+            return self.nickname
         text = ''
         text += all_character['name'][self.cardType]
         text += " STAT "

@@ -199,17 +199,24 @@ class STATCardPanel(QWidget):
         self.cardlistcomboBox = cardlistcomboBox
         self.gridLayout = QGridLayout(self)
 
+        self.nicknamelabel = QLabel(self)
+        self.nicknamelabel.setText("卡片别名")
+        self.gridLayout.addWidget(self.nicknamelabel, 0, 0, 1, 1)
+
+        self.nicknamelineedit = QLineEdit(self)
+        self.gridLayout.addWidget(self.nicknamelineedit, 0, 1, 1, 1)
+
         self.cardtypelabel = QLabel(self)
         self.cardtypelabel.setText("卡片类型")
-        self.gridLayout.addWidget(self.cardtypelabel, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.cardtypelabel, 1, 0, 1, 1)
 
         self.cardtypecomboBox = cardCharacterComboBox(self)
-        self.gridLayout.addWidget(self.cardtypecomboBox, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.cardtypecomboBox, 1, 1, 1, 1)
 
         # gridLayout1__________________________
 
         self.gridLayout1 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout1, 1, 0, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout1, 2, 0, 1, 1)
 
         self.ADlabel = QLabel(self)
         self.ADlabel.setText("物攻")
@@ -248,7 +255,7 @@ class STATCardPanel(QWidget):
         # gridLayout2__________________________
 
         self.gridLayout2 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout2, 1, 1, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout2, 2, 1, 1, 1)
 
         self.RTKlabel = QLabel(self)
         self.RTKlabel.setText("绝对攻击")
@@ -294,7 +301,7 @@ class STATCardPanel(QWidget):
         # gridLayout3__________________________
 
         self.gridLayout3 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout3, 2, 0, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout3, 3, 0, 1, 1)
 
         self.HEALTHlabel = QLabel(self)
         self.HEALTHlabel.setText("生命")
@@ -333,7 +340,7 @@ class STATCardPanel(QWidget):
         # gridLayout4__________________________
 
         self.gridLayout4 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout4, 2, 1, 1, 1)
+        self.gridLayout.addLayout(self.gridLayout4, 3, 1, 1, 1)
 
         self.CRITlabel = QLabel(self)
         self.CRITlabel.setText("暴击")
@@ -366,7 +373,7 @@ class STATCardPanel(QWidget):
         # gridLayout5__________________________
 
         self.gridLayout5 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout5, 3, 0, 1, 2)
+        self.gridLayout.addLayout(self.gridLayout5, 4, 0, 1, 2)
 
         self.comboBoxList = []
         for i in range(5, len(all_skill["name"])):
@@ -398,7 +405,7 @@ class STATCardPanel(QWidget):
         # gridLayout6__________________________
 
         self.gridLayout6 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout6, 4, 0, 1, 2)
+        self.gridLayout.addLayout(self.gridLayout6, 5, 0, 1, 2)
 
         self.savepushButton = QPushButton()
         self.savepushButton.clicked.connect(self.saveMyCard)
@@ -422,6 +429,7 @@ class STATCardPanel(QWidget):
         self.customContextMenuRequested.connect(self.rightMenuShow)
 
     def makeMyCard(self):
+        nickname = self.nicknamelineedit.text()
         cardType = self.cardtypecomboBox.currentIndex()
         attrs1 = []
         attrs1.append(self.ADLineEdit.getValue())
@@ -460,7 +468,7 @@ class STATCardPanel(QWidget):
                 attrs5[0] += 1
                 attrs5.append(i.currentValue())
 
-        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5)
+        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname)
 
     def ableCheck(self):
         return True, ""
@@ -511,6 +519,7 @@ class STATCardPanel(QWidget):
             del (self.cardList[text])
 
     def newMyCard(self):
+        self.nicknamelineedit.setText("")
         self.cardtypecomboBox.setCurrentIndex(0)
         self.ADLineEdit.setText("")
         self.APLineEdit.setText("")
@@ -549,6 +558,11 @@ class STATCardPanel(QWidget):
         attrs3 = card.attrs3
         attrs4 = card.attrs4
         attrs5 = card.attrs5
+        if hasattr(card, "nickname"):
+            nickname = card.nickname
+            self.nicknamelineedit.setText(nickname)
+        else:
+            self.nicknamelineedit.setText("")
 
         self.cardtypecomboBox.setCurrentIndex(cardtype)
         self.ADLineEdit.setText(attrs1[0])
@@ -586,8 +600,11 @@ class STATCardPanel(QWidget):
 
     def rightMenuCreat(self):
         self.contextMenu = QMenu(self)
-        self.cardImport = self.contextMenu.addAction(u'卡片导入')
+        self.cardImport = self.contextMenu.addAction(u'全部导入')
         self.cardImport.triggered.connect(lambda: self.cardImportFun())
+
+        self.cardOutput = self.contextMenu.addAction(u'全部导出')
+        self.cardOutput.triggered.connect(lambda: self.cardOutputFun())
 
     def rightMenuShow(self):
         self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
@@ -633,6 +650,13 @@ class STATCardPanel(QWidget):
         self.REFLECTLineEdit.setText(attrs4[2])
         self.VAMPIRELineEdit.setText(attrs4[3])
 
+    def cardOutputFun(self, text=None):
+        if not self.ableCheck():
+            return
+
+        thiscard = self.makeMyCard()
+        thistext = thiscard.make_gu_text()
+        QInputDialog.getMultiLineText(self, '请复制', "", thistext)
 
 class cardSkillPanel(QWidget):
     def __init__(self, parent=None):
@@ -661,7 +685,7 @@ class cardSkillPanel(QWidget):
         skillList = self.skillList
         for i in range(4):
             if i < len(skillList):
-                self.skilllabels[i].setText(all_skill['name'][skillList[i]-1])
+                self.skilllabels[i].setText(all_skill['name'][skillList[i] - 1])
             else:
                 self.skilllabels[i].setText("无技能")
 
@@ -697,10 +721,9 @@ class cardSkillPanel(QWidget):
         data = text.split()
         for i in range(1, len(data)):
             thisindex = getSkillIndexOfData(data[i])
-            skillList.append(thisindex+1)
+            skillList.append(thisindex + 1)
         self.skillList = skillList
         self.setSkillFromList()
-
 
     def ablecheck(self):
         pass
