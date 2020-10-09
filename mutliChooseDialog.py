@@ -16,11 +16,13 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QFont,
 from PySide2.QtWidgets import *
 
 from ALDialogWindow import Ui_ALWindow
+from Qclass import excludeSkillPanel
 
 attrClear = True
 skillClear = True
 equipClear = True
 DEFENDERmode = False
+excludeskilltext = ""
 
 
 class Ui_mutliChooseDialog(object):
@@ -31,6 +33,7 @@ class Ui_mutliChooseDialog(object):
         self.skillClear = False
         self.equipClear = False
         self.DEFENDERmode = False
+        self.excludeskilltext = ""
 
     def setupUi(self, Dialog):
         if Dialog.objectName():
@@ -105,6 +108,10 @@ class Ui_mutliChooseDialog(object):
 
         self.gridLayout_2.addWidget(self.buttonBox, 3, 1, 1, 4)
 
+        self.excludeSkillPanel = excludeSkillPanel(Dialog);
+        self.excludeSkillPanel.selectSkillButton.setStyleSheet("color:red;")
+        self.gridLayout_2.addWidget(self.excludeSkillPanel, 3, 0, 1, 1)
+
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept)
         self.buttonBox.rejected.connect(Dialog.reject)
@@ -137,6 +144,7 @@ class Ui_mutliChooseDialog(object):
                 self.skillClear = True
             if self.checkbox3.isChecked():
                 self.equipClear = True
+            self.excludeskilltext = self.excludeSkillPanel.getExcludeSkills()
         if self.checkbox4.isChecked():
             self.DEFENDERmode = True
         self.accept()
@@ -163,7 +171,8 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg = mutliChooseWindow(parent)
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
+            return True, dlg.value, (
+                dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode, dlg.excludeskilltext)
         return False, None, None
 
     @staticmethod
@@ -174,7 +183,8 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg.checkbox4.hide()
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
+            return True, dlg.value, (
+                dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode, dlg.excludeskilltext)
         return False, None, None
 
     @staticmethod
@@ -185,15 +195,17 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         dlg.pushButton_5.hide()
         r = dlg.exec_()
         if r:
-            return True, dlg.value, (dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode)
+            return True, dlg.value, (
+                dlg.attrClear, dlg.skillClear, dlg.equipClear, dlg.DEFENDERmode, dlg.excludeskilltext)
         return False, None, None
 
     def accept(self):
-        global attrClear, skillClear, equipClear,DEFENDERmode
+        global attrClear, skillClear, equipClear, DEFENDERmode, excludeskilltext
         attrClear = self.checkbox.isChecked()
         skillClear = self.checkbox2.isChecked()
         equipClear = self.checkbox3.isChecked()
         DEFENDERmode = self.checkbox4.isChecked()
+        excludeskilltext = self.excludeSkillPanel.getExcludeSkills()
         QDialog.accept(self)
 
     def valueInit(self):
@@ -201,3 +213,4 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         self.checkbox2.setChecked(skillClear)
         self.checkbox3.setChecked(equipClear)
         self.checkbox4.setChecked(DEFENDERmode)
+        self.excludeSkillPanel.setExcludeSkills(excludeskilltext)

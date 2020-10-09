@@ -133,6 +133,8 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
     text += "SEEDMAX " + str(global_env.seedmax) + "\n"
     if setting and setting[3]:
         text += "DEFENDER 1\n"
+    if setting and setting[4] != "":
+        text += "AURAFILTER " + setting[4] + "\n"
     return text
 
 

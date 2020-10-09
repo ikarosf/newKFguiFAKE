@@ -658,6 +658,7 @@ class STATCardPanel(QWidget):
         thistext = thiscard.make_gu_text()
         QInputDialog.getMultiLineText(self, '请复制', "", thistext)
 
+
 class cardSkillPanel(QWidget):
     def __init__(self, parent=None):
         super(cardSkillPanel, self).__init__(parent)
@@ -727,3 +728,27 @@ class cardSkillPanel(QWidget):
 
     def ablecheck(self):
         pass
+
+
+class excludeSkillPanel(cardSkillPanel):
+    def __init__(self, parent=None):
+        super(excludeSkillPanel, self).__init__(parent)
+        self.skillslotcomboBox.hide()
+        self.selectSkillButton.setText("排除天赋")
+
+    def getExcludeSkills(self):
+        text = ""
+        for i in self.skillList:
+            if text != "":
+                text += "_"
+            text += all_skill["data"][i - 1]
+        return text
+
+    def setExcludeSkills(self, text):
+        data = text.split("_")
+        skillList = []
+        for i in data:
+            if i != "":
+                skillList.append(getSkillIndexOfData(i)+1)
+        self.skillList = skillList
+        self.setSkillFromList()
