@@ -13,17 +13,17 @@
 
 all_skill = {
     "name": ["启程之誓", "启程之心", "启程之风",
-             "破壁之心", "破魔之心",
+             "破壁之心", "破魔之心", "复合护盾",
              "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍",
              "沸血之志", "波澜不惊", "飓风之力"],
 
     "data": ["SHI", "XIN", "FENG",
-             "BI", "MO",
+             "BI", "MO", "DUN",
              "SHANG", "SHEN", "CI", "REN",
              "FEI", "BO", "JU"
              ],
     "cost": [10, 10, 10,
-             30, 30,
+             30, 30, 30,
              50, 50, 50, 50,
              100, 100, 100
              ]
@@ -48,9 +48,15 @@ def getSkillIndexOfName(name):
             return i
 
 
+def getSkillIndexOfData(data):
+    for i in range(len(all_skill["data"])):
+        if all_skill["data"][i] == data:
+            return i
+
+
 all_character = {
-    "name": ["琳", "默", "艾", "梦"],
-    "data": ["LIN", "MO", "AI", "MENG"]
+    "name": ["琳", "默", "艾", "梦", "薇"],
+    "data": ["LIN", "MO", "AI", "MENG", "WEI"]
 }
 
 all_npc = {

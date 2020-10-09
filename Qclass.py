@@ -5,7 +5,7 @@ from PySide2.QtWidgets import QComboBox, QLineEdit, QSpinBox, QWidget, QGridLayo
     QInputDialog, QPushButton, QMessageBox, QVBoxLayout
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt, SIGNAL, Slot)
-from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName
+from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName, getSkillIndexOfData
 from cardClass import STATCard
 import global_env
 from skillChooseDialog import skillChooseWindow
@@ -81,7 +81,7 @@ class npcHighGainComboBox(myComboBox):
 class cardCharacterComboBox(myComboBox):
     def __init__(self, parent=None):
         super(cardCharacterComboBox, self).__init__(parent)
-        for i in range(4):
+        for i in range(len(all_character["name"])):
             self.addItem("")
             self.setItemText(i, all_character["name"][i])
 
@@ -639,7 +639,7 @@ class cardSkillPanel(QWidget):
         super(cardSkillPanel, self).__init__(parent)
         self.vBoxLayout = QVBoxLayout(self)
         self.skilllabels = []
-        self.skillList = [0]
+        self.skillList = []
 
         self.skillslotcomboBox = skillSlotNum()
         self.skillslotcomboBox.setObjectName(u"技能位")
@@ -657,43 +657,50 @@ class cardSkillPanel(QWidget):
         self.vBoxLayout.addWidget(self.selectSkillButton)
         self.selectSkillButton.clicked.connect(lambda: self.runSkillChooseDialog())
 
+    def setSkillFromList(self):
+        skillList = self.skillList
+        for i in range(4):
+            if i < len(skillList):
+                self.skilllabels[i].setText(all_skill['name'][skillList[i]-1])
+            else:
+                self.skilllabels[i].setText("无技能")
+
     def runSkillChooseDialog(self):
         scw, skillList = skillChooseWindow.launch(self)
         if scw:
             self.skillList = skillList
-            for i in range(4):
-                if i < len(skillList):
-                    self.skilllabels[i].setText(skillList[i])
-                else:
-                    self.skilllabels[i].setText("无技能")
+            self.setSkillFromList()
 
     def get4index(self):
         indexlist = []
         for i in range(4):
             if i < len(self.skillList):
-                indexlist.append(getSkillIndexOfName(self.skillList[i]) + 1)
+                indexlist.append(self.skillList[i])
             else:
                 indexlist.append(0)
         return indexlist
 
     def getshortindex(self):
-        indexlist = []
-        for i in range(min(4, len(self.skillList))):
-            indexlist.append(getSkillIndexOfName(self.skillList[i]) + 1)
-        return indexlist
+        return self.skillList.copy()
 
     def set4index(self, indexlist):
         skillList = []
         for i in range(4):
             if indexlist[i] == 0:
                 break
-            skillList.append(all_skill["name"][indexlist[i] - 1])
+            skillList.append(indexlist[i])
         self.skillList = skillList
-        for i in range(4):
-            if i < len(skillList):
-                self.skilllabels[i].setText(skillList[i])
-            else:
-                self.skilllabels[i].setText("无技能")
+        self.setSkillFromList()
+
+    def setFromCaclText(self, text):
+        skillList = []
+        data = text.split()
+        for i in range(1, len(data)):
+            thisindex = getSkillIndexOfData(data[i])
+            skillList.append(thisindex+1)
+        self.skillList = skillList
+        self.setSkillFromList()
+
 
     def ablecheck(self):
         pass

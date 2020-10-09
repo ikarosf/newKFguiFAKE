@@ -27,15 +27,16 @@ class Ui_skillChooseDialog(object):
         for i in range(len(all_skill["name"])):
             name = all_skill["name"][i]
             thisCombobox = QCheckBox(name)
+            thisCombobox.setWhatsThis(str(i+1))
             self.comboBoxList.append(thisCombobox)
         for i in range(3):
             self.gridLayout5.addWidget(self.comboBoxList[i], 0, i, 1, 1)
-        for i in range(3, 5):
+        for i in range(3, 6):
             self.gridLayout5.addWidget(self.comboBoxList[i], 1, i - 3, 1, 1)
-        for i in range(5, 9):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 2, i - 5, 1, 1)
-        for i in range(9, 12):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 3, i - 9, 1, 1)
+        for i in range(6, 10):
+            self.gridLayout5.addWidget(self.comboBoxList[i], 2, i - 6, 1, 1)
+        for i in range(10, 13):
+            self.gridLayout5.addWidget(self.comboBoxList[i], 3, i - 10, 1, 1)
 
         self.buttonBox = QDialogButtonBox(Dialog)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -59,7 +60,7 @@ class Ui_skillChooseDialog(object):
         self.skilllist = []
         for i in self.comboBoxList:
             if i.isChecked():
-                self.skilllist.append(i.text())
+                self.skilllist.append(int(i.whatsThis()))
 
 
 class skillChooseWindow(Ui_skillChooseDialog, QDialog):
@@ -67,6 +68,7 @@ class skillChooseWindow(Ui_skillChooseDialog, QDialog):
         super(skillChooseWindow, self).__init__(parent)
         # self.setAcceptDrops(True)
         self.setupUi(self)
+        self.skillList = parent.skillList
         self.setWindowModality(Qt.ApplicationModal)
         self.valueInit()
 
@@ -83,4 +85,5 @@ class skillChooseWindow(Ui_skillChooseDialog, QDialog):
         QDialog.accept(self)
 
     def valueInit(self):
-        pass
+        for i in self.skillList:
+            self.comboBoxList[i-1].setChecked(True)

@@ -908,7 +908,7 @@ class Ui_cardForm(object):
             return False, "技能数量大于技能位!"
         used_halo = 0
         for skl in sklList:
-            used_halo += all_skill["cost"][skl-1]
+            used_halo += all_skill["cost"][skl - 1]
         if used_halo > halo:
             return False, "技能所需点数超过光环！"
         # self.comboBox_8.setObjectName(u"武器类型")
@@ -1133,13 +1133,15 @@ class Ui_cardForm(object):
         self.cardImport = self.contextMenu.addAction(u'卡片导入')
         self.skillImport = self.contextMenu.addAction(u'技能导入')
         self.equipImport = self.contextMenu.addAction(u'装备导入')
-        self.allImport = self.contextMenu.addAction(u'全部导入')
         self.caclImport = self.contextMenu.addAction(u'结果导入')
+        self.allImport = self.contextMenu.addAction(u'全部导入')
+        self.cacloutput = self.contextMenu.addAction(u'全部导出')
         self.cardImport.triggered.connect(lambda: self.cardImportFun())
         self.skillImport.triggered.connect(lambda: self.skillImportFun())
         self.equipImport.triggered.connect(lambda: self.equipImportFun())
         self.allImport.triggered.connect(lambda: self.allImportFun())
         self.caclImport.triggered.connect(lambda: self.caclImportFun())
+        self.cacloutput.triggered.connect(lambda: self.cacloutputFun())
 
     def rightMenuShow(self):
         self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
@@ -1169,29 +1171,31 @@ class Ui_cardForm(object):
             text, ok = QInputDialog.getMultiLineText(self, '导入技能', '咕咕镇计算器格式')
             if not (ok and text):
                 return
-        data = text.split()
-        sklBoxList = [self.skill1comboBox, self.skill2comboBox, self.skill3comboBox, self.skill4comboBox]
-        index = 0
-        for i in range(1, len(data)):
-            for j in range(len(all_skill['data'])):
-                if data[i] == all_skill['data'][j]:
-                    sklBoxList[index].setCurrentIndex(j + 1)
-                    index += 1
-                    break
-        for i in range(index, 4):
-            sklBoxList[i].setCurrentIndex(0)
+        self.cardSkillPanel.setFromCaclText(text)
+        # data = text.split()
+        # sklBoxList = [self.skill1comboBox, self.skill2comboBox, self.skill3comboBox, self.skill4comboBox]
+        # index = 0
+        # for i in range(1, len(data)):
+        #     for j in range(len(all_skill['data'])):
+        #         if data[i] == all_skill['data'][j]:
+        #             sklBoxList[index].setCurrentIndex(j + 1)
+        #             index += 1
+        #             break
+        # for i in range(index, 4):
+        #     sklBoxList[i].setCurrentIndex(0)
 
     def equipImportFun(self, text=None):
         if text is None:
-            text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式')
+            text, ok = QInputDialog.getMultiLineText(self, '导入装备', '咕咕镇计算器格式,')
             if not (ok and text):
                 return
         if text.startswith("武器"):
             mySet = text_to_equipSet(text)
             self.equipSetImport(mySet)
             return
-        data = text.split()
-        data = [data[i:i + 7] for i in range(0, len(data), 7)]
+        data = text.split("\n")
+        for i in range(4):
+            data[i] = data[i].split()
         for i in range(len(all_equip['data']["weapon"])):
             if data[0][0] == all_equip['data']["weapon"][i]:
                 self.weapontypecomboBox.setCurrentIndex(i + 1)
@@ -1201,6 +1205,9 @@ class Ui_cardForm(object):
                 self.weaponattr3lineEdit.setText(data[0][4])
                 self.weaponattr4lineEdit.setText(data[0][5])
                 self.weaponmysticalcomboBox.setCurrentIndex(int(data[0][6]))
+                break
+            elif data[0][0] == "NONE":
+                self.weapontypecomboBox.setCurrentIndex(0)
                 break
         for i in range(len(all_equip['data']["glove"])):
             if data[1][0] == all_equip['data']["glove"][i]:
@@ -1212,6 +1219,9 @@ class Ui_cardForm(object):
                 self.gloveattr4lineEdit.setText(data[1][5])
                 self.glovemysticalcomboBox.setCurrentIndex(int(data[1][6]))
                 break
+            elif data[1][0] == "NONE":
+                self.glovetypecomboBox.setCurrentIndex(0)
+                break
         for i in range(len(all_equip['data']["Armor"])):
             if data[2][0] == all_equip['data']["Armor"][i]:
                 self.armortypecomboBox.setCurrentIndex(i + 1)
@@ -1222,6 +1232,9 @@ class Ui_cardForm(object):
                 self.armorattr4lineEdit.setText(data[2][5])
                 self.armormysticalcomboBox.setCurrentIndex(int(data[2][6]))
                 break
+            elif data[2][0] == "NONE":
+                self.armortypecomboBox.setCurrentIndex(0)
+                break
         for i in range(len(all_equip['data']["helmet"])):
             if data[3][0] == all_equip['data']["helmet"][i]:
                 self.helmettypecomboBox.setCurrentIndex(i + 1)
@@ -1231,6 +1244,9 @@ class Ui_cardForm(object):
                 self.helmetattr3lineEdit.setText(data[3][4])
                 self.helmetattr4lineEdit.setText(data[3][5])
                 self.helmetmysticalcomboBox.setCurrentIndex(int(data[3][6]))
+                break
+            elif data[3][0] == "NONE":
+                self.helmettypecomboBox.setCurrentIndex(0)
                 break
 
     def allImportFun(self, text=None):
@@ -1267,6 +1283,14 @@ class Ui_cardForm(object):
         self.equipImportFun(
             text[myindex + 1] + "\n" + text[myindex + 2] + "\n" + text[myindex + 3] + "\n" + text[myindex + 4])
         self.skillImportFun(text[myindex + 5])
+
+    def cacloutputFun(self, text=None):
+        if not self.ableCheck():
+            return
+
+        thiscard = self.makeMyCard()
+        thistext = thiscard.make_gu_text()
+        QInputDialog.getMultiLineText(self, '请复制', "", thistext)
 
     def toggleSTAT(self, flag=None):
         if flag is None:
