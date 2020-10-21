@@ -394,6 +394,8 @@ class STATCardPanel(QWidget):
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("光辉法杖", "WAND", self)
         self.comboBoxList.append(thisCombobox)
+        thisCombobox = STATSkillCheckBox("荆棘剑盾", "SHIELD", self)
+        self.comboBoxList.append(thisCombobox)
 
         try:
             for i in range(5):
@@ -620,6 +622,15 @@ class STATCardPanel(QWidget):
         text = text.split("\n")
 
         attrs1 = text[0].split()
+        if (len(attrs1) == 2):
+            cardtype, nickname = attrs1[0].split("_")
+            for i in range(len(all_character['data'])):
+                if cardtype == all_character['data'][i]:
+                    self.cardtypecomboBox.setCurrentIndex(i)
+                    break
+            self.nicknamelineedit.setText(nickname)
+            text.pop(0)
+            attrs1 = text[0].split()
         self.ADLineEdit.setText(attrs1[0])
         self.APLineEdit.setText(attrs1[1])
         self.RTKLineEdit.setText(attrs1[2])
@@ -749,6 +760,6 @@ class excludeSkillPanel(cardSkillPanel):
         skillList = []
         for i in data:
             if i != "":
-                skillList.append(getSkillIndexOfData(i)+1)
+                skillList.append(getSkillIndexOfData(i) + 1)
         self.skillList = skillList
         self.setSkillFromList()

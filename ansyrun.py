@@ -54,7 +54,7 @@ export_start = [
     "startlevel <n",
     "alc <Powe",
     "Defender mode",
-    "defender [0|1]",
+    "defender [0",
     "Reduce rate",
     "reducerate ",
     "ti <ene",

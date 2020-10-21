@@ -140,6 +140,7 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
 
 def stopNewFKEXE():
     os.system("taskkill /f /im newkf.exe")
+    os.system("taskkill /f /im newkf_64.exe")
 
 
 def whatCardClass(card):

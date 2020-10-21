@@ -1278,7 +1278,11 @@ class Ui_cardForm(object):
 
         text = re.sub(r"\n\n", "\n", text)
         text = text.split("\n")
-        self.halolineEdit.setText(text[0])
+        text0 = text[0].split(" ")
+        if (len(text0) == 1):
+            self.halolineEdit.setText(text[0])
+        else:
+            text.insert(0, "")
         self.cardImportFun(text[1] + "\n" + text[2])
         self.equipImportFun(text[3] + "\n" + text[4] + "\n" + text[5] + "\n" + text[6])
         self.skillImportFun(text[7])

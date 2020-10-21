@@ -19,7 +19,7 @@ verbose = 1
 reducerate = "0"
 seedmax = 1000000
 
-run_args = "bnpc"
+run_args = "t PC 0"
 saveData = None
 
 test_mode = False
@@ -33,10 +33,19 @@ class MyCardListClass(dict):
         super(MyCardListClass, self).__setitem__(*args, **kwargs)
         if myCardWindow is not None:
             myCardWindow.myCardListUpdate()
+        if battleReadyWindow is not None:
+            battleReadyWindow.flash()
+        if dailyBattleWindow is not None:
+            dailyBattleWindow.myCardForm.myCardListUpdate()
+        if pvpWindow is not None:
+            pvpWindow.myCardForm.myCardListUpdate()
 
     def __delitem__(self, *args, **kwargs):
         super(MyCardListClass, self).__delitem__(*args, **kwargs)
         myCardWindow.myCardListUpdate()
+        battleReadyWindow.flash()
+        dailyBattleWindow.myCardForm.myCardListUpdate()
+        pvpWindow.myCardForm.myCardListUpdate()
 
 
 class EnemyCardListClass(dict):
@@ -47,10 +56,16 @@ class EnemyCardListClass(dict):
         super(EnemyCardListClass, self).__setitem__(*args, **kwargs)
         if enemyCardWindow is not None:
             enemyCardWindow.myCardListUpdate()
+        if battleReadyWindow is not None:
+            battleReadyWindow.flash()
+        if pvpWindow is not None:
+            pvpWindow.enemyCardForm.myCardListUpdate()
 
     def __delitem__(self, *args, **kwargs):
         super(EnemyCardListClass, self).__delitem__(*args, **kwargs)
         enemyCardWindow.myCardListUpdate()
+        battleReadyWindow.flash()
+        pvpWindow.enemyCardForm.myCardListUpdate()
 
 
 class NPCListClass(dict):
