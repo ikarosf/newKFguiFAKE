@@ -94,7 +94,8 @@ class Ui_mutliChooseDialog(object):
         self.checkbox3.setStyleSheet("color:red;")
         self.gridLayout_3.addWidget(self.checkbox3, 0, 3, 1, 1)
 
-        self.checkbox4 = QCheckBox(Dialog)
+        self.checkbox4 = QComboBox(Dialog)
+        self.checkbox4.addItems(["进攻模式", "防守模式", "混合模式"])
         self.gridLayout_3.addWidget(self.checkbox4, 0, 4, 1, 1)
 
         self.tiplabel = QLabel(Dialog)
@@ -131,7 +132,6 @@ class Ui_mutliChooseDialog(object):
         self.checkbox.setText("属性自动置1")
         self.checkbox2.setText("技能自动清空")
         self.checkbox3.setText("装备自动清空")
-        self.checkbox4.setText("防守模式")
         self.tiplabel.setText("选择装备清空请先设置备选装备")
 
     # retranslateUi
@@ -145,8 +145,7 @@ class Ui_mutliChooseDialog(object):
             if self.checkbox3.isChecked():
                 self.equipClear = True
             self.excludeskilltext = self.excludeSkillPanel.getExcludeSkills()
-        if self.checkbox4.isChecked():
-            self.DEFENDERmode = True
+        self.DEFENDERmode = self.checkbox4.currentIndex()
         self.accept()
 
     def openALDialog(self):
@@ -204,7 +203,7 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         attrClear = self.checkbox.isChecked()
         skillClear = self.checkbox2.isChecked()
         equipClear = self.checkbox3.isChecked()
-        DEFENDERmode = self.checkbox4.isChecked()
+        DEFENDERmode = self.checkbox4.currentIndex()
         excludeskilltext = self.excludeSkillPanel.getExcludeSkills()
         QDialog.accept(self)
 
@@ -212,5 +211,5 @@ class mutliChooseWindow(Ui_mutliChooseDialog, QDialog):
         self.checkbox.setChecked(attrClear)
         self.checkbox2.setChecked(skillClear)
         self.checkbox3.setChecked(equipClear)
-        self.checkbox4.setChecked(DEFENDERmode)
+        self.checkbox4.setCurrentIndex(DEFENDERmode)
         self.excludeSkillPanel.setExcludeSkills(excludeskilltext)

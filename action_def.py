@@ -131,8 +131,8 @@ def make_full_gu_text(myCard, npcList=[], enemyCardList=[], gearList=[], setting
     if global_env.reducerate != "0":
         text += "REDUCERATE " + str(global_env.reducerate) + "\n"
     text += "SEEDMAX " + str(global_env.seedmax) + "\n"
-    if setting and setting[3]:
-        text += "DEFENDER 1\n"
+    if setting:
+        text += "DEFENDER " + str(setting[3]) + "\n"
     if setting and setting[4] != "":
         text += "AURAFILTER " + setting[4] + "\n"
     return text
