@@ -103,72 +103,82 @@ class Ui_cardForm(object):
         self.levellineEdit.textEdited.connect(self.set_remainder_point)
         self.gridLayout.addWidget(self.levellineEdit, 3, 1, 1, 1)
 
+        self.qualitylabel = QLabel(Form)
+        self.qualitylabel.setObjectName(u"卡片品质")
+
+        self.gridLayout.addWidget(self.qualitylabel, 4, 0, 1, 1)
+
+        self.qualitylineEdit = intLineEdit(parent=Form, max=8)  # 等级
+        self.qualitylineEdit.setObjectName(u"卡片品质")
+        self.qualitylineEdit.textEdited.connect(self.set_remainder_point)
+        self.gridLayout.addWidget(self.qualitylineEdit, 4, 1, 1, 1)
+
         self.remainder_point_text = QLabel(Form)
         self.remainder_point_text.setObjectName(u"点数文本")
-        self.gridLayout.addWidget(self.remainder_point_text, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.remainder_point_text, 5, 0, 1, 1)
         self.remainder_point = QLabel(Form)
         self.remainder_point.setObjectName(u"点数")
-        self.gridLayout.addWidget(self.remainder_point, 4, 1, 1, 1)
+        self.gridLayout.addWidget(self.remainder_point, 5, 1, 1, 1)
 
         self.STRlabel = QLabel(Form)
         self.STRlabel.setObjectName(u"力量")
 
-        self.gridLayout.addWidget(self.STRlabel, 5, 0, 1, 1)
+        self.gridLayout.addWidget(self.STRlabel, 6, 0, 1, 1)
 
         self.STRspinBox = bigSpinBox(Form)
         self.STRspinBox.setObjectName(u"力量")
         self.STRspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.STRspinBox, 5, 1, 1, 1)
+        self.gridLayout.addWidget(self.STRspinBox, 6, 1, 1, 1)
 
         self.AGIlabel = QLabel(Form)
         self.AGIlabel.setObjectName(u"敏捷")
 
-        self.gridLayout.addWidget(self.AGIlabel, 6, 0, 1, 1)
+        self.gridLayout.addWidget(self.AGIlabel, 7, 0, 1, 1)
 
         self.AGIspinBox = bigSpinBox(Form)
         self.AGIspinBox.setObjectName(u"敏捷")
         self.AGIspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.AGIspinBox, 6, 1, 1, 1)
+        self.gridLayout.addWidget(self.AGIspinBox, 7, 1, 1, 1)
 
         self.INTlabel = QLabel(Form)
         self.INTlabel.setObjectName(u"智力")
 
-        self.gridLayout.addWidget(self.INTlabel, 7, 0, 1, 1)
+        self.gridLayout.addWidget(self.INTlabel, 8, 0, 1, 1)
 
         self.INTspinBox = bigSpinBox(Form)
         self.INTspinBox.setObjectName(u"智力")
         self.INTspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.INTspinBox, 7, 1, 1, 1)
+        self.gridLayout.addWidget(self.INTspinBox, 8, 1, 1, 1)
 
         self.VITlabel = QLabel(Form)
         self.VITlabel.setObjectName(u"体魄")
 
-        self.gridLayout.addWidget(self.VITlabel, 8, 0, 1, 1)
+        self.gridLayout.addWidget(self.VITlabel, 9, 0, 1, 1)
 
         self.VITspinBox = bigSpinBox(Form)
         self.VITspinBox.setObjectName(u"体魄")
         self.VITspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.VITspinBox, 8, 1, 1, 1)
+        self.gridLayout.addWidget(self.VITspinBox, 9, 1, 1, 1)
 
         self.SPRlabel = QLabel(Form)
         self.SPRlabel.setObjectName(u"精神")
 
-        self.gridLayout.addWidget(self.SPRlabel, 9, 0, 1, 1)
+        self.gridLayout.addWidget(self.SPRlabel, 10, 0, 1, 1)
 
         self.SPRspinBox = bigSpinBox(Form)
         self.SPRspinBox.setObjectName(u"精神")
         self.SPRspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.SPRspinBox, 9, 1, 1, 1)
+        self.gridLayout.addWidget(self.SPRspinBox, 10, 1, 1, 1)
 
         self.RESlabel = QLabel(Form)
         self.RESlabel.setObjectName(u"意志")
 
-        self.gridLayout.addWidget(self.RESlabel, 10, 0, 1, 1)
+        self.gridLayout.addWidget(self.RESlabel, 11, 0, 1, 1)
 
         self.RESspinBox = bigSpinBox(Form)
         self.RESspinBox.setObjectName(u"意志")
         self.RESspinBox.valueChanged.connect(self.set_remainder_point)
-        self.gridLayout.addWidget(self.RESspinBox, 10, 1, 1, 1)
+        self.gridLayout.addWidget(self.RESspinBox, 11, 1, 1, 1)
 
         self.gridLayout_stack1.addLayout(self.gridLayout, 1, 0, 2, 1)
 
@@ -528,6 +538,7 @@ class Ui_cardForm(object):
         self.cardtypelabel.setText("卡片类型")
 
         self.levellabel.setText("卡片等级")
+        self.qualitylabel.setText("卡片品质")
         self.remainder_point_text.setText("可用点数")
         self.STRlabel.setText("力量")
         self.AGIlabel.setText("敏捷")
@@ -587,6 +598,7 @@ class Ui_cardForm(object):
         nickname = self.nicknamelineEdit.text()
         character = self.cardtypecomboBox.currentIndex()
         level = self.levellineEdit.text()
+        quality = self.qualitylineEdit.getValue()
         attrSTR = self.STRspinBox.getValue()
         attrAGI = self.AGIspinBox.getValue()
         attrINT = self.INTspinBox.getValue()
@@ -646,7 +658,7 @@ class Ui_cardForm(object):
 
         equipSet = EQUIPSet(weapon, glove, Armor, helmet)
 
-        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname)
+        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
 
         return card
 
@@ -657,6 +669,10 @@ class Ui_cardForm(object):
         halo = card.halo
         character = card.character
         level = card.level
+        if hasattr(card, "quality"):
+            quality = card.quality
+        else:
+            quality = 0
         attrSet = card.attrSet
         sklSlot = card.sklSlot
         skillSet = card.skillSet
@@ -687,6 +703,7 @@ class Ui_cardForm(object):
         self.halolineEdit.setText(halo)
         self.cardtypecomboBox.setCurrentIndex(character)
         self.levellineEdit.setText(level)
+        self.qualitylineEdit.setText(quality)
         self.STRspinBox.setValue(attrSTR)
         self.AGIspinBox.setValue(attrAGI)
         self.INTspinBox.setValue(attrINT)
@@ -735,6 +752,7 @@ class Ui_cardForm(object):
         halo = "0"
         character = 0
         level = "0"
+        quality = "0"
         attrSet = cardAttr(0, 0, 0, 0, 0, 0)
         sklSlot = 4
         # skillSet = card.skillSet
@@ -761,6 +779,7 @@ class Ui_cardForm(object):
         self.halolineEdit.setText(halo)
         self.cardtypecomboBox.setCurrentIndex(character)
         self.levellineEdit.setText(level)
+        self.qualitylineEdit.setText(quality)
         self.STRspinBox.setValue(attrSTR)
         self.AGIspinBox.setValue(attrAGI)
         self.INTspinBox.setValue(attrINT)
@@ -907,7 +926,9 @@ class Ui_cardForm(object):
 
         if level > 500:
             return False, "卡片不能超过500级"
+        quality = self.qualitylineEdit.getValue()
         maxPoint = level * 3 + 6
+        maxPoint = int(maxPoint * (1 + quality / 100))
         if maxPoint < STR + AGI + INT + VIT + SPR + RES:
             return False, "属性点分配超过等级上限！"
 
@@ -1030,6 +1051,7 @@ class Ui_cardForm(object):
 
     def set_remainder_point(self):
         level = self.levellineEdit.getValue()
+        quality = self.qualitylineEdit.getValue()
         STR = self.STRspinBox.getValue()
         AGI = self.AGIspinBox.getValue()
         INT = self.INTspinBox.getValue()
@@ -1038,6 +1060,7 @@ class Ui_cardForm(object):
         RES = self.RESspinBox.getValue()
 
         maxPoint = level * 3 + 6
+        maxPoint = int(maxPoint * (1 + quality / 100))
         remainder_point = maxPoint - (STR + AGI + INT + VIT + SPR + RES)
         self.remainder_point.setText(str(remainder_point))
 

@@ -2,7 +2,7 @@ from SystemClass import all_character
 
 
 class card:
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
         self.halo = halo
         self.character = character
         self.level = level
@@ -10,6 +10,7 @@ class card:
         self.sklSlot = sklSlot
         self.skillSet = skillSet
         self.equipSet = equipSet
+        self.quality = quality
 
     def tostring(self):
         text = ''
@@ -22,8 +23,8 @@ class card:
 
 
 class myCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
-        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
+        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
 
     def make_gu_text(self):
         text = ''
@@ -44,8 +45,8 @@ class myCard(card):
 
 
 class enemyCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname):
-        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
+        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
         self.nickname = nickname
 
     def make_gu_text(self):

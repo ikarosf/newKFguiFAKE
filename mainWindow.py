@@ -151,7 +151,7 @@ class Ui_MainWindow(object):
     def aboutWindowOpen(self):
         QMessageBox.about(self, "关于", """autor: ikarosf @kf 
         title: 咕咕镇计算器图形化界面(伪（伪）)
-        vision: 1.82
+        vision: 1.83
         link: 
         https://bbs.kforz.com/read.php?tid=809582&sf=44f""")
 
