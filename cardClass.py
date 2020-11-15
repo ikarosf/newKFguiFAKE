@@ -35,6 +35,8 @@ class myCard(card):
         text += self.level
         text += " "
         text += str(self.sklSlot + 1)
+        text += " "
+        text += str(self.quality)
         text += "\n"
         text += self.attrSet.make_gu_text()
         text += "\n"
@@ -58,6 +60,8 @@ class enemyCard(card):
         text += self.level
         text += " "
         text += str(self.sklSlot + 1)
+        text += " "
+        text += str(self.quality)
         text += "\n"
         text += self.attrSet.make_gu_text()
         text += "\n"

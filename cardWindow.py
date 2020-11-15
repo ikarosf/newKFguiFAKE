@@ -927,6 +927,8 @@ class Ui_cardForm(object):
         if level > 500:
             return False, "卡片不能超过500级"
         quality = self.qualitylineEdit.getValue()
+        if quality <= 0:
+            return False, "卡片品质不能为0"
         maxPoint = level * 3 + 6
         maxPoint = int(maxPoint * (1 + quality / 100))
         if maxPoint < STR + AGI + INT + VIT + SPR + RES:
@@ -1203,12 +1205,13 @@ class Ui_cardForm(object):
                 break
         self.levellineEdit.setText(data[1])
         self.cardSkillPanel.skillslotcomboBox.setCurrentText(data[2])
-        self.STRspinBox.setValue(int(data[3]))
-        self.AGIspinBox.setValue(int(data[4]))
-        self.INTspinBox.setValue(int(data[5]))
-        self.VITspinBox.setValue(int(data[6]))
-        self.SPRspinBox.setValue(int(data[7]))
-        self.RESspinBox.setValue(int(data[8]))
+        self.qualitylineEdit.setText(data[3])
+        self.STRspinBox.setValue(int(data[4]))
+        self.AGIspinBox.setValue(int(data[5]))
+        self.INTspinBox.setValue(int(data[6]))
+        self.VITspinBox.setValue(int(data[7]))
+        self.SPRspinBox.setValue(int(data[8]))
+        self.RESspinBox.setValue(int(data[9]))
 
     def skillImportFun(self, text=None):
         if text is None:
