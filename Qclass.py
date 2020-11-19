@@ -379,6 +379,8 @@ class STATCardPanel(QWidget):
         for i in range(5, len(all_skill["name"])):
             name = all_skill["name"][i]
             attr = all_skill["data"][i]
+            if attr == "XUE":
+                continue
             thisCombobox = STATSkillCheckBox(name, attr, self)
             self.comboBoxList.append(thisCombobox)
 

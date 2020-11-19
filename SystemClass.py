@@ -13,19 +13,20 @@
 
 all_skill = {
     "name": ["启程之誓", "启程之心", "启程之风",
-             "破壁之心", "破魔之心", "复合护盾",
+             "破壁之心", "破魔之心", "复合护盾", "鲜血渴望",
              "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍",
-             "沸血之志", "波澜不惊", "飓风之力"],
+             "沸血之志", "波澜不惊", "飓风之力", "红蓝双刺", "绝对护盾"
+             ],
 
     "data": ["SHI", "XIN", "FENG",
-             "BI", "MO", "DUN",
+             "BI", "MO", "DUN", "XUE",
              "SHANG", "SHEN", "CI", "REN",
-             "FEI", "BO", "JU"
+             "FEI", "BO", "JU", "HONG", "JUE"
              ],
     "cost": [10, 10, 10,
-             30, 30, 30,
+             30, 30, 30, 30,
              50, 50, 50, 50,
-             100, 100, 100
+             100, 100, 100, 100, 100
              ]
 }
 
@@ -269,7 +270,7 @@ class SKILLSet:
         if self.skill_3.data != 0:
             text += "_"
             text += all_skill["data"][self.skill_3.data - 1]
-        if self.skill_4.data == len(all_skill["name"])+1:
+        if self.skill_4.data == len(all_skill["name"]) + 1:
             text += "_"
             text += "RAND"
         elif self.skill_4.data != 0:

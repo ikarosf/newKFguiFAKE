@@ -27,16 +27,25 @@ class Ui_skillChooseDialog(object):
         for i in range(len(all_skill["name"])):
             name = all_skill["name"][i]
             thisCombobox = QCheckBox(name)
-            thisCombobox.setWhatsThis(str(i+1))
+            thisCombobox.setWhatsThis(str(i + 1))
             self.comboBoxList.append(thisCombobox)
-        for i in range(3):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 0, i, 1, 1)
-        for i in range(3, 6):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 1, i - 3, 1, 1)
-        for i in range(6, 10):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 2, i - 6, 1, 1)
-        for i in range(10, 13):
-            self.gridLayout5.addWidget(self.comboBoxList[i], 3, i - 10, 1, 1)
+        j = 0
+        k = 0
+        n = 0
+        m = 0
+        for i in range(len(all_skill["name"])):
+            if all_skill["cost"][i] == 10:
+                self.gridLayout5.addWidget(self.comboBoxList[i], 0, j, 1, 1)
+                j += 1
+            elif all_skill["cost"][i] == 30:
+                self.gridLayout5.addWidget(self.comboBoxList[i], 1, k, 1, 1)
+                k += 1
+            elif all_skill["cost"][i] == 50:
+                self.gridLayout5.addWidget(self.comboBoxList[i], 2, n, 1, 1)
+                n += 1
+            elif all_skill["cost"][i] == 100:
+                self.gridLayout5.addWidget(self.comboBoxList[i], 3, m, 1, 1)
+                m += 1
 
         self.buttonBox = QDialogButtonBox(Dialog)
         self.buttonBox.setObjectName(u"buttonBox")
@@ -86,4 +95,4 @@ class skillChooseWindow(Ui_skillChooseDialog, QDialog):
 
     def valueInit(self):
         for i in self.skillList:
-            self.comboBoxList[i-1].setChecked(True)
+            self.comboBoxList[i - 1].setChecked(True)
