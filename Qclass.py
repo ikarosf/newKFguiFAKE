@@ -2,13 +2,14 @@ import re
 
 from PySide2.QtGui import QIntValidator, QDoubleValidator, QCursor
 from PySide2.QtWidgets import QComboBox, QLineEdit, QSpinBox, QWidget, QGridLayout, QLabel, QCheckBox, QMenu, \
-    QInputDialog, QPushButton, QMessageBox, QVBoxLayout
+    QInputDialog, QPushButton, QMessageBox, QVBoxLayout, QHBoxLayout
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt, SIGNAL, Slot)
-from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName, getSkillIndexOfData
+from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName, getSkillIndexOfData, WishSet
 from cardClass import STATCard
 import global_env
 from skillChooseDialog import skillChooseWindow
+from wishSetDialog import wishSetWindow
 
 
 class myComboBox(QComboBox):
@@ -201,22 +202,19 @@ class STATCardPanel(QWidget):
 
         self.nicknamelabel = QLabel(self)
         self.nicknamelabel.setText("卡片别名")
-        self.gridLayout.addWidget(self.nicknamelabel, 0, 0, 1, 1)
 
         self.nicknamelineedit = QLineEdit(self)
-        self.gridLayout.addWidget(self.nicknamelineedit, 0, 1, 1, 1)
 
         self.cardtypelabel = QLabel(self)
         self.cardtypelabel.setText("卡片类型")
-        self.gridLayout.addWidget(self.cardtypelabel, 1, 0, 1, 1)
 
         self.cardtypecomboBox = cardCharacterComboBox(self)
-        self.gridLayout.addWidget(self.cardtypecomboBox, 1, 1, 1, 1)
+
+        self.wishpanel = wishPanel()
 
         # gridLayout1__________________________
 
         self.gridLayout1 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout1, 2, 0, 1, 1)
 
         self.ADlabel = QLabel(self)
         self.ADlabel.setText("物攻")
@@ -255,7 +253,6 @@ class STATCardPanel(QWidget):
         # gridLayout2__________________________
 
         self.gridLayout2 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout2, 2, 1, 1, 1)
 
         self.RTKlabel = QLabel(self)
         self.RTKlabel.setText("绝对攻击")
@@ -301,7 +298,6 @@ class STATCardPanel(QWidget):
         # gridLayout3__________________________
 
         self.gridLayout3 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout3, 3, 0, 1, 1)
 
         self.HEALTHlabel = QLabel(self)
         self.HEALTHlabel.setText("生命")
@@ -340,7 +336,6 @@ class STATCardPanel(QWidget):
         # gridLayout4__________________________
 
         self.gridLayout4 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout4, 3, 1, 1, 1)
 
         self.CRITlabel = QLabel(self)
         self.CRITlabel.setText("暴击")
@@ -373,7 +368,6 @@ class STATCardPanel(QWidget):
         # gridLayout5__________________________
 
         self.gridLayout5 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout5, 4, 0, 1, 2)
 
         self.comboBoxList = []
         for i in range(5, len(all_skill["name"])):
@@ -390,6 +384,8 @@ class STATCardPanel(QWidget):
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("手环", "BRACELET", self)
         self.comboBoxList.append(thisCombobox)
+        thisCombobox = STATSkillCheckBox("秃鹫手套", "VULTURE", self)
+        self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("发饰", "TIARA", self)
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("幽梦匕首", "DAGGER", self)
@@ -397,6 +393,8 @@ class STATCardPanel(QWidget):
         thisCombobox = STATSkillCheckBox("光辉法杖", "WAND", self)
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("荆棘剑盾", "SHIELD", self)
+        self.comboBoxList.append(thisCombobox)
+        thisCombobox = STATSkillCheckBox("天使缎带", "RIBBON", self)
         self.comboBoxList.append(thisCombobox)
 
         try:
@@ -409,7 +407,6 @@ class STATCardPanel(QWidget):
         # gridLayout6__________________________
 
         self.gridLayout6 = QGridLayout()
-        self.gridLayout.addLayout(self.gridLayout6, 5, 0, 1, 2)
 
         self.savepushButton = QPushButton()
         self.savepushButton.clicked.connect(self.saveMyCard)
@@ -432,9 +429,24 @@ class STATCardPanel(QWidget):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.rightMenuShow)
 
+        self.gridLayout.addWidget(self.nicknamelabel, 0, 0, 1, 1)  # 卡片别名
+        self.gridLayout.addWidget(self.nicknamelineedit, 0, 1, 1, 1)  # 卡片别名QLineEdit
+        self.gridLayout.addWidget(self.cardtypelabel, 1, 0, 1, 1)  # 卡片类型
+        self.gridLayout.addWidget(self.cardtypecomboBox, 1, 1, 1, 1)  # 卡片类型comboBox
+        self.gridLayout.addWidget(self.wishpanel, 2, 0, 1, 2)
+        self.gridLayout.addLayout(self.gridLayout1, 3, 0, 2, 1)  # 物攻
+        self.gridLayout.addLayout(self.gridLayout2, 3, 1, 2, 1)  # 绝对攻击
+        self.gridLayout.addLayout(self.gridLayout3, 5, 0, 2, 1)  # 生命
+        self.gridLayout.addLayout(self.gridLayout4, 5, 1, 2, 1)  # 暴击
+        self.gridLayout.addLayout(self.gridLayout5, 7, 0, 2, 2)  # 神秘
+        self.gridLayout.addLayout(self.gridLayout6, 9, 0, 1, 2)  # 按钮
+
     def makeMyCard(self):
         nickname = self.nicknamelineedit.text()
         cardType = self.cardtypecomboBox.currentIndex()
+
+        wishSet = WishSet(self.wishpanel.getWishLevelList())
+
         attrs1 = []
         attrs1.append(self.ADLineEdit.getValue())
         attrs1.append(self.APLineEdit.getValue())
@@ -472,7 +484,7 @@ class STATCardPanel(QWidget):
                 attrs5[0] += 1
                 attrs5.append(i.currentValue())
 
-        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname)
+        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname,wishSet)
 
     def ableCheck(self):
         return True, ""
@@ -525,6 +537,11 @@ class STATCardPanel(QWidget):
     def newMyCard(self):
         self.nicknamelineedit.setText("")
         self.cardtypecomboBox.setCurrentIndex(0)
+
+        wishLevelList = [0,0,0,0,0,0,0]
+        self.wishpanel.wishLevelList = wishLevelList
+        self.wishpanel.setLabelLevel()
+
         self.ADLineEdit.setText("")
         self.APLineEdit.setText("")
         self.RTKLineEdit.setText("")
@@ -569,6 +586,15 @@ class STATCardPanel(QWidget):
             self.nicknamelineedit.setText("")
 
         self.cardtypecomboBox.setCurrentIndex(cardtype)
+
+        if hasattr(card, "wishSet"):
+            wishSet = card.wishSet
+        else:
+            wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
+
+        self.wishpanel.wishLevelList = wishSet.getWishLevelList()
+        self.wishpanel.setLabelLevel()
+
         self.ADLineEdit.setText(attrs1[0])
         self.APLineEdit.setText(attrs1[1])
         self.RTKLineEdit.setText(attrs1[2])
@@ -614,6 +640,26 @@ class STATCardPanel(QWidget):
         self.contextMenu.popup(QCursor.pos())  # 2菜单显示的位置
         self.contextMenu.show()
 
+    def wishImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入祝福', 'WISH 开头')
+            if not (ok and text):
+                return
+
+        text = text.split(" ")
+        if text[0] != "WISH":
+            return
+        else:
+            wishLevelList = []
+            for i in range(len(text) - 1):
+                try:
+                    wishLevelList.append(int(text[i + 1]))
+                except:
+                    pass
+            self.wishpanel.wishLevelList = wishLevelList.copy()
+            self.wishpanel.setLabelLevel()
+
+
     def cardImportFun(self, text=None):
         if text is None:
             text, ok = QInputDialog.getMultiLineText(self, '导入卡片', '计算器格式')
@@ -633,6 +679,12 @@ class STATCardPanel(QWidget):
             self.nicknamelineedit.setText(nickname)
             text.pop(0)
             attrs1 = text[0].split()
+
+        if attrs1[0] == "WISH":
+            self.wishImportFun(text[0])
+            text.pop(0)
+            attrs1 = text[0].split()
+
         self.ADLineEdit.setText(attrs1[0])
         self.APLineEdit.setText(attrs1[1])
         self.RTKLineEdit.setText(attrs1[2])
@@ -741,6 +793,39 @@ class cardSkillPanel(QWidget):
 
     def ablecheck(self):
         pass
+
+
+class wishPanel(QWidget):
+    def __init__(self, parent=None):
+        super(wishPanel, self).__init__(parent)
+        self.hBoxLayout = QHBoxLayout(self)
+        self.selectButton = QPushButton("选择许愿池系数")
+        self.wishLevelList = [0, 0, 0, 0, 0, 0, 0]
+        self.wishLevelLabelList = []
+
+        self.hBoxLayout.addWidget(self.selectButton)
+        for i in range(len(self.wishLevelList)):
+            wishLevelLabel = QLabel(self)
+            wishLevelLabel.setText("无技能")
+            self.wishLevelLabelList.append(wishLevelLabel)
+            self.hBoxLayout.addWidget(wishLevelLabel)
+
+        self.setLabelLevel()
+
+        self.selectButton.clicked.connect(lambda: self.runwishSetDialog())
+
+    def setLabelLevel(self):
+        for i in range(len(self.wishLevelList)):
+            self.wishLevelLabelList[i].setText(str(self.wishLevelList[i]))
+
+    def runwishSetDialog(self):
+        scw, wishLevelList = wishSetWindow.launch(self)
+        if scw:
+            self.wishLevelList = wishLevelList
+            self.setLabelLevel()
+
+    def getWishLevelList(self):
+        return self.wishLevelList.copy()
 
 
 class excludeSkillPanel(cardSkillPanel):

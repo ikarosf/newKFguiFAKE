@@ -68,15 +68,15 @@ all_npc = {
 all_equip = {
     "name": {
         "weapon": ["剑", "短弓", "短杖", "荣誉之刃", "刺杀弓", "幽梦匕首", "光辉法杖", "荆棘剑盾"],
-        "glove": ["手套", "手环"],
+        "glove": ["手套", "手环", "秃鹫手套"],
         "Armor": ["铁甲", "皮甲", "布甲", "灵光袍", "荆棘重甲"],
-        "helmet": ["头巾", "发饰"],
+        "helmet": ["头巾", "发饰", "天使缎带"],
     },
     "data": {
         "weapon": ["SWORD", "BOW", "STAFF", "BLADE", "ASSBOW", "DAGGER", "WAND", "SHIELD"],
-        "glove": ["GLOVES", "BRACELET"],
+        "glove": ["GLOVES", "BRACELET", "VULTURE"],
         "Armor": ["PLATE", "LEATHER", "CLOTH", "CLOAK", "THORN"],
-        "helmet": ["SCARF", "TIARA"],
+        "helmet": ["SCARF", "TIARA", "RIBBON"],
     }
 }
 
@@ -293,3 +293,17 @@ class SKILLSet:
             text += "_"
             text += all_skill["name"][self.skill_4.data - 1]
         return text
+
+
+class WishSet:
+    def __init__(self, wishLevelList):
+        self.wishLevelList = wishLevelList
+
+    def make_gu_text(self):
+        text = "WISH "
+        for i in range(len(self.wishLevelList)):
+            text += str(self.wishLevelList[i]) + " "
+        return text
+
+    def getWishLevelList(self):
+        return self.wishLevelList.copy()

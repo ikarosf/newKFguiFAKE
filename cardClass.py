@@ -2,7 +2,7 @@ from SystemClass import all_character
 
 
 class card:
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet):
         self.halo = halo
         self.character = character
         self.level = level
@@ -11,6 +11,7 @@ class card:
         self.skillSet = skillSet
         self.equipSet = equipSet
         self.quality = quality
+        self.wishSet = wishSet
 
     def tostring(self):
         text = ''
@@ -23,8 +24,9 @@ class card:
 
 
 class myCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
-        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet):
+        super(myCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality,
+                                     wishSet)
 
     def make_gu_text(self):
         text = ''
@@ -38,6 +40,8 @@ class myCard(card):
         text += " "
         text += str(self.quality)
         text += "\n"
+        text += self.wishSet.make_gu_text()
+        text += "\n"
         text += self.attrSet.make_gu_text()
         text += "\n"
         text += self.equipSet.make_gu_text()
@@ -47,8 +51,9 @@ class myCard(card):
 
 
 class enemyCard(card):
-    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality):
-        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
+    def __init__(self, halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet):
+        super(enemyCard, self).__init__(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality,
+                                        wishSet)
         self.nickname = nickname
 
     def make_gu_text(self):
@@ -62,6 +67,8 @@ class enemyCard(card):
         text += str(self.sklSlot + 1)
         text += " "
         text += str(self.quality)
+        text += "\n"
+        text += self.wishSet.make_gu_text()
         text += "\n"
         text += self.attrSet.make_gu_text()
         text += "\n"
@@ -79,7 +86,7 @@ class enemyCard(card):
 
 
 class STATCard:
-    def __init__(self, cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname):
+    def __init__(self, cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname, wishSet):
         self.cardType = cardType
         self.attrs1 = attrs1
         self.attrs2 = attrs2
@@ -87,6 +94,7 @@ class STATCard:
         self.attrs4 = attrs4
         self.attrs5 = attrs5
         self.nickname = nickname
+        self.wishSet = wishSet
 
     def make_gu_text(self):
         text = ''
@@ -95,6 +103,8 @@ class STATCard:
             text += "_" + self.nickname
         text += " "
         text += "STAT"
+        text += "\n"
+        text += self.wishSet.make_gu_text()
         text += "\n"
         text += " ".join(str(i) for i in self.attrs1)
         text += "\n"

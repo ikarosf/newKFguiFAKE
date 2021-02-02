@@ -8,9 +8,9 @@ from PySide2.QtWidgets import *
 import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
     ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox, STATCardPanel, \
-    cardSkillPanel
+    cardSkillPanel, wishPanel
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet, \
-    all_character, all_skill, all_equip
+    all_character, all_skill, all_equip, WishSet
 from action_def import text_to_equipSet, whatCardClass
 from cardClass import myCard
 from equipChooseWindow import equipChooseWindow
@@ -180,7 +180,7 @@ class Ui_cardForm(object):
         self.RESspinBox.valueChanged.connect(self.set_remainder_point)
         self.gridLayout.addWidget(self.RESspinBox, 11, 1, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout, 1, 0, 2, 1)
+        self.wishpanel = wishPanel()
 
         self.gridLayout_4 = QGridLayout()
         self.gridLayout_4.setObjectName(u"gridLayout_4")
@@ -249,8 +249,6 @@ class Ui_cardForm(object):
 
         self.gridLayout_4.addWidget(self.weaponmysticallabel, 3, 0, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout_4, 1, 1, 1, 1)
-
         self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.gloveattr1lineEdit = intLineEdit(Form, min=50, max=150)
@@ -313,8 +311,6 @@ class Ui_cardForm(object):
 
         self.gridLayout_5.addWidget(self.glovelevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout_5, 2, 1, 1, 1)
-
         # self.gridLayout_2 = QGridLayout()
         # self.gridLayout_2.setObjectName(u"技能组")
         # self.skillslotlabel = QLabel(Form)
@@ -353,8 +349,7 @@ class Ui_cardForm(object):
         # self.gridLayout_2.addWidget(self.skill4comboBox, 4, 1, 1, 1)
         #
         # self.gridLayout_stack1.addLayout(self.gridLayout_2, 3, 0, 2, 1)
-        self.cardSkillPanel = cardSkillPanel(Form);
-        self.gridLayout_stack1.addWidget(self.cardSkillPanel, 3, 0, 2, 1)
+        self.cardSkillPanel = cardSkillPanel(Form)
 
         self.gridLayout_6 = QGridLayout()
         self.gridLayout_6.setObjectName(u"护甲")
@@ -418,8 +413,6 @@ class Ui_cardForm(object):
 
         self.gridLayout_6.addWidget(self.armorlevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout_6, 3, 1, 1, 1)
-
         self.gridLayout_7 = QGridLayout()
         self.gridLayout_7.setObjectName(u"头盔")
         self.helmetattr1lineEdit = intLineEdit(Form, min=50, max=150)
@@ -482,8 +475,6 @@ class Ui_cardForm(object):
 
         self.gridLayout_7.addWidget(self.helmetlevellabel, 1, 0, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout_7, 4, 1, 1, 1)
-
         self.gridLayout_8 = QGridLayout()
         self.gridLayout_8.setObjectName(u"按钮")
 
@@ -518,7 +509,16 @@ class Ui_cardForm(object):
         self.pushButton_5.setObjectName(u"比例分配属性")
         self.gridLayout_8.addWidget(self.pushButton_5, 1, 1, 1, 1)
 
-        self.gridLayout_stack1.addLayout(self.gridLayout_8, 5, 0, 1, 2)
+        self.gridLayout_stack1.addLayout(self.gridLayout, 0, 0, 6, 1)  # 昵称到意志
+        self.gridLayout_stack1.addWidget(self.cardSkillPanel, 6, 0, 4, 1)  # 技能
+
+        self.gridLayout_stack1.addWidget(self.wishpanel, 0, 1, 1, 1)
+        self.gridLayout_stack1.addLayout(self.gridLayout_4, 1, 1, 2, 1)  # 武器
+        self.gridLayout_stack1.addLayout(self.gridLayout_5, 3, 1, 2, 1)  # 手套
+        self.gridLayout_stack1.addLayout(self.gridLayout_6, 5, 1, 2, 1)  # 护甲
+        self.gridLayout_stack1.addLayout(self.gridLayout_7, 7, 1, 3, 1)  # 头盔
+
+        self.gridLayout_stack1.addLayout(self.gridLayout_8, 10, 0, 1, 2)  # 按钮
 
         self.STATCardForm = STATCardPanel(Form, cardList=self.cardList, cardlistcomboBox=self.cardlistcomboBox)
         self.gridLayout_stack2.addWidget(self.STATCardForm)
@@ -616,6 +616,8 @@ class Ui_cardForm(object):
         skill_4 = skill(skillindexlist[3])
         skillSet = SKILLSet(skill_1, skill_2, skill_3, skill_4)
 
+        wishSet = WishSet(self.wishpanel.getWishLevelList())
+
         weaponType = self.weapontypecomboBox.currentIndex()
         weaponLevel = self.weaponlevellineEdit.text()
         weaponAttr1 = self.weaponattr1lineEdit.text()
@@ -658,7 +660,7 @@ class Ui_cardForm(object):
 
         equipSet = EQUIPSet(weapon, glove, Armor, helmet)
 
-        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality)
+        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet)
 
         return card
 
@@ -676,6 +678,10 @@ class Ui_cardForm(object):
         attrSet = card.attrSet
         sklSlot = card.sklSlot
         skillSet = card.skillSet
+        if hasattr(card, "wishSet"):
+            wishSet = card.wishSet
+        else:
+            wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
         equipSet = card.equipSet
 
         attrSTR = attrSet.STR
@@ -715,6 +721,9 @@ class Ui_cardForm(object):
 
         skillindexlist = [skill_1.data, skill_2.data, skill_3.data, skill_4.data]
         self.cardSkillPanel.set4index(skillindexlist)
+
+        self.wishpanel.wishLevelList = wishSet.getWishLevelList()
+        self.wishpanel.setLabelLevel()
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -765,6 +774,8 @@ class Ui_cardForm(object):
         attrSPR = attrSet.SPR
         attrRES = attrSet.RES
 
+        wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
+
         skill_1 = 0
         skill_2 = 0
         skill_3 = 0
@@ -788,8 +799,10 @@ class Ui_cardForm(object):
         self.RESspinBox.setValue(attrRES)
 
         self.cardSkillPanel.skillslotcomboBox.setCurrentIndex(sklSlot)
-
         self.cardSkillPanel.set4index([0, 0, 0, 0])
+
+        self.wishpanel.wishLevelList = wishSet.getWishLevelList()
+        self.wishpanel.setLabelLevel()
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -916,6 +929,9 @@ class Ui_cardForm(object):
         if global_env.test_mode:
             return True, "测试模式"
 
+        if self.isSTAT():
+            return True, "STAT卡片"
+
         level = self.levellineEdit.getValue()
         STR = self.STRspinBox.getValue()
         AGI = self.AGIspinBox.getValue()
@@ -928,7 +944,7 @@ class Ui_cardForm(object):
             return False, "卡片不能超过500级"
         quality = self.qualitylineEdit.getValue()
         if quality <= 0:
-            return False, "卡片品质不能为0"
+            return False, "卡片品质不能小于等于0"
         maxPoint = level * 3 + 6
         maxPoint = int(maxPoint * (1 + quality / 100))
         if maxPoint < STR + AGI + INT + VIT + SPR + RES:
@@ -1195,23 +1211,34 @@ class Ui_cardForm(object):
             text, ok = QInputDialog.getMultiLineText(self, '导入卡片', '咕咕镇计算器格式')
             if not (ok and text):
                 return
-        data = text.split()
-        data1 = data[0].split("_")
-        if len(data1) == 2:
-            self.nicknamelineEdit.setText(data1[1])
+        text = re.sub(r"\n\n", "\n", text)
+        data = text.split("\n")
+        if len(data) < 3:
+            data.insert(1, " ")
+        data0 = data[0].split(" ")
+        data1 = data[1].split(" ")
+        data2 = data[2].split(" ")
+
+        data00 = data0[0].split("_")
+        if len(data00) == 2:
+            self.nicknamelineEdit.setText(data00[1])
         for i in range(len(all_character['data'])):
-            if data1[0] == all_character['data'][i]:
+            if data00[0] == all_character['data'][i]:
                 self.cardtypecomboBox.setCurrentIndex(i)
                 break
-        self.levellineEdit.setText(data[1])
-        self.cardSkillPanel.skillslotcomboBox.setCurrentText(data[2])
-        self.qualitylineEdit.setText(data[3])
-        self.STRspinBox.setValue(int(data[4]))
-        self.AGIspinBox.setValue(int(data[5]))
-        self.INTspinBox.setValue(int(data[6]))
-        self.VITspinBox.setValue(int(data[7]))
-        self.SPRspinBox.setValue(int(data[8]))
-        self.RESspinBox.setValue(int(data[9]))
+
+        self.levellineEdit.setText(data0[1])
+        self.cardSkillPanel.skillslotcomboBox.setCurrentText(data0[2])
+        self.qualitylineEdit.setText(data0[3])
+
+        self.wishImportFun(data[1])
+
+        self.STRspinBox.setValue(int(data2[0]))
+        self.AGIspinBox.setValue(int(data2[1]))
+        self.INTspinBox.setValue(int(data2[2]))
+        self.VITspinBox.setValue(int(data2[3]))
+        self.SPRspinBox.setValue(int(data2[4]))
+        self.RESspinBox.setValue(int(data2[5]))
 
     def skillImportFun(self, text=None):
         if text is None:
@@ -1219,17 +1246,6 @@ class Ui_cardForm(object):
             if not (ok and text):
                 return
         self.cardSkillPanel.setFromCaclText(text)
-        # data = text.split()
-        # sklBoxList = [self.skill1comboBox, self.skill2comboBox, self.skill3comboBox, self.skill4comboBox]
-        # index = 0
-        # for i in range(1, len(data)):
-        #     for j in range(len(all_skill['data'])):
-        #         if data[i] == all_skill['data'][j]:
-        #             sklBoxList[index].setCurrentIndex(j + 1)
-        #             index += 1
-        #             break
-        # for i in range(index, 4):
-        #     sklBoxList[i].setCurrentIndex(0)
 
     def equipImportFun(self, text=None):
         if text is None:
@@ -1302,16 +1318,31 @@ class Ui_cardForm(object):
             if not (ok and text):
                 return
 
+        '''
+        光环
+        <PC类型> <等级> <技能位> <品质>
+        [WISH <七项许愿池点数>]
+        <六项基本属性点数>
+        <装备1>
+        <装备2>
+        <装备3>
+        <装备4>
+        <天赋技能数> <天赋技能1> <天赋技能2> ...
+        '''
+
         text = re.sub(r"\n\n", "\n", text)
         text = text.split("\n")
         text0 = text[0].split(" ")
-        if (len(text0) == 1):
-            self.halolineEdit.setText(text[0])
-        else:
-            text.insert(0, "")
-        self.cardImportFun(text[1] + "\n" + text[2])
-        self.equipImportFun(text[3] + "\n" + text[4] + "\n" + text[5] + "\n" + text[6])
-        self.skillImportFun(text[7])
+        if len(text0) != 1:
+            text.insert(0, "0")
+        text2 = text[2].split(" ")
+        if text2[0] != "WISH":
+            text.insert(2, " ")
+
+        self.halolineEdit.setText(text[0])
+        self.cardImportFun(text[1] + "\n" + text[2] + "\n" + text[3])
+        self.equipImportFun(text[4] + "\n" + text[5] + "\n" + text[6] + "\n" + text[7])
+        self.skillImportFun(text[8])
 
     def caclImportFun(self, text=None):
         if text is None:
@@ -1334,6 +1365,25 @@ class Ui_cardForm(object):
         self.equipImportFun(
             text[myindex + 1] + "\n" + text[myindex + 2] + "\n" + text[myindex + 3] + "\n" + text[myindex + 4])
         self.skillImportFun(text[myindex + 5])
+
+    def wishImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入祝福', 'WISH 开头')
+            if not (ok and text):
+                return
+
+        text = text.split(" ")
+        if text[0] != "WISH":
+            return
+        else:
+            wishLevelList = []
+            for i in range(len(text) - 1):
+                try:
+                    wishLevelList.append(int(text[i + 1]))
+                except:
+                    pass
+            self.wishpanel.wishLevelList = wishLevelList.copy()
+            self.wishpanel.setLabelLevel()
 
     def cacloutputFun(self, text=None):
         if not self.ableCheck():
