@@ -59,7 +59,11 @@ export_start = [
     "reducerate ",
     "ti <ene",
     "rank : Cal",
-    "seedmax <n> "
+    "seedmax <n> ",
+    "PC opponent weight",
+    "al <Rank> <MU> <ZHU> <DENG> <SHOU>",
+    "    Calculate best profi",
+    "pcweight <a> <b> : Set we",
 ]
 
 

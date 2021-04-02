@@ -18,6 +18,7 @@ tests = 1000
 verbose = 1
 reducerate = "0"
 seedmax = 1000000
+PCWEIGHT = [1, 1]
 
 run_args = "t PC 0"
 saveData = None
@@ -101,7 +102,7 @@ def equipStorageDictINIT():
 
 
 def initSaveData():
-    global saveData, myCardList, enemyCardList, npcList, threads, tests, verbose, reducerate, seedmax, equipStorageDict
+    global saveData, myCardList, enemyCardList, npcList, threads, tests, verbose, reducerate, seedmax, equipStorageDict, PCWEIGHT
     saveData = {
         'setting': {"exeDir": None},
         'data': {
@@ -113,7 +114,8 @@ def initSaveData():
             "tests": tests,
             "verbose": verbose,
             "reducerate": reducerate,
-            "seedmax": seedmax
+            "seedmax": seedmax,
+            "PCWEIGHT": PCWEIGHT,
         }
     }
     myCardList = saveData["data"]["myCardList"]
@@ -132,6 +134,7 @@ def storeSaveData():
     saveData["data"]["verbose"] = verbose
     saveData["data"]["reducerate"] = reducerate
     saveData["data"]["seedmax"] = seedmax
+    saveData["data"]["PCWEIGHT"] = PCWEIGHT
 
     file_path = os.path.join(".", "ggzgui")
     with open(file_path, 'wb') as f:
@@ -140,7 +143,7 @@ def storeSaveData():
 
 
 def readSaveData():
-    global saveData, myCardList, enemyCardList, npcList, equipStorageDict, threads, tests, verbose, reducerate, seedmax
+    global saveData, myCardList, enemyCardList, npcList, equipStorageDict, threads, tests, verbose, reducerate, seedmax,PCWEIGHT
     file_path = os.path.join(".", "ggzgui")
     try:
         with open(file_path, 'rb') as f:
@@ -162,6 +165,8 @@ def readSaveData():
                 reducerate = saveData["data"]["reducerate"]
             if saveData["data"].__contains__("seedmax"):
                 seedmax = saveData["data"]["seedmax"]
+            if saveData["data"].__contains__("PCWEIGHT"):
+                PCWEIGHT = saveData["data"]["PCWEIGHT"]
 
     except FileNotFoundError:
         return False

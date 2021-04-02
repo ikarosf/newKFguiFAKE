@@ -14,19 +14,19 @@
 all_skill = {
     "name": ["启程之誓", "启程之心", "启程之风",
              "破壁之心", "破魔之心", "复合护盾", "鲜血渴望",
-             "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍",
-             "沸血之志", "波澜不惊", "飓风之力", "红蓝双刺", "绝对护盾"
+             "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍", "热血战魂",
+             "沸血之志", "波澜不惊", "飓风之力", "红蓝双刺", "绝对护盾", "后发制人"
              ],
 
     "data": ["SHI", "XIN", "FENG",
              "BI", "MO", "DUN", "XUE",
-             "SHANG", "SHEN", "CI", "REN",
-             "FEI", "BO", "JU", "HONG", "JUE"
+             "SHANG", "SHEN", "CI", "REN", "RE",
+             "FEI", "BO", "JU", "HONG", "JUE", "HOU"
              ],
     "cost": [10, 10, 10,
              30, 30, 30, 30,
-             50, 50, 50, 50,
-             100, 100, 100, 100, 100
+             50, 50, 50, 50, 50,
+             100, 100, 100, 100, 100, 100
              ]
 }
 
@@ -56,8 +56,8 @@ def getSkillIndexOfData(data):
 
 
 all_character = {
-    "name": ["琳", "默", "艾", "梦", "薇"],
-    "data": ["LIN", "MO", "AI", "MENG", "WEI"]
+    "name": ["琳", "默", "艾", "梦", "薇", "伊"],
+    "data": ["LIN", "MO", "AI", "MENG", "WEI", "YI"]
 }
 
 all_npc = {
@@ -67,13 +67,13 @@ all_npc = {
 
 all_equip = {
     "name": {
-        "weapon": ["剑", "短弓", "短杖", "荣誉之刃", "刺杀弓", "幽梦匕首", "光辉法杖", "荆棘剑盾"],
+        "weapon": ["剑", "短弓", "短杖", "荣誉之刃", "刺杀弓", "幽梦匕首", "光辉法杖", "荆棘剑盾", "陨铁重剑"],
         "glove": ["手套", "手环", "秃鹫手套"],
         "Armor": ["铁甲", "皮甲", "布甲", "灵光袍", "荆棘重甲"],
         "helmet": ["头巾", "发饰", "天使缎带"],
     },
     "data": {
-        "weapon": ["SWORD", "BOW", "STAFF", "BLADE", "ASSBOW", "DAGGER", "WAND", "SHIELD"],
+        "weapon": ["SWORD", "BOW", "STAFF", "BLADE", "ASSBOW", "DAGGER", "WAND", "SHIELD", "CLAYMORE"],
         "glove": ["GLOVES", "BRACELET", "VULTURE"],
         "Armor": ["PLATE", "LEATHER", "CLOTH", "CLOAK", "THORN"],
         "helmet": ["SCARF", "TIARA", "RIBBON"],

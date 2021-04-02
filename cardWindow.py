@@ -98,7 +98,7 @@ class Ui_cardForm(object):
 
         self.gridLayout.addWidget(self.levellabel, 3, 0, 1, 1)
 
-        self.levellineEdit = intLineEdit(parent=Form, max=500)  # 等级
+        self.levellineEdit = intLineEdit(parent=Form, max=10000)  # 等级
         self.levellineEdit.setObjectName(u"卡片等级")
         self.levellineEdit.textEdited.connect(self.set_remainder_point)
         self.gridLayout.addWidget(self.levellineEdit, 3, 1, 1, 1)
@@ -940,8 +940,8 @@ class Ui_cardForm(object):
         SPR = self.SPRspinBox.getValue()
         RES = self.RESspinBox.getValue()
 
-        if level > 500:
-            return False, "卡片不能超过500级"
+        # if level > 500:
+        #     return False, "卡片不能超过500级"
         quality = self.qualitylineEdit.getValue()
         if quality <= 0:
             return False, "卡片品质不能小于等于0"

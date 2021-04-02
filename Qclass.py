@@ -396,6 +396,8 @@ class STATCardPanel(QWidget):
         self.comboBoxList.append(thisCombobox)
         thisCombobox = STATSkillCheckBox("天使缎带", "RIBBON", self)
         self.comboBoxList.append(thisCombobox)
+        thisCombobox = STATSkillCheckBox("陨铁重剑", "CLAYMORE", self)
+        self.comboBoxList.append(thisCombobox)
 
         try:
             for i in range(5):

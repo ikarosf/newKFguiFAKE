@@ -76,7 +76,7 @@ class Ui_npcForm(object):
 
         self.gridLayout.addWidget(self.label_4, 6, 0, 1, 1)
 
-        self.lineEdit = intLineEdit(Form, max=500)
+        self.lineEdit = intLineEdit(Form, max=10000)
         self.lineEdit.setObjectName(u"lineEdit")
 
         self.gridLayout.addWidget(self.lineEdit, 6, 2, 1, 1)

@@ -104,6 +104,9 @@ class Ui_MainWindow(object):
         self.set_seedmax_action = self.set_menu.addAction('设置种子数')
         self.set_seedmax_action.triggered.connect(self.set_seedmax)
 
+        self.set_PCWEIGHT_action = self.set_menu.addAction('设置权重')
+        self.set_PCWEIGHT_action.triggered.connect(self.set_PCWEIGHT)
+
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -151,7 +154,7 @@ class Ui_MainWindow(object):
     def aboutWindowOpen(self):
         QMessageBox.about(self, "关于", """autor: ikarosf @kf 
         title: 咕咕镇计算器图形化界面(伪（伪）)
-        vision: 2.00
+        vision: 2.04
         link: 
         https://bbs.kforz.com/read.php?tid=809582&sf=44f""")
 
@@ -187,16 +190,29 @@ class Ui_MainWindow(object):
             global_env.verbose = 0
 
     def set_reducerate(self):
-        text, ok = QInputDialog.getText(self, '设置技能、暴击的抵消率', '如：“1 3”，填“0”为计算器默认设置', value=global_env.reducerate)
+        text, ok = QInputDialog.getText(self, '设置技能、暴击的抵消率', '如：“1 3”，填“0”为计算器默认设置', text=global_env.reducerate)
         if not (ok and text):
             return
         global_env.reducerate = text
 
     def set_seedmax(self):
-        text, ok = QInputDialog.getInt(self, '设置初始候选方案最大数量', '默认值1000000(已百万)，最大值100000000（一亿）', value=global_env.seedmax)
+        text, ok = QInputDialog.getInt(self, '设置初始候选方案最大数量', '默认值1000000(已百万)，最大值100000000（一亿）',
+                                       value=global_env.seedmax)
         if not (ok and text):
             return
         global_env.seedmax = text
+
+    def set_PCWEIGHT(self):
+        value1, value2 = global_env.PCWEIGHT
+        PCWEIGHT_text = str(value1) + " " + str(value2)
+        text, ok = QInputDialog.getText(self, '设置权重', '<权重起始值> <权重结束值>,默认如1 1', text=QString(PCWEIGHT_text))
+        if not (ok and text):
+            return
+        pcw = text.split()
+        if len(pcw) != 2:
+            return
+        retVal = [int(pcw[0]), int(pcw[1])]
+        global_env.PCWEIGHT = retVal
 
     def disable_all_button(self):
         self.mpShadeWindowShow()
@@ -214,4 +230,3 @@ class Ui_MainWindow(object):
     def mpBreak(self):
         action_def.stopNewFKEXE()
         self.textBrowser.insertPlainText("计算中止！")
-
