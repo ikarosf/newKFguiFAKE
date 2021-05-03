@@ -5,11 +5,14 @@ from PySide2.QtWidgets import QComboBox, QLineEdit, QSpinBox, QWidget, QGridLayo
     QInputDialog, QPushButton, QMessageBox, QVBoxLayout, QHBoxLayout
 from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
                             QRect, QSize, QUrl, Qt, SIGNAL, Slot)
-from SystemClass import all_skill, all_character, all_equip, all_npc, getSkillIndexOfName, getSkillIndexOfData, WishSet
+from SystemClass import all_skill, all_character, all_equip, all_npc, all_amulet, getSkillIndexOfName, \
+    getSkillIndexOfData, WishSet, \
+    amuletClass
 from cardClass import STATCard
 import global_env
 from skillChooseDialog import skillChooseWindow
 from wishSetDialog import wishSetWindow
+from amuletSetDialog import amuletSetWindow
 
 
 class myComboBox(QComboBox):
@@ -188,6 +191,7 @@ class STATSkillCheckBox(QCheckBox):
     def __init__(self, text, ATTR, parent=None):
         super(STATSkillCheckBox, self).__init__(text, parent)
         self.ATTR = ATTR
+        self.name = text
 
     def currentValue(self):
         return self.ATTR
@@ -211,6 +215,7 @@ class STATCardPanel(QWidget):
         self.cardtypecomboBox = cardCharacterComboBox(self)
 
         self.wishpanel = wishPanel()
+        self.amuletpanel = amuletPanel()
 
         # gridLayout1__________________________
 
@@ -435,7 +440,8 @@ class STATCardPanel(QWidget):
         self.gridLayout.addWidget(self.nicknamelineedit, 0, 1, 1, 1)  # 卡片别名QLineEdit
         self.gridLayout.addWidget(self.cardtypelabel, 1, 0, 1, 1)  # 卡片类型
         self.gridLayout.addWidget(self.cardtypecomboBox, 1, 1, 1, 1)  # 卡片类型comboBox
-        self.gridLayout.addWidget(self.wishpanel, 2, 0, 1, 2)
+        self.gridLayout.addWidget(self.wishpanel, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.amuletpanel, 2, 1, 1, 1)
         self.gridLayout.addLayout(self.gridLayout1, 3, 0, 2, 1)  # 物攻
         self.gridLayout.addLayout(self.gridLayout2, 3, 1, 2, 1)  # 绝对攻击
         self.gridLayout.addLayout(self.gridLayout3, 5, 0, 2, 1)  # 生命
@@ -448,6 +454,7 @@ class STATCardPanel(QWidget):
         cardType = self.cardtypecomboBox.currentIndex()
 
         wishSet = WishSet(self.wishpanel.getWishLevelList())
+        amuletclass = amuletClass(self.amuletpanel.getAmuletLevelList())
 
         attrs1 = []
         attrs1.append(self.ADLineEdit.getValue())
@@ -486,7 +493,7 @@ class STATCardPanel(QWidget):
                 attrs5[0] += 1
                 attrs5.append(i.currentValue())
 
-        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname,wishSet)
+        return STATCard(cardType, attrs1, attrs2, attrs3, attrs4, attrs5, nickname, wishSet, amuletclass)
 
     def ableCheck(self):
         return True, ""
@@ -540,9 +547,9 @@ class STATCardPanel(QWidget):
         self.nicknamelineedit.setText("")
         self.cardtypecomboBox.setCurrentIndex(0)
 
-        wishLevelList = [0,0,0,0,0,0,0]
+        wishLevelList = [0, 0, 0, 0, 0, 0, 0]
         self.wishpanel.wishLevelList = wishLevelList
-        self.wishpanel.setLabelLevel()
+        self.amuletpanel.resetList()
 
         self.ADLineEdit.setText("")
         self.APLineEdit.setText("")
@@ -594,8 +601,13 @@ class STATCardPanel(QWidget):
         else:
             wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
 
+        if hasattr(card, "amuletclass"):
+            amuletclass = card.amuletclass
+        else:
+            amuletclass = amuletClass([])
+
         self.wishpanel.wishLevelList = wishSet.getWishLevelList()
-        self.wishpanel.setLabelLevel()
+        self.amuletpanel.amuletLevelList = amuletclass.getAmuletLevelList()
 
         self.ADLineEdit.setText(attrs1[0])
         self.APLineEdit.setText(attrs1[1])
@@ -659,8 +671,28 @@ class STATCardPanel(QWidget):
                 except:
                     pass
             self.wishpanel.wishLevelList = wishLevelList.copy()
-            self.wishpanel.setLabelLevel()
 
+    def amuletImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入护符', 'AMULET 开头,ENDAMULET结束')
+            if not (ok and text):
+                return
+
+        text = text.split(" ")
+        if text[0] != "AMULET":
+            return
+        else:
+            amuletLevelList = [0] * len(all_amulet["data"])
+            for i in range(1, len(text) - 2, 2):
+                try:
+                    name = text[i]
+                    level = text[i + 1]
+                    for j in range(len(all_amulet["data"])):
+                        if all_amulet["data"][j] == name:
+                            amuletLevelList[j] = int(level)
+                except:
+                    pass
+            self.amuletpanel.amuletLevelList = amuletLevelList.copy()
 
     def cardImportFun(self, text=None):
         if text is None:
@@ -684,6 +716,11 @@ class STATCardPanel(QWidget):
 
         if attrs1[0] == "WISH":
             self.wishImportFun(text[0])
+            text.pop(0)
+            attrs1 = text[0].split()
+
+        if attrs1[0] == "AMULET":
+            self.amuletImportFun(text[0])
             text.pop(0)
             attrs1 = text[0].split()
 
@@ -716,6 +753,13 @@ class STATCardPanel(QWidget):
         self.SKILLLineEdit.setText(attrs4[1])
         self.REFLECTLineEdit.setText(attrs4[2])
         self.VAMPIRELineEdit.setText(attrs4[3])
+
+        others = text[4].split()
+        for i in range(len(self.comboBoxList)):
+            self.comboBoxList[i].setChecked(False)
+            for j in range(1,len(others)):
+                if others[j] == self.comboBoxList[i].ATTR:
+                    self.comboBoxList[i].setChecked(True)
 
     def cardOutputFun(self, text=None):
         if not self.ableCheck():
@@ -803,31 +847,40 @@ class wishPanel(QWidget):
         self.hBoxLayout = QHBoxLayout(self)
         self.selectButton = QPushButton("选择许愿池系数")
         self.wishLevelList = [0, 0, 0, 0, 0, 0, 0]
-        self.wishLevelLabelList = []
 
         self.hBoxLayout.addWidget(self.selectButton)
-        for i in range(len(self.wishLevelList)):
-            wishLevelLabel = QLabel(self)
-            wishLevelLabel.setText("无技能")
-            self.wishLevelLabelList.append(wishLevelLabel)
-            self.hBoxLayout.addWidget(wishLevelLabel)
-
-        self.setLabelLevel()
 
         self.selectButton.clicked.connect(lambda: self.runwishSetDialog())
-
-    def setLabelLevel(self):
-        for i in range(len(self.wishLevelList)):
-            self.wishLevelLabelList[i].setText(str(self.wishLevelList[i]))
 
     def runwishSetDialog(self):
         scw, wishLevelList = wishSetWindow.launch(self)
         if scw:
             self.wishLevelList = wishLevelList
-            self.setLabelLevel()
 
     def getWishLevelList(self):
         return self.wishLevelList.copy()
+
+
+class amuletPanel(QWidget):
+    def __init__(self, parent=None):
+        super(amuletPanel, self).__init__(parent)
+        self.hBoxLayout = QHBoxLayout(self)
+        self.selectButton = QPushButton("设置护符")
+        self.amuletLevelList = [0] * len(all_amulet["data"])
+
+        self.hBoxLayout.addWidget(self.selectButton)
+        self.selectButton.clicked.connect(lambda: self.runAmuletSetDialog())
+
+    def runAmuletSetDialog(self):
+        scw, amuletLevelList = amuletSetWindow.launch(self)
+        if scw:
+            self.amuletLevelList = amuletLevelList
+
+    def getAmuletLevelList(self):
+        return self.amuletLevelList.copy()
+
+    def resetList(self):
+        self.amuletLevelList = [0] * len(all_amulet["data"])
 
 
 class excludeSkillPanel(cardSkillPanel):

@@ -8,9 +8,9 @@ from PySide2.QtWidgets import *
 import global_env
 from Qclass import skillComboBox, skillSlotNum, cardCharacterComboBox, weaponChooseComboBox, gloveChooseComboBox, \
     ArmorChooseComboBox, helmetChooseComboBox, hasOrNotComboBox, intLineEdit, bigSpinBox, myComboBox, STATCardPanel, \
-    cardSkillPanel, wishPanel
+    cardSkillPanel, wishPanel, amuletPanel
 from SystemClass import cardAttr, skill, SKILLSet, weaponEquip, ArmorEquip, gloveEquip, helmetEquip, EQUIPSet, \
-    all_character, all_skill, all_equip, WishSet
+    all_character, all_skill, all_equip, all_amulet, WishSet, amuletClass
 from action_def import text_to_equipSet, whatCardClass
 from cardClass import myCard
 from equipChooseWindow import equipChooseWindow
@@ -181,6 +181,7 @@ class Ui_cardForm(object):
         self.gridLayout.addWidget(self.RESspinBox, 11, 1, 1, 1)
 
         self.wishpanel = wishPanel()
+        self.amuletpanel = amuletPanel()
 
         self.gridLayout_4 = QGridLayout()
         self.gridLayout_4.setObjectName(u"gridLayout_4")
@@ -513,6 +514,7 @@ class Ui_cardForm(object):
         self.gridLayout_stack1.addWidget(self.cardSkillPanel, 6, 0, 4, 1)  # 技能
 
         self.gridLayout_stack1.addWidget(self.wishpanel, 0, 1, 1, 1)
+        self.gridLayout_stack1.addWidget(self.amuletpanel, 0, 2, 1, 1)
         self.gridLayout_stack1.addLayout(self.gridLayout_4, 1, 1, 2, 1)  # 武器
         self.gridLayout_stack1.addLayout(self.gridLayout_5, 3, 1, 2, 1)  # 手套
         self.gridLayout_stack1.addLayout(self.gridLayout_6, 5, 1, 2, 1)  # 护甲
@@ -617,6 +619,7 @@ class Ui_cardForm(object):
         skillSet = SKILLSet(skill_1, skill_2, skill_3, skill_4)
 
         wishSet = WishSet(self.wishpanel.getWishLevelList())
+        amuletclass = amuletClass(self.amuletpanel.getAmuletLevelList())
 
         weaponType = self.weapontypecomboBox.currentIndex()
         weaponLevel = self.weaponlevellineEdit.text()
@@ -660,7 +663,8 @@ class Ui_cardForm(object):
 
         equipSet = EQUIPSet(weapon, glove, Armor, helmet)
 
-        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet)
+        card = self.cardClass(halo, character, level, attrSet, sklSlot, skillSet, equipSet, nickname, quality, wishSet,
+                              amuletclass)
 
         return card
 
@@ -682,6 +686,10 @@ class Ui_cardForm(object):
             wishSet = card.wishSet
         else:
             wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
+        if hasattr(card, "amuletclass"):
+            amuletclass = card.amuletclass
+        else:
+            amuletclass = amuletClass([])
         equipSet = card.equipSet
 
         attrSTR = attrSet.STR
@@ -723,7 +731,7 @@ class Ui_cardForm(object):
         self.cardSkillPanel.set4index(skillindexlist)
 
         self.wishpanel.wishLevelList = wishSet.getWishLevelList()
-        self.wishpanel.setLabelLevel()
+        self.amuletpanel.amuletLevelList = amuletclass.getAmuletLevelList()
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -775,6 +783,7 @@ class Ui_cardForm(object):
         attrRES = attrSet.RES
 
         wishSet = WishSet([0, 0, 0, 0, 0, 0, 0])
+        amuletclass = amuletClass([])
 
         skill_1 = 0
         skill_2 = 0
@@ -802,7 +811,7 @@ class Ui_cardForm(object):
         self.cardSkillPanel.set4index([0, 0, 0, 0])
 
         self.wishpanel.wishLevelList = wishSet.getWishLevelList()
-        self.wishpanel.setLabelLevel()
+        self.amuletpanel.amuletLevelList = amuletclass.getAmuletLevelList()
 
         self.weapontypecomboBox.setCurrentIndex(weapon.equipType)
         self.weaponlevellineEdit.setText(weapon.level)
@@ -1192,12 +1201,14 @@ class Ui_cardForm(object):
         self.cardImport = self.contextMenu.addAction(u'卡片导入')
         self.skillImport = self.contextMenu.addAction(u'技能导入')
         self.equipImport = self.contextMenu.addAction(u'装备导入')
+        self.amuletImport = self.contextMenu.addAction(u'护符导入')
         self.caclImport = self.contextMenu.addAction(u'结果导入')
         self.allImport = self.contextMenu.addAction(u'全部导入')
         self.cacloutput = self.contextMenu.addAction(u'全部导出')
         self.cardImport.triggered.connect(lambda: self.cardImportFun())
         self.skillImport.triggered.connect(lambda: self.skillImportFun())
         self.equipImport.triggered.connect(lambda: self.equipImportFun())
+        self.amuletImport.triggered.connect(lambda: self.amuletImportFun())
         self.allImport.triggered.connect(lambda: self.allImportFun())
         self.caclImport.triggered.connect(lambda: self.caclImportFun())
         self.cacloutput.triggered.connect(lambda: self.cacloutputFun())
@@ -1207,17 +1218,22 @@ class Ui_cardForm(object):
         self.contextMenu.show()
 
     def cardImportFun(self, text=None):
+        '''
+        <PC类型> <等级> <技能位> <品质>
+        [WISH <七项许愿池点数>]
+        [AMULET <护符类型1> <护符点数1> <护符类型2> <护符点数2> ... ENDAMULET]
+        <六项基本属性点数>
+        '''
         if text is None:
             text, ok = QInputDialog.getMultiLineText(self, '导入卡片', '咕咕镇计算器格式')
             if not (ok and text):
                 return
         text = re.sub(r"\n\n", "\n", text)
         data = text.split("\n")
-        if len(data) < 3:
+        if len(data) < 4:
             data.insert(1, " ")
         data0 = data[0].split(" ")
-        data1 = data[1].split(" ")
-        data2 = data[2].split(" ")
+        data3 = data[3].split(" ")
 
         data00 = data0[0].split("_")
         if len(data00) == 2:
@@ -1232,13 +1248,14 @@ class Ui_cardForm(object):
         self.qualitylineEdit.setText(data0[3])
 
         self.wishImportFun(data[1])
+        self.amuletImportFun(data[2])
 
-        self.STRspinBox.setValue(int(data2[0]))
-        self.AGIspinBox.setValue(int(data2[1]))
-        self.INTspinBox.setValue(int(data2[2]))
-        self.VITspinBox.setValue(int(data2[3]))
-        self.SPRspinBox.setValue(int(data2[4]))
-        self.RESspinBox.setValue(int(data2[5]))
+        self.STRspinBox.setValue(int(data3[0]))
+        self.AGIspinBox.setValue(int(data3[1]))
+        self.INTspinBox.setValue(int(data3[2]))
+        self.VITspinBox.setValue(int(data3[3]))
+        self.SPRspinBox.setValue(int(data3[4]))
+        self.RESspinBox.setValue(int(data3[5]))
 
     def skillImportFun(self, text=None):
         if text is None:
@@ -1322,6 +1339,7 @@ class Ui_cardForm(object):
         光环
         <PC类型> <等级> <技能位> <品质>
         [WISH <七项许愿池点数>]
+        护符
         <六项基本属性点数>
         <装备1>
         <装备2>
@@ -1338,11 +1356,14 @@ class Ui_cardForm(object):
         text2 = text[2].split(" ")
         if text2[0] != "WISH":
             text.insert(2, " ")
+        text3 = text[3].split(" ")
+        if text3[0] != "AMULET":
+            text.insert(3, "")
 
         self.halolineEdit.setText(text[0])
-        self.cardImportFun(text[1] + "\n" + text[2] + "\n" + text[3])
-        self.equipImportFun(text[4] + "\n" + text[5] + "\n" + text[6] + "\n" + text[7])
-        self.skillImportFun(text[8])
+        self.cardImportFun(text[1] + "\n" + text[2] + "\n" + text[3]+ "\n" + text[4])
+        self.equipImportFun(text[5] + "\n" + text[6] + "\n" + text[7] + "\n" + text[8])
+        self.skillImportFun(text[9])
 
     def caclImportFun(self, text=None):
         if text is None:
@@ -1354,6 +1375,9 @@ class Ui_cardForm(object):
         text = text.split("\n")
         myindex = 0
         for num in range(len(text)):
+            firstText = text[num].split(" ")[0]
+            if firstText in all_character["data"]:
+                self.cardImportFun(text[num] + "\n" + text[num+1] + "\n" + text[num+2] + "\n" + text[num+3])
             if re.match(r"\d+ \d+ \d+ \d+ \d+ \d+", text[num]):
                 myindex = num
                 break
@@ -1383,7 +1407,28 @@ class Ui_cardForm(object):
                 except:
                     pass
             self.wishpanel.wishLevelList = wishLevelList.copy()
-            self.wishpanel.setLabelLevel()
+
+    def amuletImportFun(self, text=None):
+        if text is None:
+            text, ok = QInputDialog.getMultiLineText(self, '导入护符', 'AMULET 开头,ENDAMULET结束')
+            if not (ok and text):
+                return
+
+        text = text.split(" ")
+        if text[0] != "AMULET":
+            return
+        else:
+            amuletLevelList = [0] * len(all_amulet["data"])
+            for i in range(1, len(text) - 2, 2):
+                try:
+                    name = text[i]
+                    level = text[i + 1]
+                    for j in range(len(all_amulet["data"])):
+                        if all_amulet["data"][j] == name:
+                            amuletLevelList[j] = int(level)
+                except:
+                    pass
+            self.amuletpanel.amuletLevelList = amuletLevelList.copy()
 
     def cacloutputFun(self, text=None):
         if not self.ableCheck():

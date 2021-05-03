@@ -13,18 +13,18 @@
 
 all_skill = {
     "name": ["启程之誓", "启程之心", "启程之风",
-             "破壁之心", "破魔之心", "复合护盾", "鲜血渴望",
+             "破壁之心", "破魔之心", "复合护盾", "鲜血渴望", "削骨之痛",
              "伤口恶化", "精神创伤", "铁甲尖刺", "忍无可忍", "热血战魂",
              "沸血之志", "波澜不惊", "飓风之力", "红蓝双刺", "绝对护盾", "后发制人"
              ],
 
     "data": ["SHI", "XIN", "FENG",
-             "BI", "MO", "DUN", "XUE",
+             "BI", "MO", "DUN", "XUE", "XIAO",
              "SHANG", "SHEN", "CI", "REN", "RE",
              "FEI", "BO", "JU", "HONG", "JUE", "HOU"
              ],
     "cost": [10, 10, 10,
-             30, 30, 30, 30,
+             30, 30, 30, 30, 30,
              50, 50, 50, 50, 50,
              100, 100, 100, 100, 100, 100
              ]
@@ -78,6 +78,17 @@ all_equip = {
         "Armor": ["PLATE", "LEATHER", "CLOTH", "CLOAK", "THORN"],
         "helmet": ["SCARF", "TIARA", "RIBBON"],
     }
+}
+
+all_amulet = {
+    "name": [
+        "力量", "敏捷", "智力", "体魄", "精神", "意志", "物理攻击", "魔法攻击", "攻击速度", "回复效果", "最大生命", "最大护盾", "生命偷取", "伤害反弹", "暴击几率",
+        "技能几率", "物理防御", "魔法防御"
+    ],
+    "data": [
+        "STR", "AGI", "INT", "VIT", "SPR", "RES", "PATK", "MATK", "SPD", "REC", "HP", "SLD", "LCH", "RFL", "CRT", "SKL",
+        "PDEF", "MDEF"
+    ]
 }
 
 
@@ -307,3 +318,22 @@ class WishSet:
 
     def getWishLevelList(self):
         return self.wishLevelList.copy()
+
+
+class amuletClass:
+    def __init__(self, amuletLevelList):
+        if len(amuletLevelList) != len(all_amulet["data"]):
+            self.amuletLevelList = [0] * len(all_amulet["data"])
+        else:
+            self.amuletLevelList = amuletLevelList
+
+    def make_gu_text(self):
+        text = "AMULET "
+        for i in range(len(self.amuletLevelList)):
+            if self.amuletLevelList[i] > 0:
+                name = all_amulet["data"][i]
+                text += name + " " + str(self.amuletLevelList[i]) + " "
+        return text + "ENDAMULET"
+
+    def getAmuletLevelList(self):
+        return self.amuletLevelList.copy()
