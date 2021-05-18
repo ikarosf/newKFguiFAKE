@@ -86,7 +86,7 @@ all_amulet = {
         "技能几率", "物理防御", "魔法防御"
     ],
     "data": [
-        "STR", "AGI", "INT", "VIT", "SPR", "RES", "PATK", "MATK", "SPD", "REC", "HP", "SLD", "LCH", "RFL", "CRT", "SKL",
+        "STR", "AGI", "INT", "VIT", "SPR", "MND", "PATK", "MATK", "SPD", "REC", "HP", "SLD", "LCH", "RFL", "CRT", "SKL",
         "PDEF", "MDEF"
     ]
 }

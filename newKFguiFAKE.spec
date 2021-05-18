@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['E:\\anaconda\\Lib\\site-packages\\shiboken2', 'G:\\pycharmProject\\newKFguiFAKE'],
+             pathex=['G:\\pycharmProject\\newKFguiFAKE'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='bitbug_favicon.ico')
+          console=True , icon='bitbug_favicon.ico')
